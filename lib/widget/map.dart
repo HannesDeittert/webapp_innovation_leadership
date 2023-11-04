@@ -9,14 +9,24 @@ import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import 'innovationhubdetailpage.dart';
 
-class InnoMap extends StatelessWidget {
+class InnoMap extends StatefulWidget {
+  @override
+  _InnoMapState createState() => _InnoMapState();
+}
+
+class _InnoMapState extends State<InnoMap> {
+  final InnovationHubProvider provider = InnovationHubProvider();
+  List<InnovationHub> hubs = [];
+  List<InnovationHub> filterhubs = [];
+
+
   @override
   Widget build(BuildContext context) {
+
     // Zugriff auf den InnovationHubProvider
     InnovationHubProvider provider = Provider.of<InnovationHubProvider>(context);
-
     // Liste der gefilterten Hubs abrufen
-    List<InnovationHub> hubs = provider.filteredHubs;
+    List<InnovationHub> currenthubs = provider.filteredHubs;
 
     return Container(
       child: Column(
@@ -38,26 +48,26 @@ class InnoMap extends StatelessWidget {
                 ),
                 // Erstellen Sie MarkerLayer dynamisch basierend auf der gefilterten Liste von InnovationHubs
                 MarkerLayer(
-                  markers: hubs.map((hub) {
+                  markers: currenthubs.map((hub) {
                     return Marker(
                       point: hub.coordinates,
                       child: IconButton(
                         iconSize: 50,
-                          onPressed: () {
-                            // Den DetailedHubInfoProvider vom Kontext abrufen
-                            DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                        onPressed: () {
+                          // Den DetailedHubInfoProvider vom Kontext abrufen
+                          DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
 
-                            // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                            detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
+                          // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                          detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
 
-                            // Zur Detailseite navigieren
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InnovationHubDetailPage(),
-                              ),
-                            );
-                          },
+                          // Zur Detailseite navigieren
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => InnovationHubDetailPage(),
+                            ),
+                          );
+                        },
                         icon: Icon(_getIconForCategory(hub.category)),
                       ),
                     );

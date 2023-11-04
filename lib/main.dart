@@ -4,9 +4,15 @@ import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
 import 'datamanager/InnovationHubProvider.dart';
 import 'home.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:webapp_innovation_leadership/firebase_options.dart';
+
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
 
-void main() {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SideMenuController()),
