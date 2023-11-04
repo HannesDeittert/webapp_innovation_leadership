@@ -38,5 +38,4 @@ flutter run
 If you would like to contribute to this project, feel free to open a pull request or create an issue on GitHub. We welcome contributions from the community!
 
 ## License
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) file for details.
