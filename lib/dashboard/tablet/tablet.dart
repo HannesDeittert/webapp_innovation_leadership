@@ -7,8 +7,8 @@ import '../../widget/MyListView.dart';
 import '../../widget/header.dart';
 import '../../widget/map.dart';
 
-
 class TabletDashboard extends StatefulWidget {
+
   @override
   _TabletDashboardState createState() => _TabletDashboardState();
 }

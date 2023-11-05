@@ -18,27 +18,12 @@ class _SideMenu extends State<SideMenu> {
   final InnovationHubProvider provider = InnovationHubProvider();
   List<InnovationHub> hubs = [];
 
-  @override
-  void initState() {
-    super.initState();
-    // Rufen Sie die Methode loadInnovationHubsFromFirestore auf und aktualisieren Sie den Zustand, wenn die Daten geladen sind
-    provider.loadInnovationHubsFromFirestore().then((_) {
-      setState(() {
-        hubs = provider.innovationHubs;
-        provider.createFilterdHubList(hubs);
-        print(provider.filteredHubs[0].name);
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       backgroundColor: tCardBgColor,
-      child: MyListView(
-        hubs: hubs,
-      ),
+      child: provider.loaded ? MyListView(hubs: hubs) : CircularProgressIndicator(),  // Zeigen Sie den Ladeindikator, wenn isLoading true ist, sonst zeigen Sie MyListView
     );
   }
 }

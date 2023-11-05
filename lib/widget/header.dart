@@ -14,7 +14,6 @@ class Header extends StatelessWidget {
     final sideMenuController = Provider.of<SideMenuController>(context);
     return Row(
       children: [
-        if(!Responsive.isDesktop(context))
           IconButton(
               onPressed: sideMenuController.controllMenu,
               icon: Icon(Icons.menu, color: tDarkColor),

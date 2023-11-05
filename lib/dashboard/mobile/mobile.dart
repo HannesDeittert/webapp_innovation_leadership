@@ -8,8 +8,8 @@ import '../../widget/header.dart';
 import '../../widget/map.dart';
 
 
-
 class MobileDashboard extends StatefulWidget {
+
   @override
   _MobileDashboardState createState() => _MobileDashboardState();
 }
