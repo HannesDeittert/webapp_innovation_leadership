@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/dashboard.dart';
+import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'package:webapp_innovation_leadership/widget/responsive.dart';
 import 'package:webapp_innovation_leadership/widget/side_menu.dart';
@@ -18,6 +19,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final InnovationHubProvider provider = InnovationHubProvider();
+  final QuestionProvider provider2 = QuestionProvider();
   @override
   void initState() {
     provider.loadInnovationHubsFromFirestore();

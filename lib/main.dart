@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webapp_innovation_leadership/Homepage.dart';
+import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
 import 'datamanager/InnovationHubProvider.dart';
@@ -19,6 +21,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SideMenuController()),
         ChangeNotifierProvider(create: (_) => innovationHubProvider),
         ChangeNotifierProvider(create: (_) => DetailedHubInfoProvider()),
+        ChangeNotifierProvider(create: (_) => QuestionProvider()),
+
       ],
       child: const MyApp()));
 }
@@ -36,7 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.black12
       ),
-      home: Home(),
+      home: MyHomePage(),
     );
   }
 }

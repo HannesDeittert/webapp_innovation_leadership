@@ -23,6 +23,8 @@ dependencies:
   firebase_core: ^2.21.0
   cloud_firestore: ^4.12.2
   firebase_auth: ^4.12.1
+  choice: ^2.3.0
+  flutter_multi_select_items: ^0.4.2
 
 
 dev_dependencies:

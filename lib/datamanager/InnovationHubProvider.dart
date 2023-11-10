@@ -42,6 +42,7 @@ class InnovationHubProvider with ChangeNotifier {
       _dataLoaded = true;
       print("Loaded once!"); // Setzen Sie _dataLoaded auf true, um anzuzeigen, dass die Daten geladen wurden
       print(_dataLoaded);
+      print(_filteredHubs);
       notifyListeners();
     }
   }
