@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../Constants/Colors.dart';
 import '../datamanager/InnovationHub.dart';
@@ -17,24 +18,12 @@ class _SideMenu extends State<SideMenu> {
   final InnovationHubProvider provider = InnovationHubProvider();
   List<InnovationHub> hubs = [];
 
-  @override
-  void initState() {
-    super.initState();
-    hubs = provider.mockupHubs;
-  }
-
-  void onFilterChange(List<InnovationHub> newFilteredHubs) {
-    // Implementieren Sie hier die Logik, die ausgeführt werden soll,
-    // wenn die gefilterte Liste sich ändert (z.B. Aktualisierung des Zustands, etc.)
-  }
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: tCardBgColor,
-      child: MyListView(
-        hubs: hubs,
-      ),
+      child: provider.loaded ? MyListView(hubs: hubs) : CircularProgressIndicator(),  // Zeigen Sie den Ladeindikator, wenn isLoading true ist, sonst zeigen Sie MyListView
     );
   }
 }

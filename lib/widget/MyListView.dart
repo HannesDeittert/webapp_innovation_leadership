@@ -1,13 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import 'filter_dropdown.dart';
-
-
-List<InnovationHub> filteredHubs = [];
 
 class MyListView extends StatefulWidget {
   final List<InnovationHub> hubs;
@@ -20,11 +16,13 @@ class MyListView extends StatefulWidget {
 
 class _MyListViewState extends State<MyListView> {
   String filter = '';
+  late List<InnovationHub> filteredHubs;
 
   @override
   void initState() {
     super.initState();
     filteredHubs = widget.hubs;
+    print(filteredHubs[0]);
   }
 
   void filterHubs(String query, BuildContext context) {
