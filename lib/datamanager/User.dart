@@ -1,13 +1,15 @@
-class User {
+import 'package:firebase_auth/firebase_auth.dart';
+
+class MyUser {
   final String uid;
   final String email;
-  final bool isSuperAdmin;
-  final String hub;
+  final String role;
+  final List<String> hub;
 
-  User({
+  MyUser({
     required this.uid,
     required this.email,
-    required this.isSuperAdmin,
+    required this.role,
     required this.hub,
   });
 }

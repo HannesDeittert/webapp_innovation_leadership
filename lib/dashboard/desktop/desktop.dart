@@ -9,7 +9,6 @@ import 'package:webapp_innovation_leadership/widget/map.dart';
 
 import '../../datamanager/InnovationHub.dart';
 import '../../widget/FilterWidgets/mainFilterUI.dart';
-import '../../widget/Login.dart';
 import '../../widget/MyListView.dart';
 
 class DesktopDashboard extends StatefulWidget {

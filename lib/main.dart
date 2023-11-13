@@ -9,6 +9,8 @@ import 'home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:webapp_innovation_leadership/firebase_options.dart';
 
+import 'login/AuthProvider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -22,6 +24,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => innovationHubProvider),
         ChangeNotifierProvider(create: (_) => DetailedHubInfoProvider()),
         ChangeNotifierProvider(create: (_) => QuestionProvider()),
+
 
       ],
       child: const MyApp()));

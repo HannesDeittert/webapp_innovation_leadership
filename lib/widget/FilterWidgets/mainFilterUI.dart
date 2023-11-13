@@ -1,15 +1,11 @@
-import 'package:choice/choice.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
+import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
+import 'package:webapp_innovation_leadership/datamanager/InnovationHubProvider.dart';
 
-import '../../datamanager/InnovationHub.dart';
-import '../../datamanager/InnovationHubProvider.dart';
-import '../../datamanager/QuestionProvider.dart';
 import '../../datamanager/Questions.dart';
+import '../../home.dart';
 
 class FilterUI extends StatefulWidget {
   @override
@@ -17,6 +13,8 @@ class FilterUI extends StatefulWidget {
 }
 
 class _FilterUIState extends State<FilterUI> {
+  int currentQuestionIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -28,87 +26,142 @@ class _FilterUIState extends State<FilterUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<InnovationHubProvider>(
-      builder: (context, provider, child) {
-        // List of questions from the QuestionProvider
-        List<Question> questions =
-            Provider.of<QuestionProvider>(context).questions;
-        List<InnovationHub> Inno = provider.innovationHubs;
-        List<InnovationHub> filtered = provider.filteredHubs;
-        List<String> tags_question_category = [];
-        List<MultiSelectCard> card_question_category = [];
+    // Get the list of questions from the QuestionProvider
+    List<Question> questions = Provider.of<QuestionProvider>(context).questions;
 
-        for (Question question in questions) {
-          List<String> tags = [];
-          for (InnovationHub hub in Inno) {
-            // Fügen Sie die Tags aus der question_category Eigenschaft des Hub hinzu, die der aktuellen Frage entsprechen
-            if (question.title == "question_category") {
-              tags.addAll(hub.question_category);
-              tags_question_category = tags;
-            }
+    // Get the list of Innovation Hubs from the InnovationHubProvider
+    List<InnovationHub> innoHubs =
+        Provider.of<InnovationHubProvider>(context).innovationHubs;
 
-            ///ToDo: If we add another Question, we need to update this method.
-            print("innohubiteration");
-          }
+    // Ensure the current question index is within bounds
+    if (currentQuestionIndex >= questions.length) {
+      // Handle when all questions are answered (you can replace this logic)
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Filter Questions'),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              Text('All questions have been answered.'),
+              OutlinedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home()),
+                    );
+                  },
+                  child: Text("Finish"))
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Get the current question based on the index
+    Question currentQuestion = questions[currentQuestionIndex];
+    print(currentQuestion);
+
+    List<String> answerOptions = [];
+    List<String> selectedAnswers = [];
+
+    for (Question question in questions) {
+      List<String> tags = [];
+      for (InnovationHub hub in innoHubs) {
+        // Fügen Sie die Tags aus der question_category Eigenschaft des Hub hinzu, die der aktuellen Frage entsprechen
+        if (question.title == "question_category") {
+          tags.addAll(hub.question_category);
+          answerOptions = tags;
         }
-        tags_question_category = tags_question_category.toSet().toList();
 
         ///ToDo: If we add another Question, we need to update this method.
-        for (String string in tags_question_category) {
-          card_question_category
-              .add(MultiSelectCard(value: string, label: string));
-        }
+        print("innohubiteration");
+      }
+    }
+    answerOptions = answerOptions.toSet().toList();
+    print(answerOptions);
 
-        print(tags_question_category);
-        return Scaffold(
-            appBar: AppBar(
-              title: Text('Filter Questions'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Filter Questions'),
+      ),
+      body: Column(
+        children: [
+          Flexible(
+            child: Container(
+              child: Text(
+                questions[currentQuestionIndex].question,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
             ),
-            body: Column(
-              children: [
-                Container(
-                  child: Column(
-                    children: [
-                      Text("What kind of Innovation Hub are you searching?"),
-                      MultiSelectContainer(
-                          prefix: MultiSelectPrefix(
-                            selectedPrefix: const Padding(
-                              padding: EdgeInsets.only(right: 5),
-                              child: Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 14,
-                              ),
+          ),
+          Flexible(
+            child: Builder(
+              builder: (context) {
+                if (questions.isNotEmpty && answerOptions.isNotEmpty) {
+                  return Column(children: [
+                    Container(
+                      height: 200,
+                      // Setzen Sie hier die maximale Höhe nach Bedarf
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: answerOptions.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 150,
+                            child: ListTile(
+                              title: Text(answerOptions[index]),
+                              onTap: () {
+                                  selectedAnswers.add(answerOptions[index]);
+                                  String selectedAnswer = answerOptions[index];
+                                  print('Selected Answer: $selectedAnswer');
+                              },
                             ),
-                          ),
-                          itemsDecoration: MultiSelectDecorations(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(colors: [
-                                  Colors.green.withOpacity(0.1),
-                                  Colors.yellow.withOpacity(0.1),
-                                ]),
-                                border: Border.all(color: Colors.green[200]!),
-                                borderRadius: BorderRadius.circular(20)),
-                            selectedDecoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                    colors: [Colors.green, Colors.lightGreen]),
-                                border: Border.all(color: Colors.green[700]!),
-                                borderRadius: BorderRadius.circular(5)),
-                            disabledDecoration: BoxDecoration(
-                                color: Colors.grey,
-                                border: Border.all(color: Colors.grey[500]!),
-                                borderRadius: BorderRadius.circular(10)),
-                          ),
-                          items: card_question_category,
-                          onChange: (allSelectedItems, selectedItem) {
-                            filterInnoHubs(context, "question_category", allSelectedItems);
-                          }),
-                    ],
-                  ),
-                )
-              ],
-            ));
-      },
+                          );
+                        },
+                      ),
+                    ), // Counter und Next/Finish Button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                            'Question ${currentQuestionIndex + 1} of ${questions.length}'),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Wenn es die letzte Frage ist, zeige "Finish" und navigiere nach Hause
+                            if (currentQuestionIndex == questions.length - 1) {
+                              print(selectedAnswers);
+                              filterInnoHubs(
+                                  context,
+                                  questions[currentQuestionIndex].title,
+                                  selectedAnswers);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Home()),
+                              );
+                            } else {
+                              // Ansonsten gehe zur nächsten Frage
+                              currentQuestionIndex++;
+                            }
+                          },
+                          child: Text(
+                              currentQuestionIndex == questions.length - 1
+                                  ? 'Finish'
+                                  : 'Next'),
+                        ),
+                      ],
+                    ),
+                  ]);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -155,5 +208,6 @@ void filterInnoHubs(BuildContext context, String question, List<dynamic> allSele
 
     // Call the createFilterdHubList function with the sorted and filtered filteredHubs list
     context.read<InnovationHubProvider>().createFilterdHubList(filteredHubs);
+    print(InnovationHubProvider().filteredHubs);
   }
 }

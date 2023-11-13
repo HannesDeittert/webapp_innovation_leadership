@@ -10,6 +10,7 @@ class InnovationHub {
   final List<String> question_category;
   final String code;
 
+
   InnovationHub({
     required this.coordinates,
     required this.category,

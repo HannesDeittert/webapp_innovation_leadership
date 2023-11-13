@@ -19,7 +19,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
-        leading: Image.asset("assets/images/Logo.png"),
+        leading: Image.asset("assets/images/FAU_INNOVATION_LOGO.png"),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.login, color: Colors.black))
         ],

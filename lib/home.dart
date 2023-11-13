@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/dashboard.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/side_menu_controller.dart';
+import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/MyListView.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
@@ -12,6 +13,7 @@ import 'package:webapp_innovation_leadership/widget/side_menu.dart';
 
 import 'datamanager/InnovationHub.dart';
 import 'datamanager/InnovationHubProvider.dart';
+import 'login/login_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     provider.loadInnovationHubsFromFirestore();
+    provider2.loadQuestionsFromFirestore();
   }
 
   @override
@@ -41,10 +44,15 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
-        leading: Image.asset("assets/images/Logo.png"),
+        leading: Image.asset("assets/images/FAU_INNOVATION_LOGO.png"),
         actions: [
           IconButton(
-              onPressed: () {}, icon: Icon(Icons.login, color: Colors.black))
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              }, icon: Icon(Icons.login, color: Colors.black))
         ],
       ),
       body: Center(
@@ -119,7 +127,13 @@ class _HomeState extends State<Home> {
 
                     Spacer(),
                     OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // Push the MainFilterUI route to the navigator stack
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => FilterUI()),
+                          );
+                        },
                         child: Text("Filter Innovation-Hubs",
                         style: TextStyle(
                           color: Colors.black
