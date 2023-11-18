@@ -8,6 +8,8 @@ class InnovationHub {
   final String name;
   final String summary;
   final List<String> question_category;
+  final List<String> question_goal;
+  final List<String> question_topic;
   final String code;
 
 
@@ -17,6 +19,8 @@ class InnovationHub {
     required this.name,
     required this.summary,
     required this.question_category,
+    required this.question_goal,
+    required this.question_topic,
     required this.code,
   });
   // Statischer Konstruktor zum Erstellen eines InnovationHub-Objekts aus einem Firestore-Dokument
@@ -30,6 +34,8 @@ class InnovationHub {
     String name = data['name'];
     String summary = data['summary'];
     List<String> question_category = List<String>.from(data['question_category']);
+    List<String> question_goal = List<String>.from(data['question_goal']);
+    List<String> question_topic = List<String>.from(data['question_topic']);
     String code = data['code'];
 
     // InnovationHub-Objekt erstellen und zurückgeben
@@ -39,6 +45,8 @@ class InnovationHub {
       name: name,
       summary: summary,
       question_category: question_category,
+      question_topic: question_topic,
+      question_goal: question_goal,
       code: code,
     );
   }
