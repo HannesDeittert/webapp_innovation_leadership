@@ -81,6 +81,8 @@ class InnoMap extends StatelessWidget {
         return Icons.business;
       case 'socialInstitution':
         return Icons.group;
+      case 'StartUp':
+        return Icons.start_sharp;
       default:
         return Icons.info;
     }

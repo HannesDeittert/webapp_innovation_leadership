@@ -1,19 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/dashboard.dart';
-import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
-import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
+import 'package:webapp_innovation_leadership/widget/InnoHubGrid.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
-import 'package:webapp_innovation_leadership/widget/MyListView.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
-import 'package:webapp_innovation_leadership/widget/responsive.dart';
-import 'package:webapp_innovation_leadership/widget/side_menu.dart';
-
-import 'datamanager/InnovationHub.dart';
-import 'datamanager/InnovationHubProvider.dart';
 import 'login/login_screen.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -23,182 +15,241 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
   bool isListViewSelected = true;
+  bool isGridViewSelected = false;
+  bool isMapViewSelected = false;
+  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
+  Future<Widget> _loadLeadingImage() async {
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref(imagePath);
+      final url = await ref.getDownloadURL();
+      print(url);
 
-  @override
-  void initState() {
-    provider.loadInnovationHubsFromFirestore();
-    provider2.loadQuestionsFromFirestore();
+      // Lade das Bild von der URL
+      final imageWidget = Image.network(url);
+
+      // Du kannst die Größe des Bildes anpassen, indem du eine `Container`-Umgebung verwendest
+      return Container(
+        width: 100, // Ändere dies nach Bedarf
+        height: 100, // Ändere dies nach Bedarf
+        child: imageWidget,
+      );
+    } catch (e) {
+      print('Fehler beim Laden des Bildes: $e');
+      // Hier könntest du ein Standardbild zurückgeben oder eine Fehlermeldung anzeigen
+      return Image.asset(
+          'assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    Color listViewButtonColor =
-    isListViewSelected ? Colors.grey : Colors.white;
-    Color mapViewButtonColor =
-    !isListViewSelected ? Colors.grey : Colors.white;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        leading: Image.asset("assets/images/FAU_INNOVATION_LOGO.png"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              }, icon: Icon(Icons.login, color: Colors.black))
-        ],
-      ),
       body: Center(
-        child: Container(
-          color: Colors.white,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 30,
+                    vertical: 0.0),
+                child: Column(
                   children: [
-                      Column(
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              isListViewSelected
-                                  ? 'This is the ListView of all Innovation Hubs'
-                                  : 'This is the MapView of all Innovation Hubs',
-                              style: TextStyle(fontSize: 18),
-                            ),
+                          FutureBuilder(
+                            future: _loadLeadingImage(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                // Wenn das Bild geladen wurde, zeige es an
+                                return snapshot.data!;
+                              } else if (snapshot.hasError) {
+                                // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                return Icon(Icons
+                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                              } else {
+                                // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                return CircularProgressIndicator();
+                              }
+                            },
                           ),
-                          // Buttons to switch between ListView and MapView
-                          // Buttons to switch between ListView and MapView
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                );
+                              },
+                              icon: Icon(Icons.login, color: Colors.black))
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              OutlinedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isListViewSelected = true;
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.list,
-                                    color: Colors.black,),
-                                    Text('ListView',
-                                    style: TextStyle(
-                                      color: Colors.black
-                                    ),),
-                                  ],
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(listViewButtonColor),
-                                ),
+                              Text(
+                                "Discover our innovation facilities one by one or use the interactive map",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color:
+                                        Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
                               ),
-                              OutlinedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isListViewSelected = false;
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.map_outlined,
-                                    color: Colors.black,),
-                                    Text('MapView',
-                                      style: TextStyle(
-                                          color: Colors.black
-                                      ),),
-                                  ],
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(mapViewButtonColor),
-                                ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              // Buttons to switch between ListView and MapView
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isListViewSelected = true;
+                                        isGridViewSelected = false;
+                                        isMapViewSelected = false;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle_outlined,
+                                          color: Colors.black,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          child: Text(
+                                            'ListView',
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    0xFF, 0x55, 0x55, 0x55)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              isListViewSelected
+                                                  ? Color.fromARGB(
+                                                      0xFF, 0xDD, 0xE1, 0xE6)
+                                                  : Colors.white),
+                                    ),
+                                  ),
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isListViewSelected = false;
+                                        isGridViewSelected = false;
+                                        isMapViewSelected = true;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle_outlined,
+                                          color: Colors.black,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          child: Text(
+                                            'MapView',
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    0xFF, 0x55, 0x55, 0x55)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              isMapViewSelected
+                                                  ? Color.fromARGB(
+                                                  0xFF, 0xDD, 0xE1, 0xE6)
+                                                  : Colors.white),
+                                    ),
+                                  ),OutlinedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isListViewSelected = false;
+                                        isGridViewSelected = true;
+                                        isMapViewSelected = false;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle_outlined,
+                                          color: Colors.black,
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          child: Text(
+                                            'GridView',
+                                            style: TextStyle(
+                                                color: Color.fromARGB(
+                                                    0xFF, 0x55, 0x55, 0x55)),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all(
+                                          isGridViewSelected
+                                              ? Color.fromARGB(
+                                              0xFF, 0xDD, 0xE1, 0xE6)
+                                              : Colors.white),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+
+                          Spacer(),
+                          OutlinedButton(
+                              onPressed: () {
+                                // Push the MainFilterUI route to the navigator stack
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FilterUI()),
+                                );
+                              },
+                              child: Text(
+                                "Filter Innovation-Hubs",
+                                style: TextStyle(color: Colors.black),
+                              ))
                         ],
                       ),
-
-                    Spacer(),
-                    OutlinedButton(
-                        onPressed: () {
-                          // Push the MainFilterUI route to the navigator stack
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => FilterUI()),
-                          );
-                        },
-                        child: Text("Filter Innovation-Hubs",
-                        style: TextStyle(
-                          color: Colors.black
-                        ),))
+                    ),
+                    // Display either ListView or MapView based on selection
                   ],
                 ),
               ),
-              // Display either ListView or MapView based on selection
-              Expanded(
-                child: isListViewSelected
-                    ? InnoHubListWidget()
-                    : InnoMap(),
-              ),
-            ],
-          ),
+            ),
+            Expanded(
+              child: isListViewSelected
+                  ? InnoHubListWidget()
+                  : (isMapViewSelected ? InnoMap() : InnoHubGridWidget()), // Falls weder ListView noch MapView ausgewählt ist, wird ein leeres Container-Widget verwendet
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-/*import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/dashboard.dart';
-import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
-import 'package:webapp_innovation_leadership/side_menu_controller.dart';
-import 'package:webapp_innovation_leadership/widget/responsive.dart';
-import 'package:webapp_innovation_leadership/widget/side_menu.dart';
-
-import 'datamanager/InnovationHub.dart';
-import 'datamanager/InnovationHubProvider.dart';
-
-
-class Home extends StatefulWidget {
-  const Home({super.key});
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
-  @override
-  void initState() {
-    provider.loadInnovationHubsFromFirestore();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-
-    final sideMenuController = Provider.of<SideMenuController>(context);
-
-    return Scaffold(
-      key: sideMenuController.scaffoldKey,
-      drawer: const SideMenu(),
-      body: Row(
-        children: [
-          Expanded(
-              flex: 5,
-              child: Dashboard()
-          ),
-        ],
-      ),
-    );
-  }
-}*/

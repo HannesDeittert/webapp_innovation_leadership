@@ -1,88 +1,176 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/dashboard.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/home.dart';
-import 'package:webapp_innovation_leadership/side_menu_controller.dart';
-import 'package:webapp_innovation_leadership/widget/responsive.dart';
-import 'package:webapp_innovation_leadership/widget/side_menu.dart';
-
-import 'datamanager/InnovationHub.dart';
+import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'datamanager/InnovationHubProvider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'login/login_screen.dart';
 
 
 class MyHomePage extends StatelessWidget {
+  final InnovationHubProvider provider = InnovationHubProvider();
+  final QuestionProvider provider2 = QuestionProvider();
+  bool isListViewSelected = true;
+
+
+  @override
+  void initState() {
+    provider.loadInnovationHubsFromFirestore();
+    provider2.loadQuestionsFromFirestore();
+  }
+  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
+
+  Future<Widget> _loadLeadingImage() async {
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref(imagePath);
+      final url = await ref.getDownloadURL();
+
+      // Lade das Bild von der URL
+      final imageWidget = Image.network(url);
+
+      // Du kannst die Größe des Bildes anpassen, indem du eine `Container`-Umgebung verwendest
+      return Container(
+        width: 100,  // Ändere dies nach Bedarf
+        height: 100,  // Ändere dies nach Bedarf
+        child: imageWidget,
+      );
+    } catch (e) {
+      print('Fehler beim Laden des Bildes: $e');
+      // Hier könntest du ein Standardbild zurückgeben oder eine Fehlermeldung anzeigen
+      return Image.asset('assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        leading: Image.asset("assets/images/FAU_INNOVATION_LOGO.png"),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.login, color: Colors.black))
-        ],
-      ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.all(20),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/30,vertical: 0.0 ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'FAU',
-                  style: TextStyle(fontSize: 300, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 5),
-                Column(
-
-                  children: [
-                    SizedBox(
-                      height: 100,
-                    ),
-                    Text(
-                    "Innovation",
-                    style: TextStyle(fontSize: 100, fontWeight: FontWeight.bold)
-                  ),
-        ]
-                )
-              ],
-            ),
-            Text(
-              'Discover our innovation facilitys and become \na part of the FAU innovation journey.',
-              style: TextStyle(fontSize: 50),
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
-                    // Aktion für den weißen Button mit schwarzer Umrandung
+                FutureBuilder(
+                  future: _loadLeadingImage(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      // Wenn das Bild geladen wurde, zeige es an
+                      return snapshot.data!;
+                    } else if (snapshot.hasError) {
+                      // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                      return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
+                    } else {
+                      // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                      return CircularProgressIndicator();
+                    }
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black),
-                  ),
-                  child: Text(
-                    'Let`s go!',
-                    style: TextStyle(
-                        color: Colors.black,
-                      fontSize: 60,
+                ),
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    }, icon: Icon(Icons.login, color: Colors.black))
+              ],
+            ),
+            Container(
+              child: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height/5),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'FAU',
+                              style: GoogleFonts.lilitaOne(fontSize: 128,color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                            ),
+                            SizedBox(height: 5),
+                            Column(
+                                children: [
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height/30,
+                                ),
+                                Text(
+                                "Inno Hub",
+                                style: GoogleFonts.pacifico(fontSize: 40,color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55))
+                              ),
+                    ]
+                            )
+                          ],
+                        ),
+                        Text(
+                          'Discover our innovation facilities and become \na part of the FAU innovation journey',
+                          style: TextStyle(fontSize: 50,color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 20),
+                  Row(
+                          children: [
+
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => FilterUI()),
+                                );
+                                // Aktion für den weißen Button mit schwarzer Umrandung
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: Color.fromARGB(0xFF, 0x0F, 0x62, 0xFE),
+                                  side: BorderSide(color: Colors.black),
+                                  fixedSize: Size(MediaQuery.of(context).size.width/9, MediaQuery.of(context).size.height/30)
+                              ),
+                              child: Text(
+                                'Personal Reccomendations',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width/80,
+                            ),
+                            OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => Home()),
+                                );
+                                // Aktion für den weißen Button mit schwarzer Umrandung
+                              },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(color: Colors.black),
+                                fixedSize: Size(MediaQuery.of(context).size.width/20, MediaQuery.of(context).size.height/30)
+                              ),
+                              child: Text(
+                                'View All',
+                                style: TextStyle(
+                                  color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+        ]
+                    ),
             ),
           ],
         ),
       ),
-    );
+          );
   }
 }

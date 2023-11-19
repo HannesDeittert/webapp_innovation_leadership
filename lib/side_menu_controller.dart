@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 
 class SideMenuController extends ChangeNotifier{
 

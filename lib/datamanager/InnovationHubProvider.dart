@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:latlong2/latlong.dart';
-
 import 'InnovationHub.dart';
 
 class InnovationHubProvider with ChangeNotifier {

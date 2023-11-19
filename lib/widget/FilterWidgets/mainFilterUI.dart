@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHubProvider.dart';
-
 import '../../datamanager/Questions.dart';
 import '../../home.dart';
 
@@ -14,6 +13,12 @@ class FilterUI extends StatefulWidget {
 
 class _FilterUIState extends State<FilterUI> {
   int currentQuestionIndex = 0;
+  List<String> answerOptions_category = [];
+  List<String> answerOptions_goal = [];
+  List<String> answerOptions_topic = [];
+  List<String> selectedAnswers_category = [];
+  List<String> selectedAnswers_goal = [];
+  List<String> selectedAnswers_topic = [];
 
   @override
   void initState() {
@@ -62,152 +67,269 @@ class _FilterUIState extends State<FilterUI> {
     Question currentQuestion = questions[currentQuestionIndex];
     print(currentQuestion);
 
-    List<String> answerOptions = [];
-    List<String> selectedAnswers = [];
-
     for (Question question in questions) {
       List<String> tags = [];
       for (InnovationHub hub in innoHubs) {
         // Fügen Sie die Tags aus der question_category Eigenschaft des Hub hinzu, die der aktuellen Frage entsprechen
         if (question.title == "question_category") {
           tags.addAll(hub.question_category);
-          answerOptions = tags;
+          answerOptions_category = tags.toSet().toList();
+        } else if (question.title == "question_topic") {
+          tags.addAll(hub.question_topic);
+          answerOptions_topic = tags.toSet().toList();
+        } else if (question.title == "question_goal") {
+          tags.addAll(hub.question_goal);
+          answerOptions_goal = tags.toSet().toList();
         }
 
         ///ToDo: If we add another Question, we need to update this method.
         print("innohubiteration");
       }
     }
-    answerOptions = answerOptions.toSet().toList();
-    print(answerOptions);
+    print(answerOptions_goal);
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Filter Questions'),
       ),
-      body: Column(
-        children: [
-          Flexible(
-            child: Container(
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height / 10,
+              ),
+              child: Container(
+                child: Text(
+                  questions[currentQuestionIndex].question,
+                  style: TextStyle(
+                    fontSize: 64,
+                    color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: Builder(
+                builder: (context) {
+                  if (currentQuestion.title == "question_category") {
+                    if (questions.isNotEmpty &&
+                        answerOptions_category.isNotEmpty) {
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 200,
+                            alignment: Alignment.center,
+                            // Setzen Sie hier die maximale Höhe nach Bedarf
+                            child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: answerOptions_category.length,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        width: 150,
+                                        child: ListTile(
+                                          title:
+                                              Text(answerOptions_category[index]),
+                                          onTap: () {
+                                            selectedAnswers_category
+                                                .add(answerOptions_category[index]);
+                                            String selectedAnswer =
+                                                answerOptions_category[index];
+                                            print(
+                                                'Selected Answer: $selectedAnswer');
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ), // Counter und Next/Finish Button
+                              ),
+                        ],
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  } else if (currentQuestion.title == "question_topic") {
+                    if (questions.isNotEmpty &&
+                        answerOptions_topic.isNotEmpty) {
+
+
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 200,
+                              alignment: Alignment.center,
+                              // Setzen Sie hier die maximale Höhe nach Bedarf
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: answerOptions_topic.length,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    width: 150,
+                                    child: ListTile(
+                                      title: Text(answerOptions_topic[index]),
+                                      onTap: () {
+                                        selectedAnswers_topic
+                                            .add(answerOptions_topic[index]);
+                                        String selectedAnswer =
+                                            answerOptions_topic[index];
+                                        print(
+                                            'Selected Answer: $selectedAnswer');
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                            ), // Counter und Next/Finish Button
+                          ]);
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  } else {
+                    if (questions.isNotEmpty && answerOptions_goal.isNotEmpty) {
+
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 200,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 8.0,
+                              children: answerOptions_goal.map((option) {
+                                return ChoiceChip(
+                                  label: Text(option),
+                                  selected: selectedAnswers_goal.contains(option),
+                                  onSelected: (selected) {
+                                    if (selected && !selectedAnswers_goal.contains(option)) {
+                                      // Füge das Element nur hinzu, wenn es noch nicht in der Liste ist
+                                      selectedAnswers_goal.add(option);
+                                    } else if (!selected && selectedAnswers_goal.contains(option)) {
+                                      // Entferne das Element nur, wenn es bereits in der Liste ist
+                                      selectedAnswers_goal.remove(option);
+                                    }
+                                    print('Selected Answers: $selectedAnswers_goal');
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }
+                },
+              ),
+            ),
+            OutlinedButton(
+              onPressed: () {
+                // Wenn es die letzte Frage ist, zeige "Finish" und navigiere nach Hause
+                if (currentQuestionIndex == questions.length - 1) {
+                  print(selectedAnswers_goal);
+                  filterInnoHubs(
+                    context,
+                    selectedAnswers_goal,
+                    selectedAnswers_topic,
+                    selectedAnswers_category,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Home()),
+                  );
+                } else {
+                  // Ansonsten gehe zur nächsten Frage
+                  setState(() {
+                    currentQuestionIndex++;
+                  });
+                }
+              },
+              style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: Colors.black),
+                  fixedSize: Size(MediaQuery.of(context).size.width / 20,
+                      MediaQuery.of(context).size.height / 30)),
               child: Text(
-                questions[currentQuestionIndex].question,
+                currentQuestionIndex == questions.length - 1
+                    ? 'Finish'
+                    : 'Next',
                 style: TextStyle(
+                  color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
                   fontSize: 20,
                 ),
               ),
             ),
-          ),
-          Flexible(
-            child: Builder(
-              builder: (context) {
-                if (questions.isNotEmpty && answerOptions.isNotEmpty) {
-                  return Column(children: [
-                    Container(
-                      height: 200,
-                      // Setzen Sie hier die maximale Höhe nach Bedarf
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: answerOptions.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            width: 150,
-                            child: ListTile(
-                              title: Text(answerOptions[index]),
-                              onTap: () {
-                                  selectedAnswers.add(answerOptions[index]);
-                                  String selectedAnswer = answerOptions[index];
-                                  print('Selected Answer: $selectedAnswer');
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ), // Counter und Next/Finish Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                            'Question ${currentQuestionIndex + 1} of ${questions.length}'),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Wenn es die letzte Frage ist, zeige "Finish" und navigiere nach Hause
-                            if (currentQuestionIndex == questions.length - 1) {
-                              print(selectedAnswers);
-                              filterInnoHubs(
-                                  context,
-                                  questions[currentQuestionIndex].title,
-                                  selectedAnswers);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => Home()),
-                              );
-                            } else {
-                              // Ansonsten gehe zur nächsten Frage
-                              currentQuestionIndex++;
-                            }
-                          },
-                          child: Text(
-                              currentQuestionIndex == questions.length - 1
-                                  ? 'Finish'
-                                  : 'Next'),
-                        ),
-                      ],
-                    ),
-                  ]);
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height / 30),
+              child: Text('${currentQuestionIndex + 1} / ${questions.length}',
+                  style: TextStyle(
+                      color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                      fontSize: 64)),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-List<InnovationHub> filterHubs(List<InnovationHub> hubs, List<String> selectedTags) {
-  return hubs.where((hub) {
-    for (String tag in selectedTags) {
-      if (hub.question_category.contains(tag)) {
-        return true;
+
+void filterInnoHubs(BuildContext context, List<dynamic> allSelectedItems_goal, List<dynamic> allSelectedItems_topic, List<dynamic> allSelectedItems_category) {
+  // Get the original list of innovation hubs
+  List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
+  List<Map<InnovationHub, int>> filteredHubs = [];
+
+  for (InnovationHub Hub in originalHubs){
+    int matchCount = 0;
+    Hub.filtered_chips.clear();
+    // Calculate simmilarity for allSelectedItems_goal
+    for (String tag in allSelectedItems_goal) {
+      if (Hub.question_goal.contains(tag)) {
+        matchCount++;
+        Hub.filtered_chips.add(tag);
       }
     }
-    return false;
-  }).toList();
-}
-
-double calculateSimilarity(List<String> selectedTags, List<String> hubTags) {
-  int matchCount = 0;
-  for (String tag in selectedTags) {
-    if (hubTags.contains(tag)) {
-      matchCount++;
+    // Calculate simmilarity for allSelectedItems_topic
+    for (String tag in allSelectedItems_topic) {
+      if (Hub.question_topic.contains(tag)) {
+        matchCount++;
+        Hub.filtered_chips.add(tag);
+      }
     }
+    // Calculate simmilarity for allSelectedItems_category
+    for (String tag in allSelectedItems_category) {
+      if (Hub.question_category.contains(tag)) {
+        matchCount++;
+        Hub.filtered_chips.add(tag);
+      }
+    }
+    // Add it to filtered Hubs
+    filteredHubs.add({Hub: matchCount});
   }
-  return matchCount.toDouble() / selectedTags.length;
-}
 
-void sortFilteredHubs(List<InnovationHub> filteredHubs, List<String> selectedTags) {
-  filteredHubs.sort((hub1, hub2) {
-    double similarity1 = calculateSimilarity(selectedTags, hub1.question_category);
-    double similarity2 = calculateSimilarity(selectedTags, hub2.question_category);
-    return similarity2.compareTo(similarity1);
-  });
-}
+  // Sort filteredHubs by matchCount
+  filteredHubs.sort((a, b) => b.values.first.compareTo(a.values.first));
 
-void filterInnoHubs(BuildContext context, String question, List<dynamic> allSelectedItems) {
-  if (question == "question_category") {
-    // Get the original list of innovation hubs
-    List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
+  // Cut Hubs with 0 matchCount
 
-    // Filter the hubs that have at least one matching tag
-    List<InnovationHub> filteredHubs = filterHubs(originalHubs, allSelectedItems.cast<String>());
+  filteredHubs.removeWhere((entry) => entry.values.first == 0);
 
-    // Sort the filteredHubs list based on the similarity with the selected tags
-    sortFilteredHubs(filteredHubs, allSelectedItems.cast<String>());
+  // Create a List<InnovationHub> from the sorted List<Map>
+  List<InnovationHub> sortedHubs = filteredHubs.map((entry) => entry.keys.first).toList();
 
-    // Call the createFilterdHubList function with the sorted and filtered filteredHubs list
-    context.read<InnovationHubProvider>().createFilterdHubList(filteredHubs);
-    print(InnovationHubProvider().filteredHubs);
-  }
+  // Call the createFilterdHubList function with the sorted and filtered filteredHubs list
+  context.read<InnovationHubProvider>().createFilterdHubList(sortedHubs);
+
 }
