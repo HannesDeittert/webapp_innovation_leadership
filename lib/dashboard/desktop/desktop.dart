@@ -1,15 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:webapp_innovation_leadership/Constants/Colors.dart';
-import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
-import 'package:webapp_innovation_leadership/widget/header.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
-
-import '../../datamanager/InnovationHub.dart';
 import '../../widget/FilterWidgets/mainFilterUI.dart';
-import '../../widget/MyListView.dart';
+
 
 class DesktopDashboard extends StatefulWidget {
   @override
@@ -54,11 +47,6 @@ class _DesktopDashboardState extends State<DesktopDashboard> {
                 ),
                 SizedBox(
                   height: (MediaQuery.of(context).size.height * (1 / 5)),
-                ),
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width * (1 / 5)),
-                  height: (MediaQuery.of(context).size.height * (2 / 3)),
-                  child: InnoHubListWidget(),
                 ),
               ],
             ),

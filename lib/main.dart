@@ -5,11 +5,8 @@ import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
 import 'datamanager/InnovationHubProvider.dart';
-import 'home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:webapp_innovation_leadership/firebase_options.dart';
-
-import 'login/AuthProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

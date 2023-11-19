@@ -27,6 +27,7 @@ dependencies:
   flutter_multi_select_items: ^0.4.2
   google_fonts: ^6.1.0
   chips_choice: ^3.0.1
+  firebase_storage: ^11.5.1
 
 
 dev_dependencies:

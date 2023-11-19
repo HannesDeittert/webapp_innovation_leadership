@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHubProvider.dart';
-import 'package:chips_choice/chips_choice.dart';
-
 import '../../datamanager/Questions.dart';
 import '../../home.dart';
 
@@ -121,14 +119,15 @@ class _FilterUIState extends State<FilterUI> {
                     if (questions.isNotEmpty &&
                         answerOptions_category.isNotEmpty) {
 
-                      return Row(
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                                  height: 200,
-                                  alignment: Alignment.center,
-                                  // Setzen Sie hier die maximale Höhe nach Bedarf
-                                  child: ListView.builder(
+                            height: 200,
+                            alignment: Alignment.center,
+                            // Setzen Sie hier die maximale Höhe nach Bedarf
+                            child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemCount: answerOptions_category.length,
@@ -200,36 +199,34 @@ class _FilterUIState extends State<FilterUI> {
 
 
                       return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 200,
-                              alignment: Alignment.center,
-                              // Setzen Sie hier die maximale Höhe nach Bedarf
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: answerOptions_goal.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    width: 150,
-                                    child: ListTile(
-                                      title: Text(answerOptions_goal[index]),
-                                      onTap: () {
-                                        selectedAnswers_goal
-                                            .add(answerOptions_goal[index]);
-                                        String selectedAnswer =
-                                            answerOptions_goal[index];
-                                        print(
-                                            'Selected Answer: $selectedAnswer');
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 200,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 8.0,
+                              children: answerOptions_goal.map((option) {
+                                return ChoiceChip(
+                                  label: Text(option),
+                                  selected: selectedAnswers_goal.contains(option),
+                                  onSelected: (selected) {
+                                    if (selected && !selectedAnswers_goal.contains(option)) {
+                                      // Füge das Element nur hinzu, wenn es noch nicht in der Liste ist
+                                      selectedAnswers_goal.add(option);
+                                    } else if (!selected && selectedAnswers_goal.contains(option)) {
+                                      // Entferne das Element nur, wenn es bereits in der Liste ist
+                                      selectedAnswers_goal.remove(option);
+                                    }
+                                    print('Selected Answers: $selectedAnswers_goal');
+                                  },
+                                );
+                              }).toList(),
                             ),
-                          ]);
+                          ),
+                        ],
+                      );
                     } else {
                       return CircularProgressIndicator();
                     }
@@ -288,29 +285,34 @@ class _FilterUIState extends State<FilterUI> {
   }
 }
 
+
 void filterInnoHubs(BuildContext context, List<dynamic> allSelectedItems_goal, List<dynamic> allSelectedItems_topic, List<dynamic> allSelectedItems_category) {
   // Get the original list of innovation hubs
   List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
-  List<Map<InnovationHub, int >> filteredHubs = [];
+  List<Map<InnovationHub, int>> filteredHubs = [];
 
   for (InnovationHub Hub in originalHubs){
     int matchCount = 0;
+    Hub.filtered_chips.clear();
     // Calculate simmilarity for allSelectedItems_goal
     for (String tag in allSelectedItems_goal) {
       if (Hub.question_goal.contains(tag)) {
         matchCount++;
+        Hub.filtered_chips.add(tag);
       }
     }
     // Calculate simmilarity for allSelectedItems_topic
     for (String tag in allSelectedItems_topic) {
       if (Hub.question_topic.contains(tag)) {
         matchCount++;
+        Hub.filtered_chips.add(tag);
       }
     }
     // Calculate simmilarity for allSelectedItems_category
     for (String tag in allSelectedItems_category) {
       if (Hub.question_category.contains(tag)) {
         matchCount++;
+        Hub.filtered_chips.add(tag);
       }
     }
     // Add it to filtered Hubs
