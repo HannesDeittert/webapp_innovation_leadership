@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -8,6 +7,9 @@ import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import 'innovationhubdetailpage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:side_sheet/side_sheet.dart';
+import '../datamanager/DetailedHubInfoProvider.dart';
 
 class InnoMap extends StatelessWidget {
   @override
@@ -48,14 +50,14 @@ class InnoMap extends StatelessWidget {
                               DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
 
                               // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                              detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
+                              //detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
 
-                              // Zur Detailseite navigieren
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InnovationHubDetailPage(),
-                                ),
+                              // Zur Detailseite navigiere
+                              SideSheet.right(
+                                sheetBorderRadius: 10,
+                                context: context,
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                body: PopUPContent(context, hub)
                               );
                             },
                             icon: Icon(_getIconForCategory(hub.category)),
@@ -81,13 +83,102 @@ class InnoMap extends StatelessWidget {
         return Icons.business;
       case 'socialInstitution':
         return Icons.group;
-      case 'StartUp':
-        return Icons.start_sharp;
       default:
         return Icons.info;
     }
   }
 }
 
+  Widget PopUPContent(BuildContext context, InnovationHub hub) {
+    return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                child: Column(
+                  children: [
+                    FutureBuilder(
+                      future: _loadProfileImage(hub.profileImagePath),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.width*0.18,
+                            width: MediaQuery.of(context).size.width*0.18,
+                            child: Image(
+                              image: snapshot.data as ImageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        } else {
+                          return Container(); // Hier könnte ein Ladeindikator eingefügt werden
+                        }
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    // Name
+                    Text(
+                      hub.name,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              // Summary
+              Text(
+                hub.summary,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: Colors.grey,),
+              ),
+              // Chips
+              Wrap(
+                spacing: 5,
+                runSpacing: 5,
+                children: hub.filtered_chips.map((chip) {
+                  return Chip(
+                    label: Text(chip),
+                  );
+                }).toList(),
+              ),
+              // Show More Button
+              GestureDetector(
+                onTap: () {
+                  // Den DetailedHubInfoProvider vom Kontext abrufen
+                  DetailedHubInfoProvider detailedHubInfoProvider =
+                  Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                  // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                  detailedHubInfoProvider.getHubInfoByCode(hub.code);
+                  // Hier zur InnovationHubDetailPage navigieren
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InnovationHubDetailPage(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Show More',
+                  style: TextStyle(color: Colors.blue, fontSize: 16),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
+
+
+Future<ImageProvider> _loadProfileImage(String path) async {
+  try {
+    final ref = firebase_storage.FirebaseStorage.instance.ref(path);
+    final url = await ref.getDownloadURL();
+    return NetworkImage(url);
+  } catch (e) {
+    // Fehlerbehandlung, wenn das Bild nicht geladen werden kann
+    print('Fehler beim Laden des Profilbildes: $e');
+    return AssetImage('assets/placeholder_image.jpg');
+  }
+}
 
 

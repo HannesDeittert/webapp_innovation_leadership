@@ -1,67 +1,64 @@
-// Datei: detailed_hub_info_provider.dart
 
-import 'package:flutter/foundation.dart';
+
+import 'dart:js';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../widget/innovationhubdetailpage.dart';
 import 'DetailedHubInfo.dart';
 
 class DetailedHubInfoProvider with ChangeNotifier {
+  late DetailedHubInfo _detailedInnovationHub;
 
-  late DetailedHubInfo _detailedHubInfo;
+  DetailedHubInfo get detailedInnovationHub => _detailedInnovationHub;
 
-  DetailedHubInfo get detailedHubInfo => _detailedHubInfo;
+  Future<void> getHubInfoByCode(String code) async {
+    try {
+      DetailedHubInfo load;
 
-  // Methode zum Laden der DetailedHubInfo für einen gegebenen Code
-  void loadDetailedHubInfo(String code) {
-    // Mockup-Daten durchsuchen, um die DetailedHubInfo für den gegebenen Code zu finden
-    _detailedHubInfo = _mockupDetailedHubInfos.firstWhere(
-          (hub) => hub.code == code,
-      orElse: () => DetailedHubInfo(
-        code: '',
-        name: 'Hub nicht gefunden',
-        detailedDescription: 'Es wurden keine Informationen für den gegebenen Hub-Code gefunden.',
-        headerImage: 'path/to/default/header/image.png',
-      ),
-    );
-    notifyListeners();
+      DocumentReference detailedinnovationHubsRef = FirebaseFirestore.instance.collection('DetailedHubInfo').doc(code);
+
+      // Daten aus der Sammlung laden
+      DocumentSnapshot snapshot = await detailedinnovationHubsRef.get();
+
+      String dcode = snapshot.get("code");
+      String name = snapshot.get("name");
+
+      String detailedDescription = snapshot.get("detailedDescription");
+
+      String website = snapshot.get("website");
+
+      String headerImage = snapshot.get("headerImage");
+
+      List<dynamic> email_contacts_dynamic =  snapshot.get("email_contacts") ;
+      List<String> email_contacts = List<String>.from(email_contacts_dynamic);
+
+      List<dynamic> tele_contacts_dynamic = snapshot.get("tele_contacts");
+      List<String> tele_contacts = List<String>.from(tele_contacts_dynamic);
+
+
+      // InnovationHub-Objekt erstellen und zurückgeben
+      load=  DetailedHubInfo(
+        code: dcode,
+        name: name,
+        detailedDescription: detailedDescription,
+        website: website,
+        headerImage: headerImage,
+        email_contacts: email_contacts,
+        tele_contacts: tele_contacts,
+      );
+
+      _detailedInnovationHub = load;
+
+      // Dokument mit passendem Code gefunden
+      //_detailedInnovationHub = DetailedHubInfo.fromFirestore(typedDoc);
+      notifyListeners();
+      print("Success!");
+
+    } catch (error) {
+      print('Error getting Innovation Hub: $error');
+    }
   }
-
-  // Mockup-Liste mit detaillierten Hub-Informationen
-  static List<DetailedHubInfo> _mockupDetailedHubInfos = [
-  DetailedHubInfo(
-  code: '1234',
-  name: 'Lehrstuhl Example 1',
-  detailedDescription: 'Ein inspirierender Ort für Forschung und Lehre an der Universität Fürth.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  DetailedHubInfo(
-  code: '5678',
-  name: 'Unternehmen',
-  detailedDescription: 'Ein Ort für Technologie und Innovation im Fürther Technologiezentrum.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  DetailedHubInfo(
-  code: '9101',
-  name: 'Innovations Cafe',
-  detailedDescription: 'Ein gemütlicher Hub für soziale Projekte und Gemeinschaftsarbeit in Fürth.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  DetailedHubInfo(
-  code: '1121',
-  name: 'Lehstuhl Example 2',
-  detailedDescription: 'Ein weiterer inspirierender Hub für Forschung und Lehre an der Universität Fürth.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  DetailedHubInfo(
-  code: '1314',
-  name: 'Unternehmen1',
-  detailedDescription: 'Ein aufstrebender Hub für Startups und junge Unternehmen im Fürther Gründerzentrum.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  DetailedHubInfo(
-  code: '1516',
-  name: 'Soziale Einrichtung1',
-  detailedDescription: 'Ein kultureller Hub für kulturelle Projekte und Veranstaltungen in Fürth.',
-  headerImage: 'assets/images/zimt_header.jpeg',
-  ),
-  ];
 }
+

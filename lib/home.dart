@@ -50,6 +50,52 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                  border: Border(
+                    bottom: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                  )
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 30,
+                    vertical: 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FutureBuilder(
+                      future: _loadLeadingImage(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          // Wenn das Bild geladen wurde, zeige es an
+                          return snapshot.data!;
+                        } else if (snapshot.hasError) {
+                          // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                          return Icon(Icons
+                              .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                        } else {
+                          // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                          return CircularProgressIndicator();
+                        }
+                      },
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                          );
+                        },
+                        icon: Icon(Icons.login, color: Colors.black))
+                  ],
+                ),
+              ),
+            ),
+            Container(
               color: Colors.white,
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -57,39 +103,6 @@ class _HomeState extends State<Home> {
                     vertical: 0.0),
                 child: Column(
                   children: [
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FutureBuilder(
-                            future: _loadLeadingImage(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                // Wenn das Bild geladen wurde, zeige es an
-                                return snapshot.data!;
-                              } else if (snapshot.hasError) {
-                                // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                return Icon(Icons
-                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
-                              } else {
-                                // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
-                                return CircularProgressIndicator();
-                              }
-                            },
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                );
-                              },
-                              icon: Icon(Icons.login, color: Colors.black))
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Row(
