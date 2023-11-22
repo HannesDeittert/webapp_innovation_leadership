@@ -211,6 +211,7 @@ class _FilterUIState extends State<FilterUI> {
                                 return ChoiceChip(
                                   label: Text(option),
                                   selected: selectedAnswers_goal.contains(option),
+                                  selectedColor: Colors.amberAccent,
                                   onSelected: (selected) {
                                     if (selected && !selectedAnswers_goal.contains(option)) {
                                       // Füge das Element nur hinzu, wenn es noch nicht in der Liste ist
