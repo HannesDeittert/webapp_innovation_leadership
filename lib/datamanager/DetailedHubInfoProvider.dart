@@ -5,6 +5,7 @@ import 'dart:js';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import '../widget/innovationhubdetailpage.dart';
 import 'DetailedHubInfo.dart';
 
@@ -13,7 +14,7 @@ class DetailedHubInfoProvider with ChangeNotifier {
 
   DetailedHubInfo get detailedInnovationHub => _detailedInnovationHub;
 
-  Future<void> getHubInfoByCode(String code) async {
+  Future<DetailedHubInfo> getHubInfoByCode(String code) async {
     try {
       DetailedHubInfo load;
 
@@ -50,6 +51,7 @@ class DetailedHubInfoProvider with ChangeNotifier {
       );
 
       _detailedInnovationHub = load;
+      return _detailedInnovationHub;
 
       // Dokument mit passendem Code gefunden
       //_detailedInnovationHub = DetailedHubInfo.fromFirestore(typedDoc);
@@ -58,6 +60,7 @@ class DetailedHubInfoProvider with ChangeNotifier {
 
     } catch (error) {
       print('Error getting Innovation Hub: $error');
+      return DetailedHubInfo(code: "code", name: "name", detailedDescription: "detailedDescription", website: "website", headerImage: "headerImage", email_contacts: ["email_contacts"], tele_contacts: ["tele_contacts"]);
     }
   }
 }

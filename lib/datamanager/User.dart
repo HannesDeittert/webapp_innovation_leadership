@@ -3,7 +3,7 @@ class MyUser {
   final String uid;
   final String email;
   final String role;
-  final List<String> hub;
+  final String hub;
 
   MyUser({
     required this.uid,

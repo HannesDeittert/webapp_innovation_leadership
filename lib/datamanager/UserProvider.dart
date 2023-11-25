@@ -10,6 +10,12 @@ class UserProvider {
     });
   }
 
+  Future<void> adInnoHub(String uid, String code) async {
+    await _firestore.collection('users').doc(uid).set({
+      'hub': code,
+    });
+  }
+
   Future<void> deleteUser(String uid) async {
     await _firestore.collection('users').doc(uid).delete();
   }
@@ -26,6 +32,19 @@ class UserProvider {
       await _firestore.collection('users').doc(uid).get();
       if (documentSnapshot.exists) {
         return documentSnapshot['role'];
+      }
+      return null;
+    } catch (e) {
+      print('Error getting user role: $e');
+      return null;
+    }
+  }
+  Future<String?> getAdminHub(String uid) async {
+    try {
+      var documentSnapshot =
+      await _firestore.collection('users').doc(uid).get();
+      if (documentSnapshot.exists) {
+        return documentSnapshot['hub'];
       }
       return null;
     } catch (e) {

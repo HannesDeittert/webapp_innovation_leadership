@@ -5,7 +5,11 @@ import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHubProvider.dart';
 import '../../datamanager/Questions.dart';
 import '../../home.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter_svg/flutter_svg.dart';
 
+///ToDo: Chip and ListTile change color, based on if there are selected.
+///ToDo: FindImages for question_goal
 class FilterUI extends StatefulWidget {
   @override
   _FilterUIState createState() => _FilterUIState();
@@ -119,12 +123,7 @@ class _FilterUIState extends State<FilterUI> {
                     if (questions.isNotEmpty &&
                         answerOptions_category.isNotEmpty) {
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 200,
+                      return Container(
                             alignment: Alignment.center,
                             // Setzen Sie hier die maximale Höhe nach Bedarf
                             child: ListView.builder(
@@ -132,25 +131,54 @@ class _FilterUIState extends State<FilterUI> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: answerOptions_category.length,
                                     itemBuilder: (context, index) {
-                                      return Container(
-                                        width: 150,
-                                        child: ListTile(
-                                          title:
-                                              Text(answerOptions_category[index]),
-                                          onTap: () {
+                                      return GestureDetector(
+                                        onTap: (){
+
                                             selectedAnswers_category
                                                 .add(answerOptions_category[index]);
                                             String selectedAnswer =
-                                                answerOptions_category[index];
+                                            answerOptions_category[index];
                                             print(
                                                 'Selected Answer: $selectedAnswer');
-                                          },
+
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: Container(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                FutureBuilder(
+                                                  future: _loadProfileImage(answerOptions_category[index]),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.connectionState == ConnectionState.done) {
+                                                      return SizedBox(
+                                                        height: MediaQuery.of(context).size.height / 4,
+                                                        width: MediaQuery.of(context).size.height / 4,
+                                                        child: Image(
+                                                          width: MediaQuery.of(context).size.height / 4,
+                                                          height: MediaQuery.of(context).size.height / 4,
+                                                          image: snapshot.data as ImageProvider,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      return Container(); // Hier könnte ein Ladeindikator eingefügt werden
+                                                    }
+                                                  },
+                                                ),
+                                                Center(
+                                                  child: Text(answerOptions_category[index]),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       );
                                     },
                                   ), // Counter und Next/Finish Button
-                              ),
-                        ],
+
+
                       );
                     } else {
                       return CircularProgressIndicator();
@@ -238,6 +266,8 @@ class _FilterUIState extends State<FilterUI> {
             OutlinedButton(
               onPressed: () {
                 // Wenn es die letzte Frage ist, zeige "Finish" und navigiere nach Hause
+
+                ///ToDo: Wenn alle SelctedAnswers empty sind dann Popup, mit hinweis darauf, wenn dann dort auf weiter, dann direkt Home() ohne zu filtern.
                 if (currentQuestionIndex == questions.length - 1) {
                   print(selectedAnswers_goal);
                   filterInnoHubs(
@@ -283,6 +313,35 @@ class _FilterUIState extends State<FilterUI> {
         ),
       ),
     );
+  }
+  Future<ImageProvider> _loadProfileImage(String selectedAnswer) async {
+    String imagePath = "";
+    try {
+      print(selectedAnswer);
+      if (selectedAnswer == "StartUp") {
+        print("object");
+        // Verwende hier die Referenz für StartUp
+        imagePath = "gs://cohort1innovationandleadership.appspot.com/Images/Filter/StartUp.svg";
+      } else if (selectedAnswer == "Company") {
+        print("object");
+        // Verwende hier die Referenz für StartUp
+        imagePath = "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Company.svg";
+      }else if (selectedAnswer == "Chair") {
+        print("object");
+        // Verwende hier die Referenz für StartUp
+        imagePath = "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Chair.svg";
+      }else {
+        // Verwende hier die Referenz für andere Fälle
+        imagePath = "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Group-bro.svg";
+      }
+      final ref = firebase_storage.FirebaseStorage.instance.ref(imagePath);
+      final url = await ref.getDownloadURL();
+      return NetworkImage(url);
+    } catch (e) {
+      // Fehlerbehandlung, wenn das Bild nicht geladen werden kann
+      print('Fehler beim Laden des Profilbildes: $e');
+      return AssetImage('assets/placeholder_image.jpg');
+    }
   }
 }
 
@@ -334,3 +393,4 @@ void filterInnoHubs(BuildContext context, List<dynamic> allSelectedItems_goal, L
   context.read<InnovationHubProvider>().createFilterdHubList(sortedHubs);
 
 }
+

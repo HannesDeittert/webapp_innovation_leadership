@@ -30,6 +30,7 @@ dependencies:
   firebase_storage: ^11.5.1
   flutter_map_marker_popup: ^6.1.2
   side_sheet: ^1.0.4
+  flutter_svg: ^2.0.9
 
 
 dev_dependencies:

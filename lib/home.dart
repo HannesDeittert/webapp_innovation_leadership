@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:side_sheet/side_sheet.dart';
 import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubGrid.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
@@ -84,13 +85,19 @@ class _HomeState extends State<Home> {
                     ),
                     IconButton(
                         onPressed: () {
-                          Navigator.push(
+                          /*Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => LoginScreen()),
+                          );*/
+                          SideSheet.right(
+                              sheetBorderRadius: 10,
+                              context: context,
+                              width: MediaQuery.of(context).size.width * 0.2,
+                              body: PopUPContent(context)
                           );
                         },
-                        icon: Icon(Icons.login, color: Colors.black))
+                        icon: Icon(Icons.menu, color: Colors.black))
                   ],
                 ),
               ),
@@ -265,4 +272,105 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+}
+Widget PopUPContent(BuildContext context) {
+
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.2,
+    padding: EdgeInsets.all(16),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+      children: [
+        // Container 2
+        Container(
+            width: MediaQuery.of(context).size.width * 0.17,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(),
+            ),
+            child: Column(
+              children: [
+                IconButton(
+                onPressed: () {
+          Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+          );
+          }, icon: Icon(Icons.login, color: Colors.black))
+              ],
+            ),
+          ),
+
+        SizedBox(
+          height: 10,
+        ),
+        // Container 4
+        Container(
+            width: MediaQuery.of(context).size.width * 0.17,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(),
+            ),
+            child: Column(
+              children: [
+                Text("General", style: TextStyle(fontWeight: FontWeight.bold),),
+                // Textzeilen, die anklickbar sind
+                buildClickableText(context,"Tips & Tricks"),
+                buildClickableText(context,"About Us"),
+                buildClickableText(context,"FAQs"),
+                buildClickableText(context,"Sources & References"),
+                buildClickableText(context,"Feedback"),
+                buildClickableText(context,"Questions"),
+              ],
+            ),
+          ),
+
+        SizedBox(
+          height: 10,
+        ),
+
+        // Container 5
+        Container(
+            width: MediaQuery.of(context).size.width * 0.17,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(),
+            ),
+            child: Column(
+              children: [
+                // Hier den Code für das Development Impressum einfügen
+                Text("Development Impressum", style: TextStyle(fontWeight: FontWeight.bold),),
+                Text("Hannes Deittert"),
+                Text("hannes.deittert@fau.de"),
+                Text("Bohlenplatz 10 91054"),
+                Text("Erlangen"),
+              ],
+            ),
+          ),
+
+      ],
+    ),
+  );
+}
+
+Widget buildClickableText(BuildContext context, String text) {
+  return GestureDetector(
+    onTap: () {
+      if (text =="Sources & References"){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+            builder: (context) => LoginScreen()));
+      }
+    },
+    child: Text(
+      text,
+      style: TextStyle(
+        decoration: TextDecoration.underline,
+        color: Colors.blue,
+      ),
+    ),
+  );
 }

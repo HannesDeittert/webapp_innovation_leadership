@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 class InnovationHub {
   final LatLng coordinates;
   final String category;
+  final String status;
   final String name;
   final String summary;
   final List<String> question_category;
@@ -18,6 +19,7 @@ class InnovationHub {
   InnovationHub({
     required this.coordinates,
     required this.category,
+    required this.status,
     required this.name,
     required this.summary,
     required this.question_category,
@@ -35,6 +37,7 @@ class InnovationHub {
     double longitude = data['longitude'];
     LatLng coordinates = LatLng(latitude, longitude); // LatLng-Objekt erstellen
     String category = data['category'];
+    String status = data['status'];
     String name = data['name'];
     String summary = data['summary'];
     List<String> question_category = List<String>.from(data['question_category']);
@@ -48,6 +51,7 @@ class InnovationHub {
     return InnovationHub(
       coordinates: coordinates,
       category: category,
+      status: status,
       name: name,
       summary: summary,
       question_category: question_category,
