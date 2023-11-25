@@ -48,13 +48,13 @@ class HubGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Den DetailedHubInfoProvider vom Kontext abrufen
         DetailedHubInfoProvider detailedHubInfoProvider =
         Provider.of<DetailedHubInfoProvider>(context, listen: false);
 
         // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-        detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
+        await detailedHubInfoProvider.getHubInfoByCode(hub.code);
 
         // Zur Detailseite navigieren
         Navigator.push(

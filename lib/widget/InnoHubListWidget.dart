@@ -6,6 +6,7 @@ import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import 'innovationhubdetailpage.dart';
+import '../datamanager/DetailedHubInfoProvider.dart';
 
 class InnoHubListWidget extends StatelessWidget {
   @override
@@ -42,13 +43,13 @@ class HubListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         // Den DetailedHubInfoProvider vom Kontext abrufen
         DetailedHubInfoProvider detailedHubInfoProvider =
         Provider.of<DetailedHubInfoProvider>(context, listen: false);
 
         // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-        detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
+        await detailedHubInfoProvider.getHubInfoByCode(hub.code);
 
         // Zur Detailseite navigieren
         Navigator.push(
@@ -99,7 +100,7 @@ class HubListItem extends StatelessWidget {
                         hub.summary,
                         style: TextStyle(fontSize: 32, color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 8),
+                      SizedBox(height: MediaQuery.of(context).size.height /20),
 
                       Wrap(
                         spacing: 5,

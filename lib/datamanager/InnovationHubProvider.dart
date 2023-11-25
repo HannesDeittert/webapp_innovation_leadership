@@ -4,10 +4,12 @@ import 'InnovationHub.dart';
 
 class InnovationHubProvider with ChangeNotifier {
   List<InnovationHub> _innovationHubs = [];
+  List<InnovationHub> _allinnovationHubs = [];
   List<InnovationHub> _filteredHubs = [];
   bool _dataLoaded = false;  // Zustand, um den Ladezustand der Daten zu verfolgen
 
   List<InnovationHub> get innovationHubs => _innovationHubs;
+  List<InnovationHub> get allinnovationHubs => _allinnovationHubs;
   List<InnovationHub> get filteredHubs => _filteredHubs;
   bool get loaded => _dataLoaded;
 
@@ -30,10 +32,16 @@ class InnovationHubProvider with ChangeNotifier {
       QuerySnapshot snapshot = await innovationHubsRef.get();
 
       // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen
-      _innovationHubs = snapshot.docs.map((doc) {
+      _allinnovationHubs = snapshot.docs.map((doc) {
         QueryDocumentSnapshot<Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<Map<String, dynamic>>;
         return InnovationHub.fromFirestore(typedDoc);
       }).toList();
+
+
+      // Filter _allinnovationhubs so that _innovationHubs only contains hubs with status "live"
+      _innovationHubs = _allinnovationHubs.where((hub) => hub.status == "live").toList();
+      //_innovationHubs = _allinnovationHubs;
+
 
       // Gefilterte Liste aktualisieren und Benachrichtigung senden
       _filteredHubs = _innovationHubs;
