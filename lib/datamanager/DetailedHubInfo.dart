@@ -9,8 +9,11 @@ class DetailedHubInfo {
   final String detailedDescription;
   final String headerImage;
   final String website;
-  final List<String> email_contacts;
-  final List<String> tele_contacts;
+  final String email_contact;
+  final String tele_contact;
+  final List<String> events;
+  final List<String> work;
+
 
 
   DetailedHubInfo({
@@ -19,8 +22,10 @@ class DetailedHubInfo {
     required this.detailedDescription,
     required this.website,
     required this.headerImage,
-    required this.email_contacts,
-    required this.tele_contacts,
+    required this.email_contact,
+    required this.tele_contact,
+    required this.work,
+    required this.events,
   });
   static DetailedHubInfo fromFirestore(QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     // Eigenschaften aus dem Dokument extrahieren
@@ -30,8 +35,10 @@ class DetailedHubInfo {
     String detailedDescription = data["detailedDescription"];
     String website = data["website"];
     String headerImage = data["headerImage"];
-    List<String> email_contacts = data["email_contacts"];
-    List<String> tele_contacts = data["tele_contacts"];
+    String email_contact = data["email_contact"];
+    String tele_contact = data["tele_contact"];
+    List<String> events = data["events"];
+    List<String> work = data["work"];
 
 
     // InnovationHub-Objekt erstellen und zurückgeben
@@ -41,8 +48,10 @@ class DetailedHubInfo {
       detailedDescription: detailedDescription,
       website: website,
       headerImage: headerImage,
-      email_contacts: email_contacts,
-      tele_contacts: tele_contacts,
+      email_contact: email_contact,
+      tele_contact: tele_contact,
+      events: events,
+      work: work
     );
   }
 }

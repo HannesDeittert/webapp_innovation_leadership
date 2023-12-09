@@ -33,8 +33,8 @@ class InnovationHub {
   static InnovationHub fromFirestore(QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     // Eigenschaften aus dem Dokument extrahieren
     Map<String, dynamic> data = documentSnapshot.data();
-    double latitude = data['latitude'];
-    double longitude = data['longitude'];
+    double latitude = data['latitude'] as double;
+    double longitude = data['longitude'] as double;
     LatLng coordinates = LatLng(latitude, longitude); // LatLng-Objekt erstellen
     String category = data['category'];
     String status = data['status'];

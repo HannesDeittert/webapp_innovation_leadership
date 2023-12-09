@@ -16,7 +16,7 @@ class _MobileDashboardState extends State<MobileDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: tPrimaryColor,
+
       appBar: AppBar(
         title: const Header(),
       ),

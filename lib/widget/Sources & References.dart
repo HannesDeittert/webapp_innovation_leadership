@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:side_sheet/side_sheet.dart';
 
 import '../Homepage.dart';
+import 'PopUpContent.dart';
 
-class MyHomePage extends StatelessWidget {
+class Sources extends StatelessWidget {
   bool isListViewSelected = true;
   
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
@@ -100,6 +101,8 @@ class MyHomePage extends StatelessWidget {
                             Text("https://storyset.com/business"),
                             Text("Education illustrations by Storyset:"),
                             Text("https://storyset.com/education"),
+                            Text("Job illustrations by Storyset:"),
+                            Text("https://storyset.com/job"),
                           ],),
                         )
                       ]

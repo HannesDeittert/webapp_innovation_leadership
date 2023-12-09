@@ -57,7 +57,7 @@ class InnoMap extends StatelessWidget {
                                 sheetBorderRadius: 10,
                                 context: context,
                                 width: MediaQuery.of(context).size.width * 0.2,
-                                body: PopUPContent(context, hub)
+                                body: PopUPContentMap(context, hub)
                               );
                             },
                             icon: Icon(_getIconForCategory(hub.category)),
@@ -89,7 +89,7 @@ class InnoMap extends StatelessWidget {
   }
 }
 
-  Widget PopUPContent(BuildContext context, InnovationHub hub) {
+  Widget PopUPContentMap(BuildContext context, InnovationHub hub) {
     return Container(
           padding: EdgeInsets.all(16),
           child: Column(

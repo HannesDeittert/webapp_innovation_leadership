@@ -21,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final UserProvider provider = UserProvider();
   bool obscureText = true;
 
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
@@ -61,11 +62,14 @@ class _LoginScreenState extends State<LoginScreen> {
         print("User Role: $userRole");
 
         if (userRole == "super") {
+          await provider.loadUserFromFirestore();
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SuperAdminPanel()),
           );
         } else if(userRole == "Admin"){
+          await provider.loadUserFromFirestore();
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AdminPanel()),
