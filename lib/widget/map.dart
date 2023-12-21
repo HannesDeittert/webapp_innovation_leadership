@@ -4,8 +4,10 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
 import '../datamanager/DetailedHubInfoProvider.dart';
+import '../datamanager/EventProvieder.dart';
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
+import '../datamanager/WorkProvider.dart';
 import 'innovationhubdetailpage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:side_sheet/side_sheet.dart';
@@ -46,18 +48,12 @@ class InnoMap extends StatelessWidget {
                           child: IconButton(
                             iconSize: 50,
                             onPressed: () {
-                              // Den DetailedHubInfoProvider vom Kontext abrufen
-                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
-
-                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                              //detailedHubInfoProvider.loadDetailedHubInfo(hub.code);
-
                               // Zur Detailseite navigiere
                               SideSheet.right(
                                 sheetBorderRadius: 10,
                                 context: context,
                                 width: MediaQuery.of(context).size.width * 0.2,
-                                body: PopUPContent(context, hub)
+                                body: PopUPContentMap(context, hub)
                               );
                             },
                             icon: Icon(_getIconForCategory(hub.category)),
@@ -89,7 +85,8 @@ class InnoMap extends StatelessWidget {
   }
 }
 
-  Widget PopUPContent(BuildContext context, InnovationHub hub) {
+  Widget PopUPContentMap(BuildContext context, InnovationHub hub) {
+
     return Container(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -143,13 +140,18 @@ class InnoMap extends StatelessWidget {
               ),
               // Show More Button
               GestureDetector(
-                onTap: () {
-                  // Den DetailedHubInfoProvider vom Kontext abrufen
-                  DetailedHubInfoProvider detailedHubInfoProvider =
-                  Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                  // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                  detailedHubInfoProvider.getHubInfoByCode(hub.code);
-                  // Hier zur InnovationHubDetailPage navigieren
+                onTap: () async {
+                  DetailedHubInfoProvider provider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                  InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
+                  EventProvider provider3 = Provider.of<EventProvider>(context, listen: false);
+                  WorkProvider provider4 = Provider.of<WorkProvider>(context, listen: false);
+                  await provider.getHubInfoByCode(hub.code);
+                  await provider.getMenu();
+                  provider2.calculate_recomendations(provider2.getInnovationHubByCode(hub.code));
+                  await provider3.loadAllEvents();
+                  await provider3.getEventListFromUidList(provider.detailedInnovationHub.events);
+                  await provider4.loadAllHubworks();
+                  await provider4.getHubworksListFromUidList(provider.detailedInnovationHub.work);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

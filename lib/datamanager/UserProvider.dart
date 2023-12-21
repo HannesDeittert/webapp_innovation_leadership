@@ -1,7 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
-class UserProvider {
+import 'User.dart';
+
+
+class UserProvider with ChangeNotifier{
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<MyUser> _user = [];
+  List<MyUser> get user => _user;
 
   Future<void> createUser(String uid, String email, String role) async {
     await _firestore.collection('users').doc(uid).set({
@@ -52,4 +58,23 @@ class UserProvider {
       return null;
     }
   }
+  Future<void> loadUserFromFirestore() async {
+    // Reference to the Firestore collection 'questions'
+    CollectionReference questionsRef = FirebaseFirestore.instance.collection('users');
+
+    // Load data from the collection
+    QuerySnapshot snapshot = await questionsRef.get();
+    print("UserSnapshot");
+    print(snapshot);
+
+    // Create Question objects from the Firestore documents
+    _user = snapshot.docs.map((doc) {
+      QueryDocumentSnapshot<Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<Map<String, dynamic>>;
+      return MyUser.fromFirestore(typedDoc.data());
+    }).toList();
+    print(_user);
+
+    notifyListeners();
+  }
+
 }

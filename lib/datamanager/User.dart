@@ -11,4 +11,12 @@ class MyUser {
     required this.role,
     required this.hub,
   });
+  factory MyUser.fromFirestore(Map<String, dynamic> data) {
+    return MyUser(
+      uid: data['uid'].toString(),
+      email: data['email'].toString(),
+      role: data['role'].toString(),
+      hub: data['hub'].toString(),
+    );
+  }
 }

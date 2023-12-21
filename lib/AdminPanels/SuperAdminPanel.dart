@@ -2,8 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/Homepage.dart';
+import 'package:webapp_innovation_leadership/datamanager/User.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import '../datamanager/QuestionProvider.dart';
+import '../datamanager/UserProvider.dart';
+import '../widget/AdminPanelWidgets/InnoHubList.dart';
+import '../widget/AdminPanelWidgets/UserList.dart';
 
 class SuperAdminPanel extends StatefulWidget {
   const SuperAdminPanel({Key? key}) : super(key: key);
@@ -14,14 +18,21 @@ class SuperAdminPanel extends StatefulWidget {
 
 class _SuperAdminPanelState extends State<SuperAdminPanel> {
   late User _user;
+  late List<MyUser> users;
   final InnovationHubProvider provider = InnovationHubProvider();
   final QuestionProvider provider2 = QuestionProvider();
+  final UserProvider provider3 = UserProvider();
   bool isUpdateGeneral = true;
   bool isUpdateDetailed = false;
+
+
+
 
   @override
   void initState() {
     super.initState();
+    users = provider3.user;
+    print(users);
     _user = FirebaseAuth.instance.currentUser!;
     provider.loadInnovationHubsFromFirestore();
     provider2.loadQuestionsFromFirestore();
@@ -47,6 +58,8 @@ class _SuperAdminPanelState extends State<SuperAdminPanel> {
 
   @override
   Widget build(BuildContext context) {
+    bool isUserViewSelected = true;
+    bool isHubViewSelected = false;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -106,38 +119,127 @@ class _SuperAdminPanelState extends State<SuperAdminPanel> {
                     horizontal: MediaQuery.of(context).size.width / 30,
                     vertical: 0.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: MediaQuery.of(context).size.height/2,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 3)
-                            ),
-                            child: Text("Manage Hubs"),
-                            ///ToDo: Gets a list of _allInnovationHubs
-                            /// Implement a logic to display the Hubs in a list view, and allow Admin to change status to live, archieved, inProgress
-                            /// Implement a logic to navigate the Admin to the HubPanel
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: MediaQuery.of(context).size.height/2,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 3)
-                            ),
-                            child: Text("Manage Users"),
+                    Container(
+                      color: Colors.white,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width / 30,
+                            vertical: 0.0),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Intereact with the InnovationHubs and users",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color:
+                                            Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      // Buttons to switch between ListView and MapView
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isUserViewSelected = true;
+                                                isHubViewSelected = false;
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.circle_outlined,
+                                                  color: Colors.black,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(
+                                                      horizontal: 10, vertical: 10),
+                                                  child: Text(
+                                                    'UserView',
+                                                    style: TextStyle(
+                                                        color: Color.fromARGB(
+                                                            0xFF, 0x55, 0x55, 0x55)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  isUserViewSelected
+                                                      ? Color.fromARGB(
+                                                      0xFF, 0xDD, 0xE1, 0xE6)
+                                                      : Colors.white),
+                                            ),
+                                          ),
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isUserViewSelected = false;
+                                                isHubViewSelected = false;
+                                              });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.circle_outlined,
+                                                  color: Colors.black,
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(
+                                                      horizontal: 10, vertical: 10),
+                                                  child: Text(
+                                                    'HubView',
+                                                    style: TextStyle(
+                                                        color: Color.fromARGB(
+                                                            0xFF, 0x55, 0x55, 0x55)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  isHubViewSelected
+                                                      ? Color.fromARGB(
+                                                      0xFF, 0xDD, 0xE1, 0xE6)
+                                                      : Colors.white),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
 
-                            ///ToDo: Gets a list of all Users with role: Admin and HubAdmin and unassigned
-                            /// Implement a logic to display the Users in a list view, and allow Admin to change role to Admin; Superadmin; unassigned; HubAdmin
-                            /// if changed to Hub admin denkt daran, dass auch der jeweilige Hub.code Hinzugefügt werden können muss.
-                          ),
-                        ],
-                      )
+                                  Spacer(),
+                                ],
+                              ),
+                            ),
+                            // Display either ListView or MapView based on selection
+                          ],
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      fit: FlexFit.loose,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: isUserViewSelected
+                            ? UserList()
+                            : AdminInnoHubList(),
+                      ),
                     ),
                     // Display either ListView or MapView based on selection
                   ],
