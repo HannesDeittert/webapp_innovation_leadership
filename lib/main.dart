@@ -5,11 +5,13 @@ import 'package:webapp_innovation_leadership/Homepage.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/side_menu_controller.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
+import 'datamanager/EventProvieder.dart';
 import 'datamanager/InnovationHubProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:webapp_innovation_leadership/firebase_options.dart';
 
 import 'datamanager/UserProvider.dart';
+import 'datamanager/WorkProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +27,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DetailedHubInfoProvider()),
         ChangeNotifierProvider(create: (_) => QuestionProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => WorkProvider()),
 
 
       ],

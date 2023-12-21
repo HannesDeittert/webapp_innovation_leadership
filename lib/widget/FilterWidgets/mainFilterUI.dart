@@ -24,14 +24,6 @@ class _FilterUIState extends State<FilterUI> {
   List<String> selectedAnswers_goal = [];
   List<String> selectedAnswers_topic = [];
 
-  @override
-  void initState() {
-    super.initState();
-
-    // Load questions from Firestore when the widget is initialized
-    Provider.of<QuestionProvider>(context, listen: false)
-        .loadQuestionsFromFirestore();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,31 +33,6 @@ class _FilterUIState extends State<FilterUI> {
     // Get the list of Innovation Hubs from the InnovationHubProvider
     List<InnovationHub> innoHubs =
         Provider.of<InnovationHubProvider>(context).innovationHubs;
-
-    // Ensure the current question index is within bounds
-    if (currentQuestionIndex >= questions.length) {
-      // Handle when all questions are answered (you can replace this logic)
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Filter Questions'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Text('All questions have been answered.'),
-              OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
-                  },
-                  child: Text("Finish"))
-            ],
-          ),
-        ),
-      );
-    }
 
     // Get the current question based on the index
     Question currentQuestion = questions[currentQuestionIndex];
@@ -225,36 +192,41 @@ class _FilterUIState extends State<FilterUI> {
 
 
                       return Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 200,
-                              alignment: Alignment.center,
-                              // Setzen Sie hier die maximale Höhe nach Bedarf
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: answerOptions_topic.length,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    width: 150,
-                                    child: ListTile(
-                                      title: Text(answerOptions_topic[index]),
-                                      onTap: () {
-                                        selectedAnswers_topic
-                                            .add(answerOptions_topic[index]);
-                                        String selectedAnswer =
-                                        answerOptions_topic[index];
-                                        print(
-                                            'Selected Answer: $selectedAnswer');
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
-                            ), // Counter und Next/Finish Button
-                          ]);
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 200,
+                            alignment: Alignment.center,
+                            child: Wrap(
+                              spacing: 8.0,
+                              children: answerOptions_topic.map((option) {
+                                return ChoiceChip(
+                                  label: Text(option),
+                                  selected: selectedAnswers_topic.contains(option),
+                                  selectedColor: Colors.blueAccent,
+                                  onSelected: (selected) {
+                                    if (!selectedAnswers_topic.contains(option)) {
+                                      // Füge das Element nur hinzu, wenn es noch nicht in der Liste ist
+                                      setState(() {
+                                        selectedAnswers_topic.add(option);
+                                      });
+
+                                    } else if (selectedAnswers_topic.contains(option)) {
+                                      // Entferne das Element nur, wenn es bereits in der Liste ist
+                                      setState(() {
+                                        selectedAnswers_topic.remove(option);
+                                      });
+                                      print(selected);
+                                    }
+                                    print('Selected Answers: $selectedAnswers_topic');
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
+                      );
                     } else {
                       return CircularProgressIndicator();
                     }

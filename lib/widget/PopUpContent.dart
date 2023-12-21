@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../home.dart';
 import '../login/login_screen.dart';
 import 'Sources & References.dart';
 
@@ -30,6 +31,24 @@ Widget PopUPContent(BuildContext context) {
                       MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   }, icon: Icon(Icons.login, color: Colors.black))
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.17,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(),
+          ),
+          child: Column(
+            children: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>Home()),
+                    );
+                  }, icon: Icon(Icons.home, color: Colors.black))
             ],
           ),
         ),

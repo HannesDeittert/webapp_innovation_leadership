@@ -3,11 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'Questions.dart';
 
 class QuestionProvider with ChangeNotifier {
+  bool _QuestiondataLoaded = false;
   List<Question> _questions = [];
 
   List<Question> get questions => _questions;
 
   Future<void> loadQuestionsFromFirestore() async {
+
+    if (_QuestiondataLoaded) {
+      print("returned as Questions is loaded");
+      return;
+    }
     // Reference to the Firestore collection 'questions'
     CollectionReference questionsRef = FirebaseFirestore.instance.collection('questions');
 
@@ -21,7 +27,7 @@ class QuestionProvider with ChangeNotifier {
     }).toList();
 
     print(_questions[0].question);
-
+    _QuestiondataLoaded = true;
     notifyListeners();
   }
 }

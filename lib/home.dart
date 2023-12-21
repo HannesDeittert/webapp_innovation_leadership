@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:side_sheet/side_sheet.dart';
 import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubGrid.dart';
@@ -7,6 +8,7 @@ import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/PopUpContent.dart';
 import 'package:webapp_innovation_leadership/widget/Sources%20&%20References.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
+import 'datamanager/QuestionProvider.dart';
 import 'login/login_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -87,11 +89,6 @@ class _HomeState extends State<Home> {
                     ),
                     IconButton(
                         onPressed: () {
-                          /*Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()),
-                          );*/
                           SideSheet.right(
                               sheetBorderRadius: 10,
                               context: context,
@@ -244,7 +241,9 @@ class _HomeState extends State<Home> {
 
                           Spacer(),
                           OutlinedButton(
-                              onPressed: () {
+                              onPressed: () async {
+                                await Provider.of<QuestionProvider>(context, listen: false)
+                                    .loadQuestionsFromFirestore();
                                 // Push the MainFilterUI route to the navigator stack
                                 Navigator.push(
                                   context,

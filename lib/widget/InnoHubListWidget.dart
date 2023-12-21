@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../datamanager/DetailedHubInfoProvider.dart';
+import '../datamanager/EventProvieder.dart';
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
+import '../datamanager/WorkProvider.dart';
 import 'innovationhubdetailpage.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 
@@ -45,15 +47,20 @@ class HubListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<InnovationHubProvider>(
         builder: (context, provider, child) {
-          //provider.calculate_recomendations(hub);
           return GestureDetector(
             onTap: () async {
               // Den DetailedHubInfoProvider vom Kontext abrufen
               DetailedHubInfoProvider detailedHubInfoProvider =
               Provider.of<DetailedHubInfoProvider>(context, listen: false);
+              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
               // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
               await detailedHubInfoProvider.getHubInfoByCode(hub.code);
               await detailedHubInfoProvider.getMenu();
+              await provider3.loadAllEvents();
+              await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
+              await provider4.loadAllHubworks();
+              await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
               print(detailedHubInfoProvider.detailedInnovationHub);
               provider.calculate_recomendations(hub);
               print(provider.recomendations);

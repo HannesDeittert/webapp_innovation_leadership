@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../datamanager/DetailedHubInfoProvider.dart';
+import '../datamanager/EventProvieder.dart';
 import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
+import '../datamanager/WorkProvider.dart';
 import 'innovationhubdetailpage.dart';
 
 class InnoHubGridWidget extends StatelessWidget {
@@ -49,12 +51,17 @@ class HubGridTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // Den DetailedHubInfoProvider vom Kontext abrufen
-        DetailedHubInfoProvider detailedHubInfoProvider =
-        Provider.of<DetailedHubInfoProvider>(context, listen: false);
-
-        // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-        await detailedHubInfoProvider.getHubInfoByCode(hub.code);
+        DetailedHubInfoProvider provider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+        InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
+        EventProvider provider3 = Provider.of<EventProvider>(context, listen: false);
+        WorkProvider provider4 = Provider.of<WorkProvider>(context, listen: false);
+        await provider.getHubInfoByCode(hub.code);
+        await provider.getMenu();
+        provider2.calculate_recomendations(provider2.getInnovationHubByCode(hub.code));
+        await provider3.loadAllEvents();
+        await provider3.getEventListFromUidList(provider.detailedInnovationHub.events);
+        await provider4.loadAllHubworks();
+        await provider4.getHubworksListFromUidList(provider.detailedInnovationHub.work);
 
         // Zur Detailseite navigieren
         Navigator.push(
