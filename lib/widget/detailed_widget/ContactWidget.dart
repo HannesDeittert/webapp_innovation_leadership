@@ -13,7 +13,7 @@ class ContactWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-          color: Colors.white,
+          color: tBackground,
           padding: EdgeInsets.all(16.0),
           child: Row(
             children: [

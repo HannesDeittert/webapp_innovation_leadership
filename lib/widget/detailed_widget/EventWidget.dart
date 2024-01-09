@@ -23,7 +23,7 @@ class EventWidget extends StatelessWidget {
           path: events[0].link
       );
       return Container(
-          color: Colors.white,
+          color: tBackground,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -41,7 +41,7 @@ class EventWidget extends StatelessWidget {
 
     // Ansonsten eine ListView mit ExpansionTiles erstellen
     return Container(
-      color: Colors.white,
+      color: tBackground,
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,6 +82,7 @@ class EventListItem extends StatelessWidget {
     );
     print(link);
     return ExpansionTile(
+      backgroundColor: tBackground,
       title: Text(event.title),
       subtitle: event.singledate ? Text(event.date) : Text("${event.daterange[0]} - ${event.daterange[1]}"),
       children: [

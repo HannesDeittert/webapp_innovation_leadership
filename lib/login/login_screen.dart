@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
           password: passwordController.text);
 
       print("Login successful: ${userCredential.user?.uid}");
+      await UserProvider().loadUserFromFirestore();
 
       String? userRole = await UserProvider().getUserRole(userCredential.user!.uid);
 

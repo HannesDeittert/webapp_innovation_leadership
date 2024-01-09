@@ -40,7 +40,7 @@ class WorkWidget extends StatelessWidget {
 
     // Ansonsten eine ListView mit ExpansionTiles erstellen
     return Container(
-      color: Colors.white,
+      color: tBackground,
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

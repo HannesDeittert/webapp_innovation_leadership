@@ -31,7 +31,7 @@ class AboutWidget extends StatelessWidget {
     final image_height = MediaQuery.of(context).size.height *(541/1080);
     return SingleChildScrollView(
       child: Container(
-        color: Colors.white,
+        color: tBackground,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
