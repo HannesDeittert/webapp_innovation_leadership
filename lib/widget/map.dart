@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/constants/colors.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../Homepage.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
 import '../datamanager/InnovationHub.dart';
@@ -12,6 +13,8 @@ import '../datamanager/QuestionProvider.dart';
 import '../datamanager/Questions.dart';
 import '../datamanager/WorkProvider.dart';
 import '../home.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
+import 'Map_Popup.dart';
 import 'innovationhubdetailpage.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:side_sheet/side_sheet.dart';
@@ -34,6 +37,13 @@ class _InnoMap extends State<InnoMap> {
   List<String> selected_all_tags = [];
   bool selected_yes = false;
   bool selected_no = false;
+  late final PopupController _popupController;
+
+  @override
+  void initState() {
+    super.initState();
+    _popupController = PopupController();
+  }
 
   void setSelectedType(List<dynamic> value) {
     setState(() => selected_Type_tags = value.cast<String>());
@@ -72,11 +82,19 @@ class _InnoMap extends State<InnoMap> {
     print(all_tags);
     print(Category_tags);
 
+
     return Consumer<InnovationHubProvider>(
       builder: (context, provider, child) {
         // Liste der gefilterten Hubs abrufen
         List<InnovationHub> filteredHubs = provider.filteredHubs;
         print(filteredHubs);
+        List<Marker> _markers = filteredHubs.map((hub) {
+          return Marker(
+            point: hub.coordinates,
+            child: Icon(_getIconForCategory(hub.category),
+            size: 30,),
+          );
+        }).toList();
 
         return Stack(
           children: [
@@ -92,32 +110,30 @@ class _InnoMap extends State<InnoMap> {
                               LatLng(49.881752, 11.509370),
                             ),
                           ),
-                          initialCenter: LatLng(49.47593, 10.98856)),
+                          initialCenter: LatLng(49.47593, 10.98856),
+                        onTap: (_, __) => _popupController.hideAllPopups(),
+                      ),
                       children: [
                         TileLayer(
                           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                           userAgentPackageName: 'com.example.app',
                         ),
                         // Erstellen Sie MarkerLayer dynamisch basierend auf der gefilterten Liste von InnovationHubs
-                        MarkerLayer(
-                          markers: filteredHubs.map((hub) {
-                            return Marker(
-                              point: hub.coordinates,
-                              child: IconButton(
-                                iconSize: 50,
-                                onPressed: () {
-                                  // Zur Detailseite navigiere
-                                  SideSheet.right(
-                                    sheetBorderRadius: 10,
-                                    context: context,
-                                    width: MediaQuery.of(context).size.width * 0.2,
-                                    body: PopUPContentMap(context, hub)
-                                  );
-                                },
-                                icon: Icon(_getIconForCategory(hub.category)),
-                              ),
-                            );
-                          }).toList(),
+                        PopupMarkerLayer(
+                          options: PopupMarkerLayerOptions(
+                            markerCenterAnimation: const MarkerCenterAnimation(),
+                            markers: _markers,
+                            popupController: _popupController,
+                            markerTapBehavior: MarkerTapBehavior.togglePopupAndHideRest(),
+                            popupDisplayOptions: PopupDisplayOptions(
+                              builder: (BuildContext context, Marker marker) =>
+
+                                  MapPopup(marker),
+                              animation: PopupAnimation.fade(
+                                  duration: Duration(milliseconds: 700)),
+
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -137,7 +153,7 @@ class _InnoMap extends State<InnoMap> {
                 ),
                 child:
                 Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*(1/63)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -147,14 +163,23 @@ class _InnoMap extends State<InnoMap> {
                           Text(
                             'Filters',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 24,
                             ),
                           ),
                           Spacer()
                         ],
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (10 / 982)
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: tSearch,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (11 / 982)
+                      ),
                       ///SearchButton
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
@@ -191,7 +216,23 @@ class _InnoMap extends State<InnoMap> {
                                   final isSelected = selected_all_tags.contains(item);
                                   return InkWell(
                                     onTap: () {
-                                      isSelected ? selected_all_tags.remove(item) : selected_all_tags.add(item);
+                                      if (isSelected == true) {
+                                        selected_all_tags.remove(item);
+                                        if(selected_Category_tags.contains(item)){
+                                          selected_Category_tags.remove(item);
+                                        }
+                                        if(selected_Type_tags.contains(item)){
+                                          selected_Type_tags.remove(item);
+                                        }
+                                      }else{
+                                        selected_all_tags.add(item);
+                                        if(Category_tags.contains(item)){
+                                          selected_Category_tags.add(item);
+                                        }
+                                        if(Type_tags.contains(item)){
+                                          selected_Type_tags.add(item);
+                                        }
+                                      }
                                       //This rebuilds the StatefulWidget to update the button's text
                                       setState(() {});
                                       //This rebuilds the dropdownMenu Widget to update the check mark
@@ -221,8 +262,8 @@ class _InnoMap extends State<InnoMap> {
                                   );
                                 },
                               ),
-
                             );
+
                           }).toList(),
 
                           //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
@@ -263,7 +304,7 @@ class _InnoMap extends State<InnoMap> {
                             iconDisabledColor: tSearch,
                           ),
                           dropdownStyleData: DropdownStyleData(
-                            maxHeight: MediaQuery.of(context).size.height * (400 / 982),
+                            maxHeight: MediaQuery.of(context).size.height * (300 / 982),
                             width: MediaQuery.of(context).size.width * (317 / 1512),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
@@ -320,7 +361,16 @@ class _InnoMap extends State<InnoMap> {
                           },
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (11 / 982)
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: tSearch,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (11 / 982)
+                      ),
                       ///TypeButton
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
@@ -447,7 +497,9 @@ class _InnoMap extends State<InnoMap> {
 
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (12 / 982)
+                      ),
                       ///CategoryButton
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
@@ -555,7 +607,7 @@ class _InnoMap extends State<InnoMap> {
                           ),
                           dropdownStyleData: DropdownStyleData(
                             ///ToDo: Optimize
-                            maxHeight: MediaQuery.of(context).size.height * (200 / 982),
+                            maxHeight: MediaQuery.of(context).size.height * (150 / 982),
                             width: MediaQuery.of(context).size.width * (317 / 1512),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
@@ -575,12 +627,18 @@ class _InnoMap extends State<InnoMap> {
 
                         ),
                       ),
-                      SizedBox(height: 16),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (21 / 982)
+                      ),
                       Text(
                         'Location is a part of FAU:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * (12 / 982)
                       ),
                       Column(
                         children: [
@@ -597,8 +655,8 @@ class _InnoMap extends State<InnoMap> {
                             child: Row(
                               children: [
                                 Container(
-                                  width: 20,
-                                  height: 20,
+                                  width: MediaQuery.of(context).size.height * (24 / 982),
+                                  height: MediaQuery.of(context).size.height * (24 / 982),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: selected_yes ? Colors.blue : Colors.white, // Farbe basierend auf Auswahl ändern
@@ -608,11 +666,16 @@ class _InnoMap extends State<InnoMap> {
                                   ),
                                 ),
                                 SizedBox(width: 10),
-                                Text('Yes'),
+                                Text('Yes',style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500
+                                ),),
                               ],
                             ),
                           ),
-                          SizedBox(height: 20),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * (24 / 982)
+                          ),
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -626,8 +689,8 @@ class _InnoMap extends State<InnoMap> {
                             child: Row(
                               children: [
                                 Container(
-                                  width: 20,
-                                  height: 20,
+                                  width: MediaQuery.of(context).size.height * (24 / 982),
+                                  height: MediaQuery.of(context).size.height * (24 / 982),
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: selected_no ? Colors.blue : Colors.white, // Farbe basierend auf Auswahl ändern
@@ -637,7 +700,10 @@ class _InnoMap extends State<InnoMap> {
                                   ),
                                 ),
                                 SizedBox(width: 10),
-                                Text('No'),
+                                Text('No',style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500
+                                ),),
                               ],
                             ),
                           ),
@@ -822,7 +888,7 @@ void filterInnoHubs(BuildContext context, List<dynamic> selected_Category_tags, 
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Home()),
+                MaterialPageRoute(builder: (context) => MyHomePage()),
               );
             },
           ),

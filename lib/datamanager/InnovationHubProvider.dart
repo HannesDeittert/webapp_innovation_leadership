@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 import 'InnovationHub.dart';
 
 class InnovationHubProvider with ChangeNotifier {
@@ -28,6 +29,15 @@ class InnovationHubProvider with ChangeNotifier {
   void createFilterdHubList(List<InnovationHub> filteredHubs) {
     _filteredHubs = filteredHubs;
     notifyListeners();
+  }
+  InnovationHub? findHubByCoordinates(LatLng coordinates) {
+    try {
+      return _innovationHubs.firstWhere(
+            (hub) => hub.coordinates == coordinates,
+      );
+    } catch (e) {
+      return null; // Return null if no matching hub is found
+    }
   }
 
   // Methode zum Laden der Innovation-Hubs aus Firestore

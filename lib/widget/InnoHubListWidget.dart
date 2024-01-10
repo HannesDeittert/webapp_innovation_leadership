@@ -98,66 +98,77 @@ class HubListItem extends StatelessWidget {
                           },
                         ),
                         SizedBox(width: 10),
-                        Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height / 4,
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.5,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Expanded(
+                          child: Container(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * (125/491),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                            children: [
-                              Text(
-                                hub.name,
-                                style: TextStyle(fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                              ),
-                              Text(
-                                hub.summary,
-                                style: TextStyle(fontSize: 32,
-                                    color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                              ),
-                              SizedBox(height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height / 20),
+                              children: [
+                                Text(
+                                  hub.name,
+                                  style: TextStyle(fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                ),
+                                Text(
+                                  hub.summary,
+                                  style: TextStyle(fontSize: 32,
+                                      color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                ),
+                                SizedBox(height: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height / 20),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (hub.filtered_chips.isNotEmpty)
-                                    Wrap(
-                                      spacing: 5,
-                                      children: hub.filtered_chips.map((chip) {
-                                        return Chip(
-                                          label: Text(
-                                            chip,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (hub.filtered_chips.isNotEmpty)
+                                      Wrap(
+                                        runSpacing: 5,
+                                        spacing: MediaQuery.of(context).size.width * (16 / 1512),
+                                        children: hub.filtered_chips.map((chip) {
+                                          return Container(
+                                            height: MediaQuery
+                                                .of(context)
+                                                .size
+                                                .height *(44/982),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 2,
+                                                color: tBlue,
+                                              ),
+                                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height *(22/982), ),
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
-                                    )
-                                  else
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                  SizedBox(width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height * (41/982),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                            padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width * (25/1512),0, MediaQuery.of(context).size.width * (25/1512), 0),
+                                            child: Center(
+                                              child: Text(
+
+                                                chip,
+
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: tBlue,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      )
+                                    else
+                                      SizedBox(
+                                        width: 8,
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
 

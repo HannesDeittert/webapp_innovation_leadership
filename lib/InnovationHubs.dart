@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
+import 'Homepage.dart';
 import 'InnoHubGeneral.dart';
 import 'constants/colors.dart';
 import 'datamanager/EventProvieder.dart';
@@ -84,32 +85,42 @@ class _InnovationHubState extends State<InnovationHubs> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        FutureBuilder(
-                          future: _loadLeadingImage(
-                              MediaQuery.of(context).size.width,
-                              MediaQuery.of(context).size.height),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.done) {
-                              // Wenn das Bild geladen wurde, zeige es an
-                              return snapshot.data!;
-                            } else if (snapshot.hasError) {
-                              // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                              return Icon(Icons
-                                  .error); // Hier könntest du eine andere Fehleranzeige verwenden
-                            } else {
-                              // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
-                              return CircularProgressIndicator();
-                            }
-                          },
-                        ),
-                        Text(
-                          "fau innohub",
-                          style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        )
-                      ],
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          FutureBuilder(
+                            future: _loadLeadingImage(
+                                MediaQuery.of(context).size.width,
+                                MediaQuery.of(context).size.height),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                // Wenn das Bild geladen wurde, zeige es an
+                                return snapshot.data!;
+                              } else if (snapshot.hasError) {
+                                // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                return Icon(Icons
+                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                              } else {
+                                // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                          Text(
+                            "fau innohub",
+                            style:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.455,
