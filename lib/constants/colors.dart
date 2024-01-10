@@ -9,8 +9,8 @@ const tPrimaryColorTextSelected = Color(0xFF001BFF);
 
 const tBackground = Color.fromARGB(255, 	249, 	249, 	249);
 const tWhite = Color.fromARGB(255, 	255, 	255, 	255);
-
-
+const tSearch = Color.fromARGB(255, 	246, 	246, 	246);
+const tWritingGrey = Color.fromARGB(255, 	50, 	50, 	50);
 // -- SOCIAL Button COLORS
 const tGoogleBgColor = Color(0xFFDFEFFF);
 const tGoogleForegroundColor = Color(0xFF167EE6);

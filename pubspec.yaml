@@ -37,6 +37,7 @@ dependencies:
   url_launcher: ^6.2.2
   responsive_builder: ^0.7.0
   pdf: ^3.10.7
+  dropdown_button2: ^2.3.9
 
 
 dev_dependencies:

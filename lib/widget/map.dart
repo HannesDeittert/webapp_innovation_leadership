@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/constants/colors.dart';
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
 import '../datamanager/InnovationHub.dart';
@@ -31,7 +31,7 @@ class _InnoMap extends State<InnoMap> {
   List<String> Category_tags = [];
   List<String> selected_Category_tags = [];
   List<String> all_tags = [];
-  List<String> aelected_all_tags = [];
+  List<String> selected_all_tags = [];
   bool selected_yes = false;
   bool selected_no = false;
 
@@ -40,6 +40,16 @@ class _InnoMap extends State<InnoMap> {
   }
   void setSelectedCategory(List<dynamic> value) {
     setState(() => selected_Category_tags = value.cast<String>());
+  }
+  void setSelectedAll(List<dynamic> value) {
+    setState(() => selected_all_tags = value.cast<String>());
+  }
+  final TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -145,61 +155,426 @@ class _InnoMap extends State<InnoMap> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Search Tags',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Choice<String>.inline(
-                        multiple: true,
-                        clearable: true,
-                        itemCount: Category_tags.length,
-                        value: selected_Category_tags,
-                        onChanged: setSelectedCategory,
-                        itemBuilder: (state, i) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: ChoiceChip(
-                              selected: state.selected(Category_tags[i]),
-                              onSelected: state.onSelected(Category_tags[i]),
-                              label: Text(Category_tags[i]),
-                            )
-                          );
-                        },
-                        listBuilder: ChoiceList.createScrollable(
-                          direction: Axis.horizontal,
-                          spacing: 10,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 25,
+                      ///SearchButton
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Row(
+                            children: [
+                              Icon(
+                                Icons.search_sharp,
+                                size: MediaQuery.of(context).size.height * (24 / 982),
+                                color: tWritingGrey,
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  'Search filter',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: tWritingGrey,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      InlineChoice<String>(
-                        multiple: true,
-                        clearable: true,
-                            itemCount: Type_tags.length,
-                            value: selected_Type_tags,
-                            onChanged: setSelectedType,
-                            itemBuilder: (state, i) {
-                              return ChoiceChip(
-                                selected: state.selected(Type_tags[i]),
-                                onSelected: state.onSelected(Type_tags[i]),
-                                label: Text(Type_tags[i]),
-                              );
+                          items: all_tags.map((item) {
+                            return DropdownMenuItem(
+                              value: item,
+                              enabled: false,
+                              child: StatefulBuilder(
+                                builder: (context, menuSetState) {
+                                  final isSelected = selected_all_tags.contains(item);
+                                  return InkWell(
+                                    onTap: () {
+                                      isSelected ? selected_all_tags.remove(item) : selected_all_tags.add(item);
+                                      //This rebuilds the StatefulWidget to update the button's text
+                                      setState(() {});
+                                      //This rebuilds the dropdownMenu Widget to update the check mark
+                                      menuSetState(() {});
+                                    },
+                                    child: Container(
+                                      height: double.infinity,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: Row(
+                                        children: [
+                                          if (isSelected)
+                                            const Icon(Icons.check_box_outlined)
+                                          else
+                                            const Icon(Icons.check_box_outline_blank),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+
+                            );
+                          }).toList(),
+
+                          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+                          value: selected_all_tags.isEmpty ? null : selected_all_tags.last,
+                          onChanged: (value) {},
+                          selectedItemBuilder: (context) {
+                            return all_tags.map(
+                                  (item) {
+                                return Container(
+                                  alignment: AlignmentDirectional.center,
+                                  child: Text(
+                                    selected_all_tags.join(', '),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                );
+                              },
+                            ).toList();
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: MediaQuery.of(context).size.height * (55 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            padding: const EdgeInsets.only(left: 14, right: 14),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_forward_ios_outlined,
+                            ),
+                            iconSize: 14,
+                            iconEnabledColor: tSearch,
+                            iconDisabledColor: tSearch,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: MediaQuery.of(context).size.height * (400 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                            offset: Offset(0, -MediaQuery.of(context).size.height * (6.875 / 982)),
+                            scrollbarTheme: ScrollbarThemeData(
+                              radius: const Radius.circular(40),
+                              thickness: MaterialStateProperty.all(6),
+                              thumbVisibility: MaterialStateProperty.all(true),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.only(left: 14, right: 14),
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: textEditingController,
+                            searchInnerWidgetHeight: 50+MediaQuery.of(context).size.height * (20 / 982),
+                            searchInnerWidget: Container(
+                              height: 50+MediaQuery.of(context).size.height * (20 / 982),
+                              padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).size.height * (20 / 982),
+                                left: MediaQuery.of(context).size.height * (10 / 982),
+                                right: MediaQuery.of(context).size.height * (10 / 982),
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: textEditingController,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Search for an item...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            searchMatchFn: (item, searchValue) {
+                              return item.value.toString().contains(searchValue);
                             },
-                        listBuilder: ChoiceList.createWrapped(
-                          spacing: 10,
-                          runSpacing: 10,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 25,
                           ),
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              textEditingController.clear();
+                            }
+                          },
                         ),
+                      ),
+                      SizedBox(height: 16),
+                      ///TypeButton
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Location Type',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: tWritingGrey,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
+                          items: Category_tags.map((item) {
+                            return DropdownMenuItem(
+                              value: item,
+                              enabled: false,
+                              child: StatefulBuilder(
+                                builder: (context, menuSetState) {
+                                  final isSelected = selected_Category_tags.contains(item);
+                                  return InkWell(
+                                    onTap: () {
+                                      if (isSelected) {
+                                        selected_all_tags.remove(item);
+                                        selected_Category_tags.remove(item);
+                                      } else {
+                                        selected_all_tags.add(item);
+                                        selected_Category_tags.add(item);
+                                      }
+                                      //This rebuilds the StatefulWidget to update the button's text
+                                      setState(() {});
+                                      //This rebuilds the dropdownMenu Widget to update the check mark
+                                      menuSetState(() {});
+                                    },
+                                    child: Container(
+                                      height: double.infinity,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: Row(
+                                        children: [
+                                          if (isSelected)
+                                            const Icon(Icons.check_box_outlined)
+                                          else
+                                            const Icon(Icons.check_box_outline_blank),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+
+                            );
+                          }).toList(),
+
+                          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+                          value: selected_Category_tags.isEmpty ? null : selected_Category_tags.last,
+                          onChanged: (value) {},
+                          selectedItemBuilder: (context) {
+                            return Category_tags.map(
+                                  (item) {
+                                return Container(
+                                  alignment: AlignmentDirectional.center,
+                                  child: Text(
+                                    selected_Category_tags.join(', '),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                );
+                              },
+                            ).toList();
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: MediaQuery.of(context).size.height * (55 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            padding: const EdgeInsets.only(left: 14, right: 14),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_forward_ios_outlined,
+                            ),
+                            iconSize: 14,
+                            iconEnabledColor: tSearch,
+                            iconDisabledColor: tSearch,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            maxHeight: MediaQuery.of(context).size.height * (400 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                            offset: Offset(0, -MediaQuery.of(context).size.height * (6.875 / 982)),
+                            scrollbarTheme: ScrollbarThemeData(
+                              radius: const Radius.circular(40),
+                              thickness: MaterialStateProperty.all(6),
+                              thumbVisibility: MaterialStateProperty.all(true),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.only(left: 14, right: 14),
+                          ),
+
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ///CategoryButton
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Category of Interest',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: tWritingGrey,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          items: Type_tags.map((item) {
+                            return DropdownMenuItem(
+                              value: item,
+                              enabled: false,
+                              child: StatefulBuilder(
+                                builder: (context, menuSetState) {
+                                  final isSelected = selected_Type_tags.contains(item);
+                                  return InkWell(
+                                    onTap: () {
+                                      if (isSelected) {
+                                        selected_all_tags.remove(item);
+                                        selected_Type_tags.remove(item);
+                                      } else {
+                                        selected_all_tags.add(item);
+                                        selected_Type_tags.add(item);
+                                      }
+                                      //This rebuilds the StatefulWidget to update the button's text
+                                      setState(() {});
+                                      //This rebuilds the dropdownMenu Widget to update the check mark
+                                      menuSetState(() {});
+                                    },
+                                    child: Container(
+                                      height: double.infinity,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: Row(
+                                        children: [
+                                          if (isSelected)
+                                            const Icon(Icons.check_box_outlined)
+                                          else
+                                            const Icon(Icons.check_box_outline_blank),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+
+                            );
+                          }).toList(),
+
+                          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
+                          value: selected_Type_tags.isEmpty ? null : selected_Type_tags.last,
+                          onChanged: (value) {},
+                          selectedItemBuilder: (context) {
+                            return Type_tags.map(
+                                  (item) {
+                                return Container(
+                                  alignment: AlignmentDirectional.center,
+                                  child: Text(
+                                    selected_Type_tags.join(', '),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                );
+                              },
+                            ).toList();
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: MediaQuery.of(context).size.height * (55 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            padding: const EdgeInsets.only(left: 14, right: 14),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_forward_ios_outlined,
+                            ),
+                            iconSize: 14,
+                            iconEnabledColor: tSearch,
+                            iconDisabledColor: tSearch,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            ///ToDo: Optimize
+                            maxHeight: MediaQuery.of(context).size.height * (200 / 982),
+                            width: MediaQuery.of(context).size.width * (317 / 1512),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                              color: tSearch,
+                            ),
+                            offset: Offset(0, -MediaQuery.of(context).size.height * (6.875 / 982)),
+                            scrollbarTheme: ScrollbarThemeData(
+                              radius: const Radius.circular(40),
+                              thickness: MaterialStateProperty.all(6),
+                              thumbVisibility: MaterialStateProperty.all(true),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                            padding: EdgeInsets.only(left: 14, right: 14),
+                          ),
+
+                        ),
+                      ),
                       SizedBox(height: 16),
                       Text(
                         'Location is a part of FAU:',
