@@ -8,6 +8,7 @@ class InnovationHub {
   final String status;
   final String name;
   final String summary;
+  final bool fau;
   final List<String> question_category;
   final List<String> question_goal;
   final List<String> question_topic;
@@ -22,6 +23,7 @@ class InnovationHub {
     required this.status,
     required this.name,
     required this.summary,
+    required this.fau,
     required this.question_category,
     required this.question_goal,
     required this.question_topic,
@@ -39,6 +41,7 @@ class InnovationHub {
     String category = data['category'];
     String status = data['status'];
     String name = data['name'];
+    bool fau = data['fau'];
     String summary = data['summary'];
     List<String> question_category = List<String>.from(data['question_category']);
     List<String> question_goal = List<String>.from(data['question_goal']);
@@ -53,6 +56,7 @@ class InnovationHub {
       category: category,
       status: status,
       name: name,
+      fau: fau,
       summary: summary,
       question_category: question_category,
       question_topic: question_topic,
