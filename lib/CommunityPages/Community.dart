@@ -1,57 +1,40 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/AdminPanels/SuperAdminPanel.dart';
-import 'package:webapp_innovation_leadership/CommunityPages/Community.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
 import '../InnovationHubs.dart';
+import '../constants/colors.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
-import '../datamanager/UserProvider.dart';
+import '../datamanager/Events.dart';
+import '../datamanager/InnovationHubProvider.dart';
 import '../datamanager/WorkProvider.dart';
-import 'RegisterScreen.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class LoginScreen extends StatefulWidget {
+class Community extends StatefulWidget {
+  const Community({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<Community> createState() => _Community();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class _Community extends State<Community> {
+
+
+
+  final InnovationHubProvider provider = InnovationHubProvider();
+
+  final EventProvider provider3 = EventProvider();
   bool isHomeViewSelected = false;
   bool isHubViewSelected = false;
   bool isEventViewSelected = false;
   bool isGuideViewSelected = false;
   bool isCommunityViewSelected = true;
   bool isDetailedViewSelected = false;
-  final UserProvider provider = UserProvider();
-  bool obscureText = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // Überprüfe den Authentifizierungsstatus beim Initialisieren der Seite
-    checkLoggedInUser();
-  }
-
-  // Überprüfe, ob der Benutzer bereits eingeloggt ist
-  void checkLoggedInUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Benutzer ist bereits eingeloggt, leite ihn weiter
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-    }
-  }
-
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
+  final String imageProfilePath = "Images/Storysetdump/casual-life-3d-profile-picture-of-man-in-green-shirt-and-orange-hat.png";
+
 
   Future<Widget> _loadLeadingImage(width, height) async {
     try {
@@ -74,66 +57,33 @@ class _LoginScreenState extends State<LoginScreen> {
           'assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
     }
   }
-
-
-  Future<void> signIn() async {
+  Future<Widget> _loadProfileImage(width, height) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text);
+      final ref = firebase_storage.FirebaseStorage.instance.ref(imageProfilePath);
+      final url = await ref.getDownloadURL();
 
-      print("Login successful: ${userCredential.user?.uid}");
-      await UserProvider().loadUserFromFirestore();
+      // Lade das Bild von der URL
+      final imageWidget = Image.network(url);
 
-      String? userRole = await UserProvider().getUserRole(userCredential.user!.uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
+      // Du kannst die Größe des Bildes anpassen, indem du eine `Container`-Umgebung verwendest
+      return Container(
+        width: width * 0.03248, // Ändere dies nach Bedarf
+        height: height * 0.05, // Ändere dies nach Bedarf
+        child: imageWidget,
       );
-
-    } on FirebaseAuthException catch (e) {
-      print("Login failed: $e");
-
-      String errorMessage;
-
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = 'Benutzer nicht gefunden. Überprüfen Sie Ihre Eingaben.';
-          break;
-        case 'wrong-password':
-          errorMessage = 'Falsches Passwort. Bitte versuchen Sie es erneut.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'Ungültige E-Mail-Adresse. Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-          break;
-        default:
-          errorMessage = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
-          break;
-      }
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error during login'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-
-      print("Error message: $errorMessage");
+    } catch (e) {
+      print('Fehler beim Laden des Bildes: $e');
+      // Hier könntest du ein Standardbild zurückgeben oder eine Fehlermeldung anzeigen
+      return Image.asset(
+          'assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    EventProvider provider3 = Provider.of<EventProvider>(context);
+    List<HubEvents> fevents = provider3.filteredEvents;
+    print("Hier$fevents");
     return Scaffold(
       backgroundColor: tBackground,
       body: Column(
@@ -270,7 +220,35 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 10,)
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage(),
+                          ),
+                        );
+                      },
+                      child:
+                          FutureBuilder(
+                            future: _loadProfileImage(
+                                MediaQuery.of(context).size.width,
+                                MediaQuery.of(context).size.height),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                // Wenn das Bild geladen wurde, zeige es an
+                                return snapshot.data!;
+                              } else if (snapshot.hasError) {
+                                // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                return Icon(Icons
+                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                              } else {
+                                // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                    ),
                   ],
                 ),
               ),
@@ -278,78 +256,55 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 8,
             ),
-            Expanded(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Log In/Create Account to be part of our Community',
-                      style: TextStyle(fontSize: 32,fontWeight: FontWeight.w400),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.392,
-                      height: MediaQuery.of(context).size.height * 0.6395,
-                      decoration: BoxDecoration(
-                        color: tWhite,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            decoration: InputDecoration(labelText: 'Email'),
+                Consumer<EventProvider>(
+                  builder: (context, provider2, child) {
+                    // Liste der gefilterten Hubs abrufen
+                    List<HubEvents> allEvents = provider2.allHubevents;
+                    print("Inside Events; $allEvents");
+                    List<HubEvents> filteredEvents = provider2.filteredEvents;
+                    print("Events: $filteredEvents");
+                    return Expanded(
+                      child:
+                        Container(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      ///ToDo: Add Logic to Request Group for an Event
+                                    },
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height *
+                                          (60 / 982),
+                                      width: MediaQuery.of(context).size.width *
+                                          (317 / 1512),
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius: BorderRadius.circular(
+                                            (MediaQuery.of(context).size.height *
+                                                (60 / 982)) /
+                                                2,
+                                          )),
+                                      child: Center(
+                                        child: Text(
+                                          'Add Group Request',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              )
+                            ],
                           ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    obscureText = !obscureText;
-                                  });
-                                },
-                              ),
-                            ),
-                            obscureText: obscureText,
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => signIn(),
-                            child: Text('Sign In'),
-                          ),
-                          SizedBox(height: 10),
-                          /*ElevatedButton(
-                            onPressed: () => signInWithGoogle(),
-                            child: Text('Sign In with Google'),
-                          ),*/
-                          SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Don\'t have an account? Register here.',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                        )
+                    );
+                    },
             )
           ]),
     );

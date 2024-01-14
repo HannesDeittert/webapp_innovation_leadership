@@ -1,57 +1,45 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/AdminPanels/SuperAdminPanel.dart';
-import 'package:webapp_innovation_leadership/CommunityPages/Community.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:webapp_innovation_leadership/InnovationHubs.dart';
+import 'package:webapp_innovation_leadership/datamanager/DetailedHubInfo.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:webapp_innovation_leadership/datamanager/Work.dart';
 import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
-import '../InnovationHubs.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
-import '../datamanager/UserProvider.dart';
+import '../datamanager/Events.dart';
+import '../datamanager/InnovationHub.dart';
+import '../datamanager/InnovationHubProvider.dart';
 import '../datamanager/WorkProvider.dart';
-import 'RegisterScreen.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import '../login/login_screen.dart';
+import 'PopUpContent.dart';
+import 'detailed_widget/AboutWidget.dart';
+import 'detailed_widget/ContactWidget.dart';
+import 'detailed_widget/EventWidget.dart';
+import 'detailed_widget/WorkWidget.dart';
 
-class LoginScreen extends StatefulWidget {
+class EventPage extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _EventPage createState() => _EventPage();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class _EventPage extends State<EventPage> {
+  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
+  bool isEventSelected = false;
+  bool isWorkSelected = false;
+  bool isAboutViewSelected = true;
+  bool isContactSelected = false;
   bool isHomeViewSelected = false;
   bool isHubViewSelected = false;
-  bool isEventViewSelected = false;
+  bool isEventViewSelected = true;
   bool isGuideViewSelected = false;
-  bool isCommunityViewSelected = true;
+  bool isCommunityViewSelected = false;
   bool isDetailedViewSelected = false;
-  final UserProvider provider = UserProvider();
-  bool obscureText = true;
 
-  @override
-  void initState() {
-    super.initState();
-    // Überprüfe den Authentifizierungsstatus beim Initialisieren der Seite
-    checkLoggedInUser();
-  }
-
-  // Überprüfe, ob der Benutzer bereits eingeloggt ist
-  void checkLoggedInUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Benutzer ist bereits eingeloggt, leite ihn weiter
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-    }
-  }
-
-  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
   Future<Widget> _loadLeadingImage(width, height) async {
     try {
@@ -76,71 +64,31 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  Future<void> signIn() async {
+  Future<ImageProvider> _loadProfileImage(String path) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text);
-
-      print("Login successful: ${userCredential.user?.uid}");
-      await UserProvider().loadUserFromFirestore();
-
-      String? userRole = await UserProvider().getUserRole(userCredential.user!.uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-
-    } on FirebaseAuthException catch (e) {
-      print("Login failed: $e");
-
-      String errorMessage;
-
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = 'Benutzer nicht gefunden. Überprüfen Sie Ihre Eingaben.';
-          break;
-        case 'wrong-password':
-          errorMessage = 'Falsches Passwort. Bitte versuchen Sie es erneut.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'Ungültige E-Mail-Adresse. Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-          break;
-        default:
-          errorMessage = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
-          break;
-      }
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error during login'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-
-      print("Error message: $errorMessage");
+      final ref = firebase_storage.FirebaseStorage.instance.ref(path);
+      final url = await ref.getDownloadURL();
+      return NetworkImage(url);
+    } catch (e) {
+      print('Fehler beim Laden des Profilbildes: $e');
+      return AssetImage('assets/placeholder_image.jpg');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    DetailedHubInfoProvider provider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+    InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context);
+    EventProvider provider3 = Provider.of<EventProvider>(context);
+    DetailedHubInfo info = provider.detailedInnovationHub;
+    HubEvents Event = provider3.selHubevent;
     return Scaffold(
       backgroundColor: tBackground,
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: Center(
+        child: Column(
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.0155,
+                height: MediaQuery.of(context).size.height * 0.0155
             ),
             Container(
               decoration: BoxDecoration(
@@ -148,8 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   border: Border(
                     bottom: BorderSide(width: 1, color: tBackground),
                   )),
-
-              //ApoBar
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width / 30,
@@ -270,88 +216,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(width: 10,)
+                    SizedBox(
+                      width: 100,
+                    )
                   ],
                 ),
               ),
-            ),
-            SizedBox(
-              height: 8,
             ),
             Expanded(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Log In/Create Account to be part of our Community',
-                      style: TextStyle(fontSize: 32,fontWeight: FontWeight.w400),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.392,
-                      height: MediaQuery.of(context).size.height * 0.6395,
-                      decoration: BoxDecoration(
-                        color: tWhite,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            decoration: InputDecoration(labelText: 'Email'),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    obscureText = !obscureText;
-                                  });
-                                },
-                              ),
-                            ),
-                            obscureText: obscureText,
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => signIn(),
-                            child: Text('Sign In'),
-                          ),
-                          SizedBox(height: 10),
-                          /*ElevatedButton(
-                            onPressed: () => signInWithGoogle(),
-                            child: Text('Sign In with Google'),
-                          ),*/
-                          SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Don\'t have an account? Register here.',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+              child: Padding(
+                padding: EdgeInsets.all(MediaQuery.of(context).size.width/60),
+                child: Container(
+                  color: tBackground,
+                  child: Column(
+                    children: [
+                      Text(Event.title),
+                      Text(info.email_contact)
+                    ],
+                  ),
                 ),
               ),
-            )
-          ]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

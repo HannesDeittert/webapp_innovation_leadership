@@ -114,7 +114,7 @@ class _MapPopupState extends State<MapPopup> {
                             WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
                             // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
                             if (Hub != null) {
-                              await detailedHubInfoProvider.getHubInfoByCode(Hub.code);
+                              await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
                             }
                             await detailedHubInfoProvider.getMenu();
                             await provider3.loadAllEvents();

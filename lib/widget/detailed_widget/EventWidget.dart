@@ -23,11 +23,11 @@ class EventWidget extends StatelessWidget {
           path: events[0].link
       );
       return Container(
-          color: tBackground,
+          color: tWhite,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Date: ${events[0].singledate ? events[0].date : "${events[0].daterange[0]} - ${events[0].daterange[1]}"}"),
+              //Text("Date: ${events[0].singledate ? events[0].date : "${events[0].daterange[0]} - ${events[0].daterange[1]}"}"),
               SizedBox(height: 8.0),
               Text("Description: ${events[0].description}"),
               SizedBox(height: 8.0),
@@ -41,7 +41,7 @@ class EventWidget extends StatelessWidget {
 
     // Ansonsten eine ListView mit ExpansionTiles erstellen
     return Container(
-      color: tBackground,
+      color: tWhite,
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +60,7 @@ class EventWidget extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               itemCount: events.length,
-              itemBuilder: (context, index) => EventListItem(event: events[index]),
+              itemBuilder: (context, index) => EventListItem2(event: events[index]),
             ),
           ),
         ],
@@ -69,10 +69,10 @@ class EventWidget extends StatelessWidget {
   }
 }
 
-class EventListItem extends StatelessWidget {
+class EventListItem2 extends StatelessWidget {
   final HubEvents event;
 
-  EventListItem({required this.event});
+  EventListItem2({required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +82,9 @@ class EventListItem extends StatelessWidget {
     );
     print(link);
     return ExpansionTile(
-      backgroundColor: tBackground,
+      backgroundColor: tWhite,
       title: Text(event.title),
-      subtitle: event.singledate ? Text(event.date) : Text("${event.daterange[0]} - ${event.daterange[1]}"),
+      //subtitle: event.singledate ? Text(event.date) : Text("${event.daterange[0]} - ${event.daterange[1]}"),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),

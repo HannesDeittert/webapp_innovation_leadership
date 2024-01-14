@@ -40,6 +40,7 @@ class InnovationHubProvider with ChangeNotifier {
     }
   }
 
+
   // Methode zum Laden der Innovation-Hubs aus Firestore
   Future<void> loadInnovationHubsFromFirestore() async {
     if (_dataLoaded) {
@@ -56,9 +57,7 @@ class InnovationHubProvider with ChangeNotifier {
 
     // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen
     _allinnovationHubs = snapshot.docs.map((doc) {
-      QueryDocumentSnapshot<
-          Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<
-          Map<String, dynamic>>;
+      QueryDocumentSnapshot<Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<Map<String, dynamic>>;
       return InnovationHub.fromFirestore(typedDoc);
     }).toList();
 
@@ -116,8 +115,8 @@ class InnovationHubProvider with ChangeNotifier {
       filteredHubs.removeWhere((entry) => entry.values.first == 0);
 
 
-    if (filteredHubs.length > 3) {
-      filteredHubs = filteredHubs.sublist(0, 3);
+    if (filteredHubs.length > 2) {
+      filteredHubs = filteredHubs.sublist(0, 2);
     }
       // Create a List<InnovationHub> from the sorted List<Map>
       recohold = filteredHubs.map((entry) =>

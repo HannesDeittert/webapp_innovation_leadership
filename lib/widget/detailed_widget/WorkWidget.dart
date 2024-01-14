@@ -2,45 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webapp_innovation_leadership/Constants/Colors.dart';
 import '../../datamanager/Work.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
+import '../../datamanager/WorkProvider.dart';
+import '../ResearchListItem.dart';
+
 class WorkWidget extends StatelessWidget {
   final List<HubWork> workList;
   final String name;
+  final bool detail;
 
-  WorkWidget(this.workList, this.name);
+  WorkWidget(this.workList, this.name, this.detail);
 
   @override
   Widget build(BuildContext context) {
-    // Wenn es nur ein Event gibt, direkt die EventPage anzeigen
-    if (workList.length == 1) {
-      Uri link = Uri(
-          scheme: 'https',
-          path: workList[0].link
-      );
-      return Container(
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Date: ${workList[0].date}"),
-            SizedBox(height: 8.0),
-            Text("Description: ${workList[0].shortdescription}"),
-            SizedBox(height: 8.0),
-            buildLinkText(link,workList[0].link),
-            SizedBox(height: 8.0),
-            Text("Tags: ${workList[0].tags.join(", ")}"),
-          ],
-        ),
-      );
-    }
-
+    WorkProvider provider4 = Provider.of<WorkProvider>(context);
+    List<HubWork> Research = provider4.Hubworks;
     // Ansonsten eine ListView mit ExpansionTiles erstellen
-    return Container(
+    return detail ? Container(
       color: tBackground,
+      width: MediaQuery.of(context).size.width *(1156/1512),
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,11 +41,45 @@ class WorkWidget extends StatelessWidget {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: workList.length,
-              itemBuilder: (context, index) => WorkListItem(work: workList[index]),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: Research.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ResearchListItem(Work: Research[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: false, ),
+                );
+              }
+          ),
+        ],
+      ),
+    ) : Container(
+      color: tBackground,
+      width: MediaQuery.of(context).size.width *(1156/1512),
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "This are all Events from $name!",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: tPrimaryColorText,
             ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: Research.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: ResearchListItem(Work: Research[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: true, ),
+                );
+              }
           ),
         ],
       ),

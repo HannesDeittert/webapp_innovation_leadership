@@ -2,17 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:side_sheet/side_sheet.dart';
+import 'package:webapp_innovation_leadership/Events.dart';
+import 'package:webapp_innovation_leadership/InnovationGuide.dart';
+import 'package:webapp_innovation_leadership/datamanager/PDFRefProvider.dart';
 import 'package:webapp_innovation_leadership/datamanager/QuestionProvider.dart';
 import 'package:webapp_innovation_leadership/home.dart';
 import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/widget/PopUpContent.dart';
+import 'CommunityPages/Community.dart';
 import 'InnoHubGeneral.dart';
 import 'InnovationHubs.dart';
 import 'constants/colors.dart';
+import 'datamanager/DetailedHubInfoProvider.dart';
 import 'datamanager/EventProvieder.dart';
 import 'datamanager/InnovationHubProvider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'datamanager/WorkProvider.dart';
 import 'login/login_screen.dart';
 
 
@@ -23,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _HomePage extends State<MyHomePage> {
   final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
+  //final PDFRefProvider provider2 = PDFRefProvider();
   final EventProvider provider3 = EventProvider();
   bool isHomeViewSelected = true;
   bool isHubViewSelected = false;
@@ -37,8 +43,10 @@ class _HomePage extends State<MyHomePage> {
   @override
   void initState() {
     provider.loadInnovationHubsFromFirestore();
-    provider2.loadQuestionsFromFirestore();
-    provider3.loadAllEvents();
+    //provider2.loadPDFRefsFromFirestore();
+    provider3.loadAllEvents().then((_) {
+      provider3.createFilterdEventList(provider3.allHubevents);
+    });
   }
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
@@ -158,21 +166,45 @@ class _HomePage extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
+                          /*onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InnovationHubs(),
+                              ),
+                            );
+                          },*/
                           child: Text(
                             "Innovation hubs",
                             style: TextStyle(
-                              fontWeight: isHubViewSelected ?FontWeight.w700: FontWeight.w500,
-                              fontSize: 16
-                            ),
+                                fontWeight: isHubViewSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                fontSize: 16),
                           ),
                         ),
                         GestureDetector(
+                          onTap: () async {
+                            // Den DetailedHubInfoProvider vom Kontext abrufen
+                            DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                            EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                            WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                            // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                            await provider3.loadAllEvents();
+                            await provider4.loadAllHubworks();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EventsHome()),
+                            );
+                          },
                           child: Text(
                             "Events",
                             style: TextStyle(
-                                fontWeight: isEventViewSelected ?FontWeight.w700: FontWeight.w500,
-                                fontSize: 16
-                            ),
+                                fontWeight: isEventViewSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                fontSize: 16),
                           ),
                         ),
                         GestureDetector(
@@ -370,18 +402,34 @@ class _HomePage extends State<MyHomePage> {
                                               ),),
                                             ],
                                           ),
-                                          Container(
-                                              width: MediaQuery.of(context).size.height*0.059,
-                                              height: MediaQuery.of(context).size.height*0.059,
-                                              decoration: BoxDecoration(
-                                                  color: tBackground,
-                                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
-                                              ),
-                                              child: Transform.rotate(
-                                                angle: -45 * 0.0174533,
-                                                child: Icon(
-                                                  Icons.arrow_forward,
-                                                ),)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              // Den DetailedHubInfoProvider vom Kontext abrufen
+                                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                                              await provider3.loadAllEvents();
+                                              await provider4.loadAllHubworks();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => EventsHome()),
+                                              );
+                                            },
+                                            child: Container(
+                                                width: MediaQuery.of(context).size.height*0.059,
+                                                height: MediaQuery.of(context).size.height*0.059,
+                                                decoration: BoxDecoration(
+                                                    color: tBackground,
+                                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                                ),
+                                                child: Transform.rotate(
+                                                  angle: -45 * 0.0174533,
+                                                  child: Icon(
+                                                    Icons.arrow_forward,
+                                                  ),)
+                                            ),
                                           )
                                         ],
                                       ),
@@ -458,18 +506,28 @@ class _HomePage extends State<MyHomePage> {
                                               ),),
                                             ],
                                           ),
-                                          Container(
-                                              width: MediaQuery.of(context).size.height*0.059,
-                                              height: MediaQuery.of(context).size.height*0.059,
-                                              decoration: BoxDecoration(
-                                                  color: tBackground,
-                                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => GuideHome()),
+                                              );
+                                            },
+                                            child:
+                                              Container(
+                                                  width: MediaQuery.of(context).size.height*0.059,
+                                                  height: MediaQuery.of(context).size.height*0.059,
+                                                  decoration: BoxDecoration(
+                                                      color: tBackground,
+                                                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                                  ),
+                                                  child: Transform.rotate(
+                                                    angle: -45 * 0.0174533,
+                                                    child: Icon(
+                                                      Icons.arrow_forward,
+                                                    ),)
                                               ),
-                                              child: Transform.rotate(
-                                                angle: -45 * 0.0174533,
-                                                child: Icon(
-                                                  Icons.arrow_forward,
-                                                ),)
                                           )
                                         ],
                                       ),
@@ -537,18 +595,34 @@ class _HomePage extends State<MyHomePage> {
                                               ),),
                                             ],
                                           ),
-                                          Container(
-                                              width: MediaQuery.of(context).size.height*0.059,
-                                              height: MediaQuery.of(context).size.height*0.059,
-                                              decoration: BoxDecoration(
-                                                  color: tBackground,
-                                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
-                                              ),
-                                              child: Transform.rotate(
-                                                angle: -45 * 0.0174533,
-                                                child: Icon(
-                                                  Icons.arrow_forward,
-                                                ),)
+                                          GestureDetector(
+                                            onTap: () async {
+                                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                                              await provider3.loadAllEvents();
+                                              await provider4.loadAllHubworks();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => LoginScreen()),
+                                              );
+                                            },
+                                            child:
+                                            Container(
+                                                width: MediaQuery.of(context).size.height*0.059,
+                                                height: MediaQuery.of(context).size.height*0.059,
+                                                decoration: BoxDecoration(
+                                                    color: tBackground,
+                                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                                ),
+                                                child: Transform.rotate(
+                                                  angle: -45 * 0.0174533,
+                                                  child: Icon(
+                                                    Icons.arrow_forward,
+                                                  ),)
+                                            ),
                                           )
                                         ],
                                       ),

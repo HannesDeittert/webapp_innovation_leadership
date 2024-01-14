@@ -20,7 +20,7 @@ class _SuperAdminPanelState extends State<SuperAdminPanel> {
   late User _user;
   late List<MyUser> users;
   final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
+
   final UserProvider provider3 = UserProvider();
   bool isUpdateGeneral = true;
   bool isUpdateDetailed = false;
@@ -35,7 +35,7 @@ class _SuperAdminPanelState extends State<SuperAdminPanel> {
     print(users);
     _user = FirebaseAuth.instance.currentUser!;
     provider.loadInnovationHubsFromFirestore();
-    provider2.loadQuestionsFromFirestore();
+
   }
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 

@@ -40,7 +40,7 @@ class HubListTile extends StatelessWidget {
         Provider.of<DetailedHubInfoProvider>(context, listen: false);
 
         // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-        await detailedHubInfoProvider.getHubInfoByCode(hub.code);
+        await detailedHubInfoProvider.getHubInfoByCode(hub.code, hub.filtered_chips);
 
         // Zur Detailseite navigieren
         Navigator.push(

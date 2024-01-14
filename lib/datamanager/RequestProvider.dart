@@ -1,11 +1,10 @@
-
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'Events.dart';
 
-class EventProvider with ChangeNotifier {
+class RequestProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late HubEvents selectedEvent;
   List<HubEvents> _Hubevents = [];
@@ -66,34 +65,34 @@ class EventProvider with ChangeNotifier {
 
   Future<void> loadAllEvents() async {
 
-      if (_eventdataLoaded) {
-        print("returned as data is loaded");
-        print("All already Loaded: $_allHubevents");
-        print("All Filtered already Loaded: $_filteredHubevents");
-        return;
-      } // Wenn Daten bereits geladen wurden, kehren Sie sofort zurück
+    if (_eventdataLoaded) {
+      print("returned as data is loaded");
+      print("All already Loaded: $_allHubevents");
+      print("All Filtered already Loaded: $_filteredHubevents");
+      return;
+    } // Wenn Daten bereits geladen wurden, kehren Sie sofort zurück
 
-      CollectionReference EventsRef = FirebaseFirestore.instance
-          .collection('Events');
+    CollectionReference EventsRef = FirebaseFirestore.instance
+        .collection('Events');
 
-      /// Daten aus der Sammlung laden
-      QuerySnapshot<Object?> snapshot = await EventsRef.get();
-      print(snapshot);
+    /// Daten aus der Sammlung laden
+    QuerySnapshot<Object?> snapshot = await EventsRef.get();
+    print(snapshot);
 
 // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen
     _allHubevents = snapshot.docs.map((doc) {
       QueryDocumentSnapshot<Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<Map<String, dynamic>>;
       return HubEvents.fromFirestore(typedDoc.data());
     }).toList();
-      print("All: $_allHubevents");
+    print("All: $_allHubevents");
 
-      _filteredHubevents = _allHubevents;
-      createFilterdAppointmentList(_filteredHubevents);
-      _eventdataLoaded = true;
-      print(
-          "Loaded once!"); // Setzen Sie _dataLoaded auf true, um anzuzeigen, dass die Daten geladen wurden
-      print("Event $_eventdataLoaded");
-      notifyListeners();
+    _filteredHubevents = _allHubevents;
+    createFilterdAppointmentList(_filteredHubevents);
+    _eventdataLoaded = true;
+    print(
+        "Loaded once!"); // Setzen Sie _dataLoaded auf true, um anzuzeigen, dass die Daten geladen wurden
+    print("Event $_eventdataLoaded");
+    notifyListeners();
 
   }
 }

@@ -6,13 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
+import 'Events.dart';
 import 'Homepage.dart';
 import 'InnoHubGeneral.dart';
 import 'constants/colors.dart';
+import 'datamanager/DetailedHubInfoProvider.dart';
 import 'datamanager/EventProvieder.dart';
 import 'datamanager/InnovationHub.dart';
 import 'datamanager/InnovationHubProvider.dart';
 import 'datamanager/QuestionProvider.dart';
+import 'datamanager/WorkProvider.dart';
 
 class InnovationHubs extends StatefulWidget {
   const InnovationHubs({Key? key}) : super(key: key);
@@ -23,7 +26,7 @@ class InnovationHubs extends StatefulWidget {
 
 class _InnovationHubState extends State<InnovationHubs> {
   final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
+
   final EventProvider provider3 = EventProvider();
   bool isHomeViewSelected = false;
   bool isHubViewSelected = true;
@@ -36,7 +39,7 @@ class _InnovationHubState extends State<InnovationHubs> {
   @override
   void initState() {
     provider.loadInnovationHubsFromFirestore();
-    provider2.loadQuestionsFromFirestore();
+
     provider3.loadAllEvents();
   }
 
@@ -134,6 +137,14 @@ class _InnovationHubState extends State<InnovationHubs> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => InnovationHubs(),
+                                ),
+                              );
+                            },
                             child: Text(
                               "Innovation hubs",
                               style: TextStyle(
@@ -144,6 +155,20 @@ class _InnovationHubState extends State<InnovationHubs> {
                             ),
                           ),
                           GestureDetector(
+                            onTap: () async {
+                              // Den DetailedHubInfoProvider vom Kontext abrufen
+                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                              await provider3.loadAllEvents();
+                              await provider4.loadAllHubworks();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EventsHome()),
+                              );
+                            },
                             child: Text(
                               "Events",
                               style: TextStyle(

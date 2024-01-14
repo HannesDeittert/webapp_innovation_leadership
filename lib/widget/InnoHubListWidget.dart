@@ -186,7 +186,7 @@ class HubListItem extends StatelessWidget {
                         EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
                         WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
                         // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                        await detailedHubInfoProvider.getHubInfoByCode(hub.code);
+                        await detailedHubInfoProvider.getHubInfoByCode(hub.code,hub.filtered_chips);
                         await detailedHubInfoProvider.getMenu();
                         await provider3.loadAllEvents();
                         await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);

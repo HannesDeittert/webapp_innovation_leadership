@@ -17,7 +17,7 @@ class DetailedHubInfoProvider with ChangeNotifier {
 
   DetailedHubInfo get detailedInnovationHub => _detailedInnovationHub;
 
-  Future<DetailedHubInfo> getHubInfoByCode(String code) async {
+  Future<DetailedHubInfo> getHubInfoByCode(String code,List<String> Filter) async {
     try {
       DetailedHubInfo load;
 
@@ -46,6 +46,7 @@ class DetailedHubInfoProvider with ChangeNotifier {
 
       List<dynamic> work_dynamic = snapshot.get("work");
       List<String> work = List<String>.from(work_dynamic);
+      List<String> filtered_chips = Filter;
 
 
       // InnovationHub-Objekt erstellen und zurückgeben
@@ -58,7 +59,8 @@ class DetailedHubInfoProvider with ChangeNotifier {
           email_contact: email_contact,
           tele_contact: tele_contact,
           events: events,
-          work: work
+          work: work,
+          filtered_chips: filtered_chips,
       );
 
       _detailedInnovationHub = load;
@@ -78,7 +80,10 @@ class DetailedHubInfoProvider with ChangeNotifier {
           email_contact: "email_contacts",
           tele_contact: "tele_contacts",
           events: ["events"],
-          work: ["work"]);
+          work: ["work"],
+        filtered_chips: [],
+      );
+
     }
   }
 
@@ -89,13 +94,13 @@ class DetailedHubInfoProvider with ChangeNotifier {
 
     if (detailedInnovationHub.detailedDescription.isNotEmpty) {
       menu.add("About");
+    } if (detailedInnovationHub.work.isNotEmpty) {
+      menu.add("Research");
+    }if (detailedInnovationHub.events.isNotEmpty) {
+      menu.add("Events");
     } if (detailedInnovationHub.tele_contact.isNotEmpty ||
         detailedInnovationHub.website.isNotEmpty) {
       menu.add("Contact");
-    } if (detailedInnovationHub.events.isNotEmpty) {
-      menu.add("Events");
-    } if (detailedInnovationHub.work.isNotEmpty) {
-      menu.add("Work");
     }
     print(menu);
     _Menu = menu;

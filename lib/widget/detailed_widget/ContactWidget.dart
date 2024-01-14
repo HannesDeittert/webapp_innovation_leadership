@@ -7,13 +7,64 @@ import '../../Constants/Colors.dart';
 class ContactWidget extends StatelessWidget {
   final Map<String, String> contacts;
   final String name;
+  final bool detail;
 
-  ContactWidget(this.contacts,this.name);
+  ContactWidget(this.contacts,this.name,this.detail );
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-          color: tBackground,
+    return detail?  Container(
+        width: MediaQuery.of(context).size.width *(1156/1512),
+        color: tBackground,
+        padding: EdgeInsets.all(16.0),
+        child: Expanded(
+          child: Row(
+            children: [
+              Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Feel Free To Contact $name!",
+                    style: TextStyle(
+                        fontSize: 64,
+                        fontWeight: FontWeight.w700,
+                        color: tPrimaryColorText
+                    ),),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height* 0.1,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildContactInfo("Website", contacts["Website"], Uri(
+                          scheme: 'https',
+                          path: contacts["Website"]
+                      )),
+                      _buildContactInfo("TeleContact", contacts["TeleContact"], Uri(
+                          scheme: 'tel',
+                          path: contacts["TeleContact"]
+                      )),
+                      _buildContactInfo("EmailContact", contacts["EmailContact"], Uri(
+                          scheme: 'mailto',
+                          path: contacts["EmailContact"]
+                      )),
+                      _buildContactInfo("Latitude", contacts["Latitude"], Uri(
+                          scheme: 'https',
+                          path: contacts["Latitud"]
+                      )),
+                    ],
+                  ),
+                ],
+              ),
+              Spacer(),
+            ],
+          ),
+        ),
+    ):
+    Container(
+          color: tWhite,
           padding: EdgeInsets.all(16.0),
           child: Row(
             children: [
