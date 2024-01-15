@@ -32,6 +32,11 @@ import 'detailed_widget/EventWidget.dart';
 import 'detailed_widget/WorkWidget.dart';
 
 class InnovationHubDetailPage extends StatefulWidget {
+
+  final List<String> stringList;
+
+  // Konstruktor, um die String-Liste zu übergeben
+  InnovationHubDetailPage({required this.stringList});
   @override
   _InnovationHubDetailPageState createState() => _InnovationHubDetailPageState();
 }
@@ -43,8 +48,6 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
   bool isAboutViewSelected = false;
   bool isContactSelected = false;
   bool isOverviewSelected = true;
-
-
   bool isHomeViewSelected = false;
   bool isHubViewSelected = true;
   bool isEventViewSelected = false;
@@ -117,6 +120,8 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
 
     WorkProvider provider4 = Provider.of<WorkProvider>(context);
     DetailedHubInfo info = provider.detailedInnovationHub;
+    List<String> Chips = widget.stringList;
+    print("Chips $Chips");
     List<HubEvents> fevents = provider3.filteredEvents;
     print("Hier$fevents");
     List<HubEvents> events = provider3.Hubevents;
@@ -291,12 +296,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                           children: [
                             GestureDetector(
                               onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => InnovationHubs(),
-                                  ),
-                                );
+                                Navigator.pop(context);
                               },
                               child: Row(
                                 children: [
@@ -474,7 +474,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) => InnovationHubDetailPage(),
+                                                          builder: (context) => InnovationHubDetailPage(stringList: reccomendations[index].filtered_chips),
                                                         ),
                                                       );
                                                     },
@@ -616,18 +616,14 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                         children: [SizedBox(
                                           height: MediaQuery.of(context).size.height*(20/1032),
                                         ),
-
-                                          Text(info.name, style: TextStyle(
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: MediaQuery.of(context).size.height*(10/1032),
-                                          ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
+                                              Text(info.name, style: TextStyle(
+                                                fontSize: 32,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                              ),
                                               if (info.filtered_chips.isNotEmpty)
                                                 Wrap(
                                                   runSpacing: 5,

@@ -41,8 +41,8 @@ class InnoHubListWidget extends StatelessWidget {
 class HubListItem extends StatelessWidget {
   final InnovationHub hub;
 
+  HubListItem({required this.hub,});
 
-  HubListItem({required this.hub});
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +180,7 @@ class HubListItem extends StatelessWidget {
                     right: MediaQuery.of(context).size.width * (16 / 491),
                     child: GestureDetector(
                       onTap: () async {
+
                         // Den DetailedHubInfoProvider vom Kontext abrufen
                         DetailedHubInfoProvider detailedHubInfoProvider =
                         Provider.of<DetailedHubInfoProvider>(context, listen: false);
@@ -192,14 +193,16 @@ class HubListItem extends StatelessWidget {
                         await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
                         await provider4.loadAllHubworks();
                         await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
-                        print(detailedHubInfoProvider.detailedInnovationHub);
                         provider.calculate_recomendations(hub);
-                        print(provider.recomendations);
+
+                        List<String> chips = hub.filtered_chips;
+                        String String_ = chips.toString();
+                        print("In the list: $String_");
                         // Zur Detailseite navigieren
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => InnovationHubDetailPage(),
+                            builder: (context) => InnovationHubDetailPage(stringList: chips,),
                           ),
                         );
                       },

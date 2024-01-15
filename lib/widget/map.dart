@@ -167,7 +167,17 @@ class _InnoMap extends State<InnoMap> {
                               fontSize: 24,
                             ),
                           ),
-                          Spacer()
+                          Spacer(),
+                          GestureDetector(
+                            onTap: (){
+                              setState(() {
+                                for(InnovationHub hub in provider.innovationHubs){
+                                  hub.filtered_chips.clear();
+                                }
+                                provider.createFilterdHubList(provider.innovationHubs);
+                              });
+                            },
+                              child: Icon(Icons.filter_alt_off))
                         ],
                       ),
                       SizedBox(
@@ -833,7 +843,7 @@ class _InnoMap extends State<InnoMap> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => InnovationHubDetailPage(),
+                      builder: (context) => InnovationHubDetailPage(stringList: hub.filtered_chips,),
                     ),
                   );
                 },

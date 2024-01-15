@@ -67,7 +67,7 @@ class HubGridTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InnovationHubDetailPage(),
+            builder: (context) => InnovationHubDetailPage(stringList: hub.filtered_chips,),
           ),
         );
       },

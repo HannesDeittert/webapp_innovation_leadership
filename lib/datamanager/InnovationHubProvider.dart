@@ -84,7 +84,6 @@ class InnovationHubProvider with ChangeNotifier {
     List<Map<InnovationHub, int>> filteredHubs = [];
       for (InnovationHub Hub in originalHubs) {
         int matchCount = 0;
-        Hub.filtered_chips.clear();
         // Calculate simmilarity for allSelectedItems_goal
         for (String tag in hub.question_goal) {
           if (Hub.question_goal.contains(tag)) {

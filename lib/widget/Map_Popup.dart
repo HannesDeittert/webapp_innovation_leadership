@@ -127,12 +127,16 @@ class _MapPopupState extends State<MapPopup> {
                             }
                             print(provider.recomendations);
                             // Zur Detailseite navigieren
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InnovationHubDetailPage(),
-                              ),
-                            );
+                            if (Hub != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      InnovationHubDetailPage(
+                                          stringList: Hub.filtered_chips),
+                                ),
+                              );
+                            }
                           },
                           child: Row(
                             children: [

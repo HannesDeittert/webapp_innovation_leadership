@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webapp_innovation_leadership/widget/Calender.dart';
 import 'package:webapp_innovation_leadership/widget/EventListItem.dart';
+import 'package:webapp_innovation_leadership/widget/GenerateFinished.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
 import 'Events.dart';
@@ -39,7 +40,7 @@ class _GuideHome extends State<GuideHome> {
   int currentQuestionIndex = 0;
   List<String> questions = [
     "Are you from Fürth?",
-    "What type of innovation location are you intrested in?",
+    "What type of innovation location you´re interested in?",
     "What best matches your Intrests?"
   ];
   List<String> answerOptions_Furth = ["Yes", "No"];
@@ -302,12 +303,30 @@ class _GuideHome extends State<GuideHome> {
                           vertical: MediaQuery.of(context).size.height / 10,
                         ),
                         child: Container(
-                          child: Text(
-                            questions[currentQuestionIndex],
-                            style: TextStyle(
-                              fontSize: 64,
-                              color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
-                            ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 34),
+                                child: Text('${currentQuestionIndex + 1} / ${questions.length}',
+                                    style: TextStyle(
+                                        fontSize: 20)),
+                              ),
+                              Text(
+                                questions[currentQuestionIndex],
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                    fontWeight: FontWeight.w700
+                                ),
+                              ),
+                              currentQuestion == "What best matches your Intrests?" ?
+                                Text("Select minimum 3 categories",style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500
+                                ),): SizedBox(height: 0.1,)
+                            ],
                           ),
                         ),
                       ),
@@ -318,119 +337,95 @@ class _GuideHome extends State<GuideHome> {
                               if (questions.isNotEmpty &&
                                   answerOptions_Furth.isNotEmpty) {
                                 return Container(
-                                  alignment: Alignment.center,
-                                  // Setzen Sie hier die maximale Höhe nach Bedarf
-                                  child: RepaintBoundary(
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: answerOptions_Furth.length,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              // Toggle the selection status of the answer
-                                              if (selectedAnswers_Furth
-                                                  .contains(answerOptions_Furth[index])) {
-                                                selectedAnswers_Furth
-                                                    .remove(answerOptions_Furth[index]);
-                                              } else {
-                                                selectedAnswers_Furth
-                                                    .add(answerOptions_Furth[index]);
-                                                if (currentQuestionIndex ==
-                                                    questions.length - 1) {
-                                                  print(selectedAnswers_Furth);
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MyHomePage()),
-                                                  );
-                                                } else {
-                                                  // Ansonsten gehe zur nächsten Frage
-                                                  setState(() {
-                                                    currentQuestionIndex++;
-                                                  });
-                                                }
-                                              }
-                                            });
-                                            String selectedAnswer =
-                                            answerOptions_Furth[index];
-                                            print('Selected Answer: $selectedAnswer');
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                Hero(
-                                                  tag: answerOptions_Furth[index],
-                                                  // Unique tag for each image
-                                                  child: FutureBuilder(
-                                                    future: _loadProfileImage(
-                                                        answerOptions_Furth[index]),
-                                                    builder: (context, snapshot) {
-                                                      if (snapshot.connectionState ==
-                                                          ConnectionState.done) {
-                                                        return SizedBox(
-                                                          height: MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                              4,
-                                                          width: MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                              4,
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                            snapshot.data as String,
-                                                            width: MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                                4,
-                                                            height: MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                                4,
-                                                            fit: BoxFit.cover,
-                                                            placeholder: (context, url) =>
-                                                                Container(),
-                                                            errorWidget:
-                                                                (context, url, error) =>
-                                                                Icon(Icons.error),
-                                                          ),
-                                                        );
-                                                      } else {
-                                                        return Container(); // Ladeindikator kann hier eingefügt werden
-                                                      }
-                                                    },
-                                                  ),
+                                  height: 250,
+                          alignment: Alignment.center,
+                          // Setzen Sie hier die maximale Höhe nach Bedarf
+                          child: RepaintBoundary(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: answerOptions_Furth.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      // Toggle the selection status of the answer
+                                      if (selectedAnswers_Furth.contains(
+                                          answerOptions_Furth[index])) {
+                                        selectedAnswers_Furth
+                                            .remove(answerOptions_Furth[index]);
+                                      } else {
+                                        selectedAnswers_Furth
+                                            .add(answerOptions_Furth[index]);
+                                        if (currentQuestionIndex ==
+                                            questions.length - 1) {
+                                          print(selectedAnswers_Furth);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MyHomePage()),
+                                          );
+                                        } else {
+                                          // Ansonsten gehe zur nächsten Frage
+                                          setState(() {
+                                            currentQuestionIndex++;
+                                          });
+                                        }
+                                      }
+                                    });
+                                    String selectedAnswer =
+                                        answerOptions_Furth[index];
+                                    print('Selected Answer: $selectedAnswer');
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 36),
+                                    child: answerOptions_Furth[index] == "Yes"
+                                        ? Container(
+                                            width: 250,
+                                            height: 250,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: tBlue),
+                                            child: Center(
+                                              child: Text(
+                                                'Yes, I am',
+                                                style: TextStyle(
+                                                    color: tWhite,
+                                                    fontSize: 32,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                          ) // Replace YourWidgetToReturnIfYes with the actual widget
+                                        : Container(
+                                            width: 250,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: Colors.blue, // Set the border color here
+                                                  width: 3, // Set the border width if needed
                                                 ),
-                                                Center(
-                                                    child: RepaintBoundary(
-                                                      child: Hero(
-                                                        tag:
-                                                        'text_${answerOptions_Furth[index]}',
-                                                        child: Text(
-                                                          answerOptions_Furth[index],
-                                                          style: TextStyle(
-                                                            fontSize: 30,
-                                                            color: tPrimaryColorText,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )),
-                                              ],
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                color: tWhite),
+                                            child: Center(
+                                              child: Text(
+                                                "No, I'm not",
+                                                style: TextStyle(
+                                                    color: tBlue,
+                                                    fontSize: 32,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ), // Counter und Next/Finish Button
+                                  ),
                                 );
-                              } else {
+                              },
+                            ),
+                          ), // Counter und Next/Finish Button
+                        );
+                      } else {
                                 return CircularProgressIndicator();
                               }
                             } else if (currentQuestion ==
@@ -453,11 +448,21 @@ class _GuideHome extends State<GuideHome> {
                                         itemCount: answerOptions_topic.length,
                                         itemBuilder: (selection, i) {
                                           return ChoiceChip(
-                                            selected: selection
-                                                .selected(answerOptions_topic[i]),
-                                            onSelected: selection
-                                                .onSelected(answerOptions_topic[i]),
-                                            label: Text(answerOptions_topic[i]),
+                                            backgroundColor: tWhite,
+                                            selectedColor: tBlue.withAlpha(95),
+                                            selected: selection.selected(answerOptions_topic[i]),
+                                            onSelected: selection.onSelected(answerOptions_topic[i]),
+                                            shape: RoundedRectangleBorder(
+                                              side: BorderSide(color: Colors.blue, width: 2),
+                                              borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
+                                            ),
+                                            label: Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                              child: Text(
+                                                answerOptions_topic[i],
+                                                style: selectedAnswers_topic.contains(answerOptions_topic[i]) ? TextStyle(color: Colors.white) : TextStyle(color: tBlue),
+                                              ),
+                                            ),
                                           );
                                         },
                                         listBuilder: ChoiceList.createWrapped(
@@ -471,6 +476,7 @@ class _GuideHome extends State<GuideHome> {
                                           ),
                                         ),
                                       ),
+
                                     ),
                                   ),
                                 );
@@ -480,6 +486,7 @@ class _GuideHome extends State<GuideHome> {
                             } else {
                               if (questions.isNotEmpty && answerOptions_Type.isNotEmpty) {
                                 return Container(
+                                  height: 293,
                                   alignment: Alignment.center,
                                   // Setzen Sie hier die maximale Höhe nach Bedarf
                                   child: RepaintBoundary(
@@ -521,69 +528,58 @@ class _GuideHome extends State<GuideHome> {
                                             print('Selected Answer: $selectedAnswer');
                                           },
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
+                                            padding: const EdgeInsets.symmetric(horizontal: 36),
                                             child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
                                               children: [
-                                                Hero(
-                                                  tag: answerOptions_Type[index],
-                                                  // Unique tag for each image
-                                                  child: FutureBuilder(
-                                                    future: _loadProfileImage(
-                                                        answerOptions_Type[index]),
-                                                    builder: (context, snapshot) {
-                                                      if (snapshot.connectionState ==
-                                                          ConnectionState.done) {
-                                                        return SizedBox(
-                                                          height: MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                              4,
-                                                          width: MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                              4,
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                            snapshot.data as String,
-                                                            width: MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                                4,
-                                                            height: MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                                4,
-                                                            fit: BoxFit.cover,
-                                                            placeholder: (context, url) =>
-                                                                Container(),
-                                                            errorWidget:
-                                                                (context, url, error) =>
-                                                                Icon(Icons.error),
-                                                          ),
-                                                        );
-                                                      } else {
-                                                        return Container(); // Ladeindikator kann hier eingefügt werden
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                                Center(
-                                                    child: RepaintBoundary(
-                                                      child: Hero(
-                                                        tag:
-                                                        'text_${answerOptions_Type[index]}',
-                                                        child: Text(
-                                                          answerOptions_Type[index],
-                                                          style: TextStyle(
-                                                            fontSize: 30,
-                                                            color: tPrimaryColorText,
-                                                          ),
+                                                Container(
+                                                  height: 250,
+                                                  width: 250,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                        color: Colors.blue, // Set the border color here
+                                                        width: 3, // Set the border width if needed
+                                                      ),
+                                                      borderRadius:
+                                                      BorderRadius.circular(20),
+                                                      color: tWhite),
+                                                  child: Center(
+                                                    child: Container(
+                                                      height: 94,
+                                                      width: 94,
+                                                      child: Expanded(
+                                                        child: FutureBuilder(
+                                                          future: _loadProfileImage(
+                                                              answerOptions_Type[index]),
+                                                          builder: (context, snapshot) {
+                                                            if (snapshot.connectionState ==
+                                                                ConnectionState.done) {
+                                                              return CachedNetworkImage(
+                                                                imageUrl:
+                                                                snapshot.data as String,
+                                                                fit: BoxFit.cover,
+                                                                placeholder: (context, url) =>
+                                                                    Container(),
+                                                                errorWidget:
+                                                                    (context, url, error) =>
+                                                                    Icon(Icons.error),
+                                                              );
+                                                            } else {
+                                                              return Container(); // Ladeindikator kann hier eingefügt werden
+                                                            }
+                                                          },
                                                         ),
                                                       ),
-                                                    )),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  answerOptions_Type[index],
+                                                  style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -627,6 +623,11 @@ class _GuideHome extends State<GuideHome> {
                             } else {
                               print("Matching entry not found in PathList");
                             }
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GuideFinishedHome()),
+                            );
 
                           },
                           child: Container(
@@ -647,19 +648,37 @@ class _GuideHome extends State<GuideHome> {
                               ),
                             ),
                           ),
-                        )
-                      else
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: MediaQuery.of(context).size.height / 30),
-                          child: Text('${currentQuestionIndex + 1} / ${questions.length}',
-                              style: TextStyle(
-                                  color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
-                                  fontSize: 64)),
                         ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height *(124/1080),
-                      )
+                      ),
+                      if(currentQuestionIndex != 0)
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width *(64/1512),vertical:MediaQuery.of(context).size.width *(64/1512)),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    currentQuestionIndex = currentQuestionIndex-1;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.arrow_back,
+                                    color: tBlue,),
+                                    Text("Previous",style: TextStyle(
+                                      color: tBlue,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500
+                                    ),)
+                                  ],
+                                )
+                              ),
+                              Spacer()
+                            ],
+                          ),
+                        )
                     ],
                   ),
             )

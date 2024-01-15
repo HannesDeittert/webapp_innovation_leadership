@@ -12,10 +12,17 @@ import 'DetailedHubInfo.dart';
 class DetailedHubInfoProvider with ChangeNotifier {
   late DetailedHubInfo _detailedInnovationHub;
   List<String> _Menu = [];
+  List<String> Chips = [];
 
   List<String> get Menu => _Menu;
 
   DetailedHubInfo get detailedInnovationHub => _detailedInnovationHub;
+  List<String> get getChips => Chips;
+
+  void createChipList(List<String> chips) {
+    Chips = chips;
+    notifyListeners();
+  }
 
   Future<DetailedHubInfo> getHubInfoByCode(String code,List<String> Filter) async {
     try {

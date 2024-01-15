@@ -12,6 +12,7 @@ const tWhite = Color.fromARGB(255, 	255, 	255, 	255);
 const tWhiteop = Color.fromARGB(214, 	255, 	255, 	255);
 const tSearch = Color.fromARGB(255, 	246, 	246, 	246);
 const tWritingGrey = Color.fromARGB(255, 	50, 	50, 	50);
+const brightGrey = Color.fromARGB(255, 	186, 	186, 	186);
 const tBlue = Color.fromARGB(255, 	0, 	107, 	220);
 
 // -- SOCIAL Button COLORS

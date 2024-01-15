@@ -13,6 +13,9 @@ class HubEvents {
   final DateTime endTime;
   final String uid;
   final String HubCode;
+  final String Location;
+  final String Street;
+  final String City;
   final bool fau;
   final List<String> filtered_chips;
 
@@ -31,6 +34,9 @@ class HubEvents {
     required this.HubCode,
     required this.allday,
     required this.filtered_chips,
+    required this.City,
+    required this.Location,
+    required this.Street,
   });
   factory HubEvents.fromFirestore(Map<String, dynamic> data) {
     List<String> filtered_chips = [];
@@ -49,6 +55,9 @@ class HubEvents {
       fau: data['fau'],
       HubCode: data['HubCode'],
       eventImagePath: data['eventImagePath'].toString(),
+      City: data['City'].toString(),
+      Location: data['Location'].toString(),
+      Street: data['Street'].toString(),
       endTime: convertTimestamp(data['endTime']),
       startTime: convertTimestamp(data['startTime']),
       filtered_chips: filtered_chips,
