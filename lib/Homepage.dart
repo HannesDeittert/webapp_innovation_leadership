@@ -11,7 +11,6 @@ import 'package:webapp_innovation_leadership/widget/FilterWidgets/mainFilterUI.d
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/widget/PopUpContent.dart';
 import 'CommunityPages/Community.dart';
-import 'InnoHubGeneral.dart';
 import 'InnovationHubs.dart';
 import 'constants/colors.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
@@ -166,14 +165,14 @@ class _HomePage extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
-                          /*onTap: (){
+                          onTap: (){
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => InnovationHubs(),
                               ),
                             );
-                          },*/
+                          },
                           child: Text(
                             "Innovation hubs",
                             style: TextStyle(
@@ -208,6 +207,13 @@ class _HomePage extends State<MyHomePage> {
                           ),
                         ),
                         GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => GuideHome()),
+                            );
+                          },
                           child: Text(
                             "Innovation Guide",
                             style: TextStyle(
@@ -217,6 +223,13 @@ class _HomePage extends State<MyHomePage> {
                           ),
                         ),
                         GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );
+                          },
                           child: Text(
                             "Community",
                             style: TextStyle(
@@ -436,10 +449,17 @@ class _HomePage extends State<MyHomePage> {
                                       SizedBox(
                                         height: MediaQuery.of(context).size.width*0.0205,
                                       ),
-                                      Text("Stay connected with our community through\na curated calendar of events, workshops,\nand conferences – where inspiration\ntransforms into action.",style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400
-                                      ),),
+                                      Expanded(
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                          child: FittedBox(
+                                            fit: BoxFit.fitWidth,
+                                            child: Text("Stay connected with our community through\na curated calendar of events, workshops,\nand conferences – where inspiration\ntransforms into action.",style: TextStyle(
+                                              fontWeight: FontWeight.w400
+                                            ),),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -534,10 +554,17 @@ class _HomePage extends State<MyHomePage> {
                                       SizedBox(
                                         height: MediaQuery.of(context).size.width*0.0205,
                                       ),
-                                      Text("Get your personalized PDF Guide with insider\ninsights, local tips, and essential information about\neach location.",style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w400
-                                      ),),
+                                      Expanded(
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                          child: FittedBox(
+                                            fit: BoxFit.fitWidth,
+                                            child: Text("Get your personalized PDF Guide with insider\ninsights, local tips, and essential information about\neach location.",style: TextStyle(
+                                                fontWeight: FontWeight.w400
+                                            ),),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -629,10 +656,17 @@ class _HomePage extends State<MyHomePage> {
                                       SizedBox(
                                         height: MediaQuery.of(context).size.width*0.0205,
                                       ),
-                                      Text("No more awkward feeling when go alone to the events.\nJoin our community, find your buddy, and explore\ninnovations and events together. ",style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w400
-                                      ),),
+                                      Expanded(
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                          child: FittedBox(
+                                            fit: BoxFit.fitWidth,
+                                            child: Text("No more awkward feeling when go alone to the events.\nJoin our community, find your buddy, and explore\ninnovations and events together.",style: TextStyle(
+                                                fontWeight: FontWeight.w400
+                                            ),),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),

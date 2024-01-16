@@ -11,7 +11,6 @@ import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
 import 'Events.dart';
 import 'Homepage.dart';
-import 'InnoHubGeneral.dart';
 import 'InnovationHubs.dart';
 import 'constants/colors.dart';
 import 'datamanager/DetailedHubInfoProvider.dart';
@@ -21,6 +20,7 @@ import 'datamanager/InnovationHub.dart';
 import 'datamanager/InnovationHubProvider.dart';
 import 'datamanager/QuestionProvider.dart';
 import 'datamanager/WorkProvider.dart';
+import 'login/login_screen.dart';
 
 class GuideHome extends StatefulWidget {
   const GuideHome({Key? key}) : super(key: key);
@@ -78,8 +78,8 @@ class _GuideHome extends State<GuideHome> {
   }
 
   String GetIndex() {
-    List<List<String>> Arrays = [['Yes', 'StartUps',],['Yes', 'University Chair'],['No', 'StartUps'],['No', 'Not Sure'],['No', 'Research Institutions']];
-    List<String> PathList = ['pdf/231117_Innovation_Lecture_upload.pdf', 'pdf/231117_Innovation_Lecture_upload.pdf','pdf/Exercise_2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf'];
+    List<List<String>> Arrays = [['No', 'StartUps','Insurance',"Finance"],['Yes', 'StartUps',],['Yes', 'University Chair'],['No', 'StartUps','Insurance'],['No', 'Not Sure'],['No', 'Research Institutions']];
+    List<String> PathList = ['pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/231117_Innovation_Lecture_upload.pdf', 'pdf/231117_Innovation_Lecture_upload.pdf','pdf/Exercise_2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf'];
     List<int> match = List.filled(Arrays.length, 0);
     List<int> matchInd =[];
     List<String?> filterTags= [selectedAnswers_Furth[0] , selectedAnswers_Type[0]];
@@ -106,6 +106,8 @@ class _GuideHome extends State<GuideHome> {
         }
       }
     }
+
+    // Checking for the index with the highest correlation
     int maxIndex = 0;
     int maxValue = match[0];
 
@@ -160,15 +162,17 @@ class _GuideHome extends State<GuideHome> {
               decoration: BoxDecoration(
                   color: tBackground,
                   border: Border(
-                    bottom: BorderSide(width: 1, color: tBackground),
-                  )),
+                    bottom: BorderSide(
+                        width: 1,
+                        color:  tBackground),
+                  )
+              ),
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 30,
-                    vertical: 0.0),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/30,vertical: 0.0 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
                     GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -181,51 +185,46 @@ class _GuideHome extends State<GuideHome> {
                       child: Row(
                         children: [
                           FutureBuilder(
-                            future: _loadLeadingImage(
-                                MediaQuery.of(context).size.width,
-                                MediaQuery.of(context).size.height),
+                            future: _loadLeadingImage(MediaQuery.of(context).size.width,MediaQuery.of(context).size.height),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.done) {
                                 // Wenn das Bild geladen wurde, zeige es an
                                 return snapshot.data!;
                               } else if (snapshot.hasError) {
                                 // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                return Icon(Icons
-                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                                return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
                               } else {
                                 // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
                                 return CircularProgressIndicator();
                               }
                             },
                           ),
-                          Text(
-                            "fau innohub",
-                            style:
-                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                          )
+                          Text("fau innohub",style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),)
                         ],
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.455,
-                      height: MediaQuery.of(context).size.height * 0.062,
+                      width: MediaQuery.of(context).size.width*0.455,
+                      height: MediaQuery.of(context).size.height*0.062,
                       decoration: BoxDecoration(
                           color: tWhite,
-                          borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.height * 0.031,
-                          )),
+                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.031,)
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                             onTap: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InnovationHubs(),
-                                ),
-                              );
-                            },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InnovationHubs(),
+                              ),
+                            );
+                          },
                             child: Text(
                               "Innovation hubs",
                               style: TextStyle(
@@ -260,30 +259,42 @@ class _GuideHome extends State<GuideHome> {
                             ),
                           ),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GuideHome()),
+                              );
+                            },
                             child: Text(
                               "Innovation Guide",
                               style: TextStyle(
-                                  fontWeight: isGuideViewSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  fontSize: 16),
+                                  fontWeight: isGuideViewSelected ?FontWeight.w700: FontWeight.w500,
+                                  fontSize: 16
+                              ),
                             ),
                           ),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                              );
+                            },
                             child: Text(
                               "Community",
                               style: TextStyle(
-                                  fontWeight: isCommunityViewSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  fontSize: 16),
+                                  fontWeight: isCommunityViewSelected ?FontWeight.w700: FontWeight.w500,
+                                  fontSize: 16
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 0,
                     )
                   ],
                 ),
@@ -661,6 +672,15 @@ class _GuideHome extends State<GuideHome> {
                                 onTap: () async {
                                   setState(() {
                                     currentQuestionIndex = currentQuestionIndex-1;
+                                    if(currentQuestionIndex == 0){
+                                      selectedAnswers_Furth.clear();
+                                    }
+                                    if(currentQuestionIndex == 1){
+                                      selectedAnswers_Type.clear();
+                                    }
+                                    if(currentQuestionIndex == 2){
+                                      selectedAnswers_topic.clear();
+                                    }
                                   });
                                 },
                                 child: Row(

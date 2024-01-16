@@ -27,7 +27,7 @@ class EventWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "This are all Events from $name!",
+              "This are all Events from $name",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,

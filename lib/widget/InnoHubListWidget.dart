@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import '../InnoHubGeneral.dart';
 import '../constants/colors.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
@@ -9,7 +8,6 @@ import '../datamanager/InnovationHub.dart';
 import '../datamanager/InnovationHubProvider.dart';
 import '../datamanager/WorkProvider.dart';
 import 'innovationhubdetailpage.dart';
-import '../datamanager/DetailedHubInfoProvider.dart';
 
 class InnoHubListWidget extends StatelessWidget {
   @override

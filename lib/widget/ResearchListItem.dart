@@ -4,9 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/constants/colors.dart';
 import 'package:webapp_innovation_leadership/datamanager/Events.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import 'package:webapp_innovation_leadership/datamanager/Work.dart';
+import 'package:webapp_innovation_leadership/widget/detailed_widget/ResearchDetailedSearch.dart';
 import '../constants/colors.dart';
+import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
+import '../datamanager/InnovationHubProvider.dart';
 
 class ResearchListItem extends StatelessWidget {
   final HubWork Work;
@@ -189,20 +193,34 @@ class ResearchListItem extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: MediaQuery.of(context).size.height * (10 / 491),
-                  right: MediaQuery.of(context).size.width * (10 / 491),
-                  child: Container(
-                    width: MediaQuery.of(context).size.height*(29/491),
-                    height: MediaQuery.of(context).size.height*(29/491),
-                    decoration: BoxDecoration(
-                        color: detail? tWhite: tBackground,
-                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*(29/491))
-                    ),
-                    child: Icon(
-                      Icons.arrow_forward,
+                    bottom: MediaQuery.of(context).size.height * (10 / 491),
+                    right: MediaQuery.of(context).size.width * (10 / 491),
+                    child: GestureDetector(
+                      onTap: () async {
+                        DetailedHubInfoProvider detailedHubInfoProvider =
+                        Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                        InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
+                        String Code = detailedHubInfoProvider.detailedInnovationHub.code;
+                        InnovationHub Hub = provider2.getInnovationHubByCode(Code);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResearchDetailedPage(Work,Hub)),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.height*(29/491),
+                        height: MediaQuery.of(context).size.height*(29/491),
+                        decoration: BoxDecoration(
+                            color: detail? tWhite: tBackground,
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*(29/491))
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward,
+                        ),
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           );

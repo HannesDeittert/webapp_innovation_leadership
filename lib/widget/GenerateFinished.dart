@@ -11,11 +11,13 @@ import 'package:webapp_innovation_leadership/widget/map.dart';
 import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
+import '../InnovationGuide.dart';
 import '../InnovationHubs.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
 import '../datamanager/Events.dart';
 import '../datamanager/WorkProvider.dart';
+import '../login/login_screen.dart';
 
 class GuideFinishedHome extends StatefulWidget {
   const GuideFinishedHome({Key? key}) : super(key: key);
@@ -175,15 +177,17 @@ class _GuideFinishedHome extends State<GuideFinishedHome> {
               decoration: BoxDecoration(
                   color: tBackground,
                   border: Border(
-                    bottom: BorderSide(width: 1, color: tBackground),
-                  )),
+                    bottom: BorderSide(
+                        width: 1,
+                        color:  tBackground),
+                  )
+              ),
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 30,
-                    vertical: 0.0),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/30,vertical: 0.0 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
                     GestureDetector(
                       onTap: (){
                         Navigator.push(
@@ -196,51 +200,46 @@ class _GuideFinishedHome extends State<GuideFinishedHome> {
                       child: Row(
                         children: [
                           FutureBuilder(
-                            future: _loadLeadingImage(
-                                MediaQuery.of(context).size.width,
-                                MediaQuery.of(context).size.height),
+                            future: _loadLeadingImage(MediaQuery.of(context).size.width,MediaQuery.of(context).size.height),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState == ConnectionState.done) {
                                 // Wenn das Bild geladen wurde, zeige es an
                                 return snapshot.data!;
                               } else if (snapshot.hasError) {
                                 // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                return Icon(Icons
-                                    .error); // Hier könntest du eine andere Fehleranzeige verwenden
+                                return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
                               } else {
                                 // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
                                 return CircularProgressIndicator();
                               }
                             },
                           ),
-                          Text(
-                            "fau innohub",
-                            style:
-                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                          )
+                          Text("fau innohub",style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600
+                          ),)
                         ],
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.455,
-                      height: MediaQuery.of(context).size.height * 0.062,
+                      width: MediaQuery.of(context).size.width*0.455,
+                      height: MediaQuery.of(context).size.height*0.062,
                       decoration: BoxDecoration(
                           color: tWhite,
-                          borderRadius: BorderRadius.circular(
-                            MediaQuery.of(context).size.height * 0.031,
-                          )),
+                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.031,)
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
                             onTap: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => InnovationHubs(),
-                                ),
-                              );
-                            },
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InnovationHubs(),
+                              ),
+                            );
+                          },
                             child: Text(
                               "Innovation hubs",
                               style: TextStyle(
@@ -275,30 +274,42 @@ class _GuideFinishedHome extends State<GuideFinishedHome> {
                             ),
                           ),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GuideHome()),
+                              );
+                            },
                             child: Text(
                               "Innovation Guide",
                               style: TextStyle(
-                                  fontWeight: isGuideViewSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  fontSize: 16),
+                                  fontWeight: isGuideViewSelected ?FontWeight.w700: FontWeight.w500,
+                                  fontSize: 16
+                              ),
                             ),
                           ),
                           GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                              );
+                            },
                             child: Text(
                               "Community",
                               style: TextStyle(
-                                  fontWeight: isCommunityViewSelected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                  fontSize: 16),
+                                  fontWeight: isCommunityViewSelected ?FontWeight.w700: FontWeight.w500,
+                                  fontSize: 16
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 0,
                     )
                   ],
                 ),

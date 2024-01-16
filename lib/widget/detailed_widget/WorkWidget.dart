@@ -31,7 +31,7 @@ class WorkWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "This are all Events from $name!",
+            "This are all Research fields from $name",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
