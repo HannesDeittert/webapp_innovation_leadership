@@ -18,14 +18,14 @@ class unassigned_hub extends StatefulWidget {
 class _unassigned_hub extends State<unassigned_hub> {
   late User _user;
   final InnovationHubProvider provider = InnovationHubProvider();
-  final QuestionProvider provider2 = QuestionProvider();
+
 
   @override
   void initState() {
     super.initState();
     _user = FirebaseAuth.instance.currentUser!;
     provider.loadInnovationHubsFromFirestore();
-    provider2.loadQuestionsFromFirestore();
+
   }
 
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';

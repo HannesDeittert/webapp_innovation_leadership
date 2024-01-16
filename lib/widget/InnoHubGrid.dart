@@ -55,7 +55,7 @@ class HubGridTile extends StatelessWidget {
         InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
         EventProvider provider3 = Provider.of<EventProvider>(context, listen: false);
         WorkProvider provider4 = Provider.of<WorkProvider>(context, listen: false);
-        await provider.getHubInfoByCode(hub.code);
+        await provider.getHubInfoByCode(hub.code,hub.filtered_chips);
         await provider.getMenu();
         provider2.calculate_recomendations(provider2.getInnovationHubByCode(hub.code));
         await provider3.loadAllEvents();
@@ -67,7 +67,7 @@ class HubGridTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => InnovationHubDetailPage(),
+            builder: (context) => InnovationHubDetailPage(stringList: hub.filtered_chips,),
           ),
         );
       },

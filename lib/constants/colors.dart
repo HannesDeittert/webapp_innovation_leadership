@@ -7,10 +7,13 @@ const tPrimaryColorText = Color.fromARGB(0xFF, 0x55, 0x55, 0x55);
 const tSecondaryColor = Color(0xFF272727);
 const tPrimaryColorTextSelected = Color(0xFF001BFF);
 
-const tWhiteColor = Colors.white;
-const tDarkColor = Color(0xff272727);
-const tCardBgColor = Color(0xFFF7F5F1);
-
+const tBackground = Color.fromARGB(255, 	249, 	249, 	249);
+const tWhite = Color.fromARGB(255, 	255, 	255, 	255);
+const tWhiteop = Color.fromARGB(214, 	255, 	255, 	255);
+const tSearch = Color.fromARGB(255, 	246, 	246, 	246);
+const tWritingGrey = Color.fromARGB(255, 	50, 	50, 	50);
+const brightGrey = Color.fromARGB(255, 	186, 	186, 	186);
+const tBlue = Color.fromARGB(255, 	0, 	107, 	220);
 
 // -- SOCIAL Button COLORS
 const tGoogleBgColor = Color(0xFFDFEFFF);

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Homepage.dart';
 import '../home.dart';
 import '../login/login_screen.dart';
 import 'Sources & References.dart';
@@ -46,7 +47,7 @@ Widget PopUPContent(BuildContext context) {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>Home()),
+                      MaterialPageRoute(builder: (context) =>MyHomePage()),
                     );
                   }, icon: Icon(Icons.home, color: Colors.black))
             ],

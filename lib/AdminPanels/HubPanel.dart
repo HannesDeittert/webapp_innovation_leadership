@@ -37,7 +37,7 @@ class _HubPanelState extends State<HubPanel> {
     super.initState();
     _user = FirebaseAuth.instance.currentUser!;
     _hub = widget.hub;
-    DetailedHubInfoProvider().getHubInfoByCode(widget.hub.code).then((detailedInfo) {
+    DetailedHubInfoProvider().getHubInfoByCode(widget.hub.code,[]).then((detailedInfo) {
       setState(() {
         _detailed = detailedInfo;
       });

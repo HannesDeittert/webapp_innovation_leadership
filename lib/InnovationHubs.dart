@@ -1,58 +1,48 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:js';
+
+import 'package:flutter/cupertino.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/AdminPanels/SuperAdminPanel.dart';
-import 'package:webapp_innovation_leadership/CommunityPages/Community.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import '../Constants/Colors.dart';
-import '../Events.dart';
-import '../Homepage.dart';
-import '../InnovationGuide.dart';
-import '../InnovationHubs.dart';
-import '../datamanager/DetailedHubInfoProvider.dart';
-import '../datamanager/EventProvieder.dart';
-import '../datamanager/UserProvider.dart';
-import '../datamanager/WorkProvider.dart';
-import 'RegisterScreen.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
+import 'package:webapp_innovation_leadership/widget/map.dart';
+import 'Events.dart';
+import 'Homepage.dart';
+import 'InnovationGuide.dart';
+import 'constants/colors.dart';
+import 'datamanager/DetailedHubInfoProvider.dart';
+import 'datamanager/EventProvieder.dart';
+import 'datamanager/InnovationHub.dart';
+import 'datamanager/InnovationHubProvider.dart';
+import 'datamanager/QuestionProvider.dart';
+import 'datamanager/WorkProvider.dart';
+import 'login/login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class InnovationHubs extends StatefulWidget {
+  const InnovationHubs({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<InnovationHubs> createState() => _InnovationHubState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class _InnovationHubState extends State<InnovationHubs> {
+  final InnovationHubProvider provider = InnovationHubProvider();
+
+  final EventProvider provider3 = EventProvider();
   bool isHomeViewSelected = false;
-  bool isHubViewSelected = false;
+  bool isHubViewSelected = true;
   bool isEventViewSelected = false;
   bool isGuideViewSelected = false;
-  bool isCommunityViewSelected = true;
+  bool isCommunityViewSelected = false;
   bool isDetailedViewSelected = false;
-  final UserProvider provider = UserProvider();
-  bool obscureText = true;
+  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
   @override
   void initState() {
-    super.initState();
-    // Überprüfe den Authentifizierungsstatus beim Initialisieren der Seite
-    checkLoggedInUser();
-  }
+    provider.loadInnovationHubsFromFirestore();
 
-  // Überprüfe, ob der Benutzer bereits eingeloggt ist
-  void checkLoggedInUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Benutzer ist bereits eingeloggt, leite ihn weiter
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-    }
+    provider3.loadAllEvents();
   }
-
-  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
   Future<Widget> _loadLeadingImage(width, height) async {
     try {
@@ -73,63 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
       // Hier könntest du ein Standardbild zurückgeben oder eine Fehlermeldung anzeigen
       return Image.asset(
           'assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
-    }
-  }
-
-
-  Future<void> signIn() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text);
-
-      print("Login successful: ${userCredential.user?.uid}");
-      await UserProvider().loadUserFromFirestore();
-
-      String? userRole = await UserProvider().getUserRole(userCredential.user!.uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-
-    } on FirebaseAuthException catch (e) {
-      print("Login failed: $e");
-
-      String errorMessage;
-
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = 'Benutzer nicht gefunden. Überprüfen Sie Ihre Eingaben.';
-          break;
-        case 'wrong-password':
-          errorMessage = 'Falsches Passwort. Bitte versuchen Sie es erneut.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'Ungültige E-Mail-Adresse. Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-          break;
-        default:
-          errorMessage = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
-          break;
-      }
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error during login'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-
-      print("Error message: $errorMessage");
     }
   }
 
@@ -202,14 +135,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            /*onTap: (){
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => InnovationHubs(),
                               ),
                             );
-                          },
+                          },*/
                             child: Text(
                               "Innovation hubs",
                               style: TextStyle(
@@ -288,78 +221,55 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: 8,
             ),
-            Expanded(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Log In/Create Account to be part of our Community',
-                      style: TextStyle(fontSize: 32,fontWeight: FontWeight.w400),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.392,
-                      height: MediaQuery.of(context).size.height * 0.6395,
-                      decoration: BoxDecoration(
-                        color: tWhite,
-                        borderRadius: BorderRadius.circular(30),
+            Consumer<InnovationHubProvider>(
+              builder: (context, provider, child) {
+                // Liste der gefilterten Hubs abrufen
+                List<InnovationHub> filteredHubs = provider.filteredHubs;
+                return Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        expandedHeight:
+                        MediaQuery.of(context).size.height * (617 / 982),
+                        flexibleSpace: InnoMap(),
+                        pinned: false,
                       ),
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            decoration: InputDecoration(labelText: 'Email'),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    obscureText = !obscureText;
-                                  });
-                                },
+                      SliverToBoxAdapter(
+                        child: Container(
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.031,
                               ),
-                            ),
-                            obscureText: obscureText,
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => signIn(),
-                            child: Text('Sign In'),
-                          ),
-                          SizedBox(height: 10),
-                          /*ElevatedButton(
-                            onPressed: () => signInWithGoogle(),
-                            child: Text('Sign In with Google'),
-                          ),*/
-                          SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB((MediaQuery.of(context).size.width / 30), 0, 0, 0),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("Your Results", style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w700
+                                  ),),
                                 ),
-                              );
-                            },
-                            child: Text(
-                              'Don\'t have an account? Register here.',
-                            ),
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.0155,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                            return HubListItem(hub: filteredHubs[index]);
+                          },
+                          childCount: filteredHubs.length,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             )
           ]),
     );

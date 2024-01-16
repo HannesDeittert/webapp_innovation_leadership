@@ -1,9 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:choice/choice.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webapp_innovation_leadership/AdminPanels/SuperAdminPanel.dart';
-import 'package:webapp_innovation_leadership/CommunityPages/Community.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webapp_innovation_leadership/widget/Calender.dart';
+import 'package:webapp_innovation_leadership/widget/EventListItem.dart';
+import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
+import 'package:webapp_innovation_leadership/widget/map.dart';
 import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
@@ -11,48 +15,126 @@ import '../InnovationGuide.dart';
 import '../InnovationHubs.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
 import '../datamanager/EventProvieder.dart';
-import '../datamanager/UserProvider.dart';
+import '../datamanager/Events.dart';
 import '../datamanager/WorkProvider.dart';
-import 'RegisterScreen.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import '../login/login_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class GuideFinishedHome extends StatefulWidget {
+  const GuideFinishedHome({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<GuideFinishedHome> createState() => _GuideFinishedHome();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+class _GuideFinishedHome extends State<GuideFinishedHome> {
+  bool generating = false;
   bool isHomeViewSelected = false;
   bool isHubViewSelected = false;
   bool isEventViewSelected = false;
-  bool isGuideViewSelected = false;
-  bool isCommunityViewSelected = true;
+  bool isGuideViewSelected = true;
+  bool isCommunityViewSelected = false;
   bool isDetailedViewSelected = false;
-  final UserProvider provider = UserProvider();
-  bool obscureText = true;
+  int currentQuestionIndex = 0;
+  List<String> questions = [
+    "Are you from Fürth?",
+    "What type of innovation location are you intrested in?",
+    "What best matches your Intrests?"
+  ];
+  List<String> answerOptions_Furth = ["Yes", "No"];
+  List<String> answerOptions_Type = [
+    "University Chair",
+    "StartUps",
+    "Research Institutions",
+    "Not Sure"
+  ];
+  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
+  List<String> answerOptions_topic = [
+    "Information Technology / AI",
+    "Business / Economics",
+    "Sustainability",
+    "Healthcare",
+    "Education",
+    "Research",
+    "Automotive",
+    "Mechanics",
+    "Finance",
+    "Insurance",
+    "Social Science",
+    "Creativity",
+    "Communications",
+    "Manufacturing",
+    "FAU",
+    "Sports"
+  ];
+  List<String> selectedAnswers_Furth = [];
+  List<String> selectedAnswers_Type = [];
+  List<String> selectedAnswers_topic = [];
 
-  @override
-  void initState() {
-    super.initState();
-    // Überprüfe den Authentifizierungsstatus beim Initialisieren der Seite
-    checkLoggedInUser();
+  void setSelectedValue(List<String> value) {
+    setState(() => selectedAnswers_topic = value);
   }
+  Future<Widget> _loadImage(width,height,path) async {
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance.ref(path);
+      final url = await ref.getDownloadURL();
 
-  // Überprüfe, ob der Benutzer bereits eingeloggt ist
-  void checkLoggedInUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Benutzer ist bereits eingeloggt, leite ihn weiter
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
+      // Lade das Bild von der URL
+      final imageWidget = Image.network(url);
+
+      // Du kannst die Größe des Bildes anpassen, indem du eine `Container`-Umgebung verwendest
+      return Container(
+        width: width,  // Ändere dies nach Bedarf
+        height: height,  // Ändere dies nach Bedarf
+        child: imageWidget,
       );
+    } catch (e) {
+      print('Fehler beim Laden des Bildes: $e');
+      // Hier könntest du ein Standardbild zurückgeben oder eine Fehlermeldung anzeigen
+      return Image.asset('assets/placeholder_image.jpg'); // Beispiel für ein Standardbild
     }
   }
 
-  final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
+  String GetIndex() {
+    List<List<String>> Arrays = [['Yes', 'StartUps',],['Yes', 'University Chair'],['No', 'StartUps'],['No', 'Not Sure'],['No', 'Research Institutions']];
+    List<String> PathList = ['pdf/231117_Innovation_Lecture_upload.pdf', 'pdf/231117_Innovation_Lecture_upload.pdf','pdf/Exercise_2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf'];
+    List<int> match = List.filled(Arrays.length, 0);
+    List<int> matchInd =[];
+    List<String?> filterTags= [selectedAnswers_Furth[0] , selectedAnswers_Type[0]];
+    //filterTags.addAll(selectedAnswers_topic);
+    print(filterTags);
+    int counter = 0;
+    for(List<String> List_ in Arrays){
+      List<int> match =[];
+      List<String> oneandtwo = [];
+      oneandtwo.add(List_[0]);
+      oneandtwo.add(List_[1]);
+      String filterTagsString = filterTags.join(',');
+      String PDFTagsString = oneandtwo.join(',');
+      if(filterTagsString == PDFTagsString){
+        matchInd.add(counter);
+      }
+      counter = counter+1;
+    }
+    for(int index in matchInd){
+      List<String> compareArray = Arrays[index];
+      for(String topic in selectedAnswers_topic){
+        if(compareArray.contains(topic)){
+          match[index] = match[index]+1;
+        }
+      }
+    }
+    int maxIndex = 0;
+    int maxValue = match[0];
+
+    for (int i = 1; i < match.length; i++) {
+      if (match[i] > maxValue) {
+        maxValue = match[i];
+        maxIndex = i;
+      }
+    }
+    return PathList[maxIndex];
+  }
+
 
   Future<Widget> _loadLeadingImage(width, height) async {
     try {
@@ -76,65 +158,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
-  Future<void> signIn() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text);
-
-      print("Login successful: ${userCredential.user?.uid}");
-      await UserProvider().loadUserFromFirestore();
-
-      String? userRole = await UserProvider().getUserRole(userCredential.user!.uid);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Community()),
-      );
-
-    } on FirebaseAuthException catch (e) {
-      print("Login failed: $e");
-
-      String errorMessage;
-
-      switch (e.code) {
-        case 'user-not-found':
-          errorMessage = 'Benutzer nicht gefunden. Überprüfen Sie Ihre Eingaben.';
-          break;
-        case 'wrong-password':
-          errorMessage = 'Falsches Passwort. Bitte versuchen Sie es erneut.';
-          break;
-        case 'invalid-email':
-          errorMessage = 'Ungültige E-Mail-Adresse. Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-          break;
-        default:
-          errorMessage = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
-          break;
-      }
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Error during login'),
-          content: Text(errorMessage),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      );
-
-      print("Error message: $errorMessage");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    // Get the current question based on the index
+    String currentQuestion = questions[currentQuestionIndex];
+    EventProvider provider3 = Provider.of<EventProvider>(context);
+    List<HubEvents> fevents = provider3.filteredEvents;
+    print("Hier$fevents");
     return Scaffold(
       backgroundColor: tBackground,
       body: Column(
@@ -289,77 +319,75 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8,
             ),
             Expanded(
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Text(
-                      'Log In/Create Account to be part of our Community',
-                      style: TextStyle(fontSize: 32,fontWeight: FontWeight.w400),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.392,
-                      height: MediaQuery.of(context).size.height * 0.6395,
-                      decoration: BoxDecoration(
-                        color: tWhite,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            decoration: InputDecoration(labelText: 'Email'),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                child:
+                Center(
+                  child: Container(
+                    width: 770,
+                    height: 478,
+                    child: Center(
+                      child:Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FutureBuilder(
+                          future: _loadImage(MediaQuery.of(context).size.height * (77 / 491),MediaQuery.of(context).size.height * (77 / 491),"Images/Storysetdump/3d-fluency-world-map 1.png"),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              // Wenn das Bild geladen wurde, zeige es an
+                              return snapshot.data!;
+                            } else if (snapshot.hasError) {
+                              // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                              return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
+                            } else {
+                              // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                        Spacer(),
+                        Text("Congratulations on completing the quiz",style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
+                        ),),
+                        Text("Innovation Guide awaits! Explore unique insights and ideas crafted just for you.",style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w400,
+                        ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MyHomePage()),
+                            );
+                          },
+                          child: Container(
+                            height: 60,
+                            width: 267,
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(
+                                  (MediaQuery.of(context).size.height * (60 / 982)) / 2,
+                                )),
+                            child: Center(
+                              child: Text("Back to Home",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    obscureText = !obscureText;
-                                  });
-                                },
                               ),
                             ),
-                            obscureText: obscureText,
                           ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => signIn(),
-                            child: Text('Sign In'),
-                          ),
-                          SizedBox(height: 10),
-                          /*ElevatedButton(
-                            onPressed: () => signInWithGoogle(),
-                            child: Text('Sign In with Google'),
-                          ),*/
-                          SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Don\'t have an account? Register here.',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                        ),
+
+    ],
+                    )
+            ),
+                  ),
+                )
             )
           ]),
     );

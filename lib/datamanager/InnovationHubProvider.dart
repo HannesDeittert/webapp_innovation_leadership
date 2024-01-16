@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 import 'InnovationHub.dart';
 
 class InnovationHubProvider with ChangeNotifier {
@@ -29,6 +30,16 @@ class InnovationHubProvider with ChangeNotifier {
     _filteredHubs = filteredHubs;
     notifyListeners();
   }
+  InnovationHub? findHubByCoordinates(LatLng coordinates) {
+    try {
+      return _innovationHubs.firstWhere(
+            (hub) => hub.coordinates == coordinates,
+      );
+    } catch (e) {
+      return null; // Return null if no matching hub is found
+    }
+  }
+
 
   // Methode zum Laden der Innovation-Hubs aus Firestore
   Future<void> loadInnovationHubsFromFirestore() async {
@@ -46,9 +57,7 @@ class InnovationHubProvider with ChangeNotifier {
 
     // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen
     _allinnovationHubs = snapshot.docs.map((doc) {
-      QueryDocumentSnapshot<
-          Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<
-          Map<String, dynamic>>;
+      QueryDocumentSnapshot<Map<String, dynamic>> typedDoc = doc as QueryDocumentSnapshot<Map<String, dynamic>>;
       return InnovationHub.fromFirestore(typedDoc);
     }).toList();
 
@@ -75,7 +84,6 @@ class InnovationHubProvider with ChangeNotifier {
     List<Map<InnovationHub, int>> filteredHubs = [];
       for (InnovationHub Hub in originalHubs) {
         int matchCount = 0;
-        Hub.filtered_chips.clear();
         // Calculate simmilarity for allSelectedItems_goal
         for (String tag in hub.question_goal) {
           if (Hub.question_goal.contains(tag)) {

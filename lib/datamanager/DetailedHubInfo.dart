@@ -13,6 +13,7 @@ class DetailedHubInfo {
   final String tele_contact;
   final List<String> events;
   final List<String> work;
+  final List<String> filtered_chips;
 
 
 
@@ -26,6 +27,7 @@ class DetailedHubInfo {
     required this.tele_contact,
     required this.work,
     required this.events,
+    required this.filtered_chips,
   });
   static DetailedHubInfo fromFirestore(QueryDocumentSnapshot<Map<String, dynamic>> documentSnapshot) {
     // Eigenschaften aus dem Dokument extrahieren
@@ -39,6 +41,7 @@ class DetailedHubInfo {
     String tele_contact = data["tele_contact"];
     List<String> events = data["events"];
     List<String> work = data["work"];
+    List<String> filtered_chips = [];
 
 
     // InnovationHub-Objekt erstellen und zurückgeben
@@ -51,7 +54,8 @@ class DetailedHubInfo {
       email_contact: email_contact,
       tele_contact: tele_contact,
       events: events,
-      work: work
+      work: work,
+      filtered_chips: filtered_chips,
     );
   }
 }

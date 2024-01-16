@@ -31,7 +31,8 @@ class AboutWidget extends StatelessWidget {
     final image_height = MediaQuery.of(context).size.height *(541/1080);
     return SingleChildScrollView(
       child: Container(
-        color: Colors.white,
+          width: MediaQuery.of(context).size.width *(1156/1512),
+        color: tBackground,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,16 +57,6 @@ class AboutWidget extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * (36/1080) ,
             ),
-            Container(
-              width:
-              MediaQuery.of(context).size.width * (2.5 / 4),
-              child: Text(AboutName,
-                style: TextStyle(
-                    fontSize: 64,
-                    fontWeight: FontWeight.w700,
-                    color: tPrimaryColorText
-                ),),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text("About",style:
@@ -78,7 +69,10 @@ class AboutWidget extends StatelessWidget {
               style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w400,
-            ),),
+            ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         )
       ),
