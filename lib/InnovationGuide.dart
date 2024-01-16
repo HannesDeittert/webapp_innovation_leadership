@@ -555,8 +555,8 @@ class _GuideHome extends State<GuideHome> {
                                                       color: tWhite),
                                                   child: Center(
                                                     child: Container(
-                                                      height: 94,
-                                                      width: 94,
+                                                      height: 106,
+                                                      width: 106,
                                                       child: Expanded(
                                                         child: FutureBuilder(
                                                           future: _loadProfileImage(
@@ -565,9 +565,9 @@ class _GuideHome extends State<GuideHome> {
                                                             if (snapshot.connectionState ==
                                                                 ConnectionState.done) {
                                                               return CachedNetworkImage(
+                                                                width: 106,
                                                                 imageUrl:
                                                                 snapshot.data as String,
-                                                                fit: BoxFit.cover,
                                                                 placeholder: (context, url) =>
                                                                     Container(),
                                                                 errorWidget:
@@ -719,7 +719,7 @@ class _GuideHome extends State<GuideHome> {
         print("object");
         // Verwende hier die Referenz für StartUp
         imagePath =
-        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/StartUp.svg";
+        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/StartUP.png";
       } else if (selectedAnswer == "Yes") {
         print("object");
         // Verwende hier die Referenz für StartUp
@@ -734,17 +734,17 @@ class _GuideHome extends State<GuideHome> {
         print("object");
         // Verwende hier die Referenz für StartUp
         imagePath =
-        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Company.svg";
+        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/covid_virus-lab-research-test-tube.png";
       } else if (selectedAnswer == "University Chair") {
         print("object");
         // Verwende hier die Referenz für StartUp
         imagePath =
-        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Chair.svg";
+        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/University Chair.png";
       } else if (selectedAnswer == "Not Sure") {
         print("object");
         // Verwende hier die Referenz für StartUp
         imagePath =
-        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/Beer Celebration-cuate.svg";
+        "gs://cohort1innovationandleadership.appspot.com/Images/Filter/notsure.png";
       }
       final ref = firebase_storage.FirebaseStorage.instance.ref(imagePath);
       final url = await ref.getDownloadURL();

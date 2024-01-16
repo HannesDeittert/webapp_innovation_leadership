@@ -114,8 +114,8 @@ class InnovationHubProvider with ChangeNotifier {
       filteredHubs.removeWhere((entry) => entry.values.first == 0);
 
 
-    if (filteredHubs.length > 2) {
-      filteredHubs = filteredHubs.sublist(0, 2);
+    if (filteredHubs.length > 3) {
+      filteredHubs = filteredHubs.sublist(0, 3);
     }
       // Create a List<InnovationHub> from the sorted List<Map>
       recohold = filteredHubs.map((entry) =>

@@ -292,7 +292,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
               child: Container(
                 color: tBackground,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height*0.062, 0,0),
+                  padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height*0.05, 0,0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +323,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                               ),
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height *(32/1032),
+                              height: MediaQuery.of(context).size.height *(16/1032),
                             ),
                             Text("Details",
                               style: TextStyle(
@@ -359,7 +359,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                               fontWeight: FontWeight.bold
                                             ),),
                                           SizedBox(
-                                            height: 20,
+                                            height: 10,
                                           )
                                         ],
                                       ),
@@ -385,7 +385,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                 fontWeight: FontWeight.bold
                                           ),),
                                           SizedBox(
-                                            height: 20,
+                                            height: 10,
                                           )
                                         ],
                                       ),
@@ -410,7 +410,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                 fontWeight: FontWeight.bold
                                           ),),
                                           SizedBox(
-                                            height: 20,
+                                            height: 10,
                                           )
                                         ],
                                       ),
@@ -435,7 +435,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                 fontWeight: FontWeight.bold
                                             ),),
                                           SizedBox(
-                                            height: 20,
+                                            height: 10,
                                           )
                                         ],
                                       ),
@@ -444,7 +444,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                 },
                               ),
                             SizedBox(
-                              height:(MediaQuery.of(context).size.height* (32/1032)),
+                              height:(MediaQuery.of(context).size.height* (8/1032)),
                             ),
                             Expanded(
                                 child: Column(
@@ -462,7 +462,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                       ),
                                     ),
                                     SizedBox(
-                                      height:(MediaQuery.of(context).size.height* (32/1032)),
+                                      height:(MediaQuery.of(context).size.height* (14/1032)),
                                     ),
                                     Flexible(
                                       child: ListView.builder(
@@ -509,16 +509,17 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                           },
                                                         ),
                                                         SizedBox(
-                                                          height:(MediaQuery.of(context).size.height* (10/1080)),
+                                                          height:(MediaQuery.of(context).size.height* (5/1080)),
                                                         ),
                                                         Text(reccomendations[index].name,
                                                           style: TextStyle(
                                                             fontSize: 24,
                                                             color: tPrimaryColorText,
                                                             fontWeight: FontWeight.w700
-                                                          ),),
+                                                          ),
+                                                        maxLines: 2,),
                                                         SizedBox(
-                                                          height:(MediaQuery.of(context).size.height* (25/1080)),
+                                                          height:(MediaQuery.of(context).size.height* (14/1080)),
                                                         ),
                                                       ],
                                                     ),
