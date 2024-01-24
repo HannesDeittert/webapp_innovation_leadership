@@ -44,7 +44,7 @@ class _MapPopupState extends State<MapPopup> {
           InnovationHub? Hub = provider.findHubByCoordinates(widget.marker.point);
           return Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(15),
             ),
             height: MediaQuery
                 .of(context)
@@ -96,74 +96,92 @@ class _MapPopupState extends State<MapPopup> {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(Hub?.name ?? 'No Name', style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                            ),),
-                            Spacer(),
-                        GestureDetector(
-                          onTap: () async {
-                            // Den DetailedHubInfoProvider vom Kontext abrufen
-                            DetailedHubInfoProvider detailedHubInfoProvider =
-                            Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                            EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
-                            WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
-                            // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                            if (Hub != null) {
-                              await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
-                            }
-                            await detailedHubInfoProvider.getMenu();
-                            await provider3.loadAllEvents();
-                            await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
-                            await provider4.loadAllHubworks();
-                            await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
-                            print(detailedHubInfoProvider.detailedInnovationHub);
-                            if (Hub != null) {
-                              provider.calculate_recomendations(Hub);
-                            }
-                            print(provider.recomendations);
-                            // Zur Detailseite navigieren
-                            if (Hub != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      InnovationHubDetailPage(
-                                          stringList: Hub.filtered_chips),
-                                ),
-                              );
-                            }
-                          },
+                        Expanded(
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text("Show Details", style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: tBlue
-                              ),),
-                              Icon(
-                                Icons.arrow_forward,
-                                color: tBlue,
+                              Expanded(
+                                child: Text(Hub?.name ?? 'No Name', style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ],
+
+                          GestureDetector(
+                            onTap: () async {
+                              // Den DetailedHubInfoProvider vom Kontext abrufen
+                              DetailedHubInfoProvider detailedHubInfoProvider =
+                              Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                              if (Hub != null) {
+                                await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
+                              }
+                              await detailedHubInfoProvider.getMenu();
+                              await provider3.loadAllEvents();
+                              await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
+                              await provider4.loadAllHubworks();
+                              await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
+                              print(detailedHubInfoProvider.detailedInnovationHub);
+                              if (Hub != null) {
+                                provider.calculate_recomendations(Hub);
+                              }
+                              print(provider.recomendations);
+                              // Zur Detailseite navigieren
+                              if (Hub != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        InnovationHubDetailPage(
+                                            stringList: Hub.filtered_chips),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                Text("Show Details", style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: tBlue
+                                ),),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: tBlue,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
                       ],
                     ),
-                        SizedBox(
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width*(350/1512)-MediaQuery.of(context).size.height*(16/982)-MediaQuery.of(context).size.height*(72/982)-MediaQuery.of(context).size.height*(12/1512),
                           height: MediaQuery
                               .of(context)
                               .size
-                              .height * (4 / 982),
-                        ),
-                        Text(
-                          Hub?.summary ?? 'No Name',
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
+                              .height * (40/982),
+
+                          child: LayoutBuilder(
+                            builder: (BuildContext context, BoxConstraints constraints) {
+                              int maxLines = (constraints.maxHeight.isFinite ? constraints.maxHeight / 12 : 1).floor(); // 32 is the font size, adjust as needed
+                              return Text(
+                                Hub?.summary ?? 'No Name',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                ),
+                                maxLines: maxLines <3? 2:maxLines ,
+                                overflow: TextOverflow.ellipsis,
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),
