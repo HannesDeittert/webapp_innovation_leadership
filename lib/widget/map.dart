@@ -244,21 +244,23 @@ class _InnoMap extends State<InnoMap> {
                           borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
                           color: tSearch,
                         ),
-                        child: TextField(
-                          controller: textEditingController,
-                          onChanged: (text) {
-                            setState(() {
-                              searchText = text; // Update the variable when text changes
-                            });
-                          },
-                          cursorColor: Colors.black,
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.search_sharp, color: Colors.black),
-                            hintText: "Search by name",
-                            enabledBorder: InputBorder.none, // Remove the underline when not focused
-                            focusedBorder: InputBorder.none,
-                          ),
+                        child: Center(
+                          child: TextField(
+                            controller: textEditingController,
+                            onChanged: (text) {
+                              setState(() {
+                                searchText = text; // Update the variable when text changes
+                              });
+                            },
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.search_sharp, color: Colors.black),
+                              hintText: "Search by name",
+                              enabledBorder: InputBorder.none, // Remove the underline when not focused
+                              focusedBorder: InputBorder.none,
+                            ),
 
+                          ),
                         ),
                       ),
                       SizedBox(
