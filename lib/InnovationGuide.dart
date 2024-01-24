@@ -9,6 +9,7 @@ import 'package:webapp_innovation_leadership/widget/EventListItem.dart';
 import 'package:webapp_innovation_leadership/widget/GenerateFinished.dart';
 import 'package:webapp_innovation_leadership/widget/InnoHubListWidget.dart';
 import 'package:webapp_innovation_leadership/widget/map.dart';
+import 'CommunityPages/Community.dart';
 import 'Events.dart';
 import 'Homepage.dart';
 import 'InnovationHubs.dart';
@@ -279,8 +280,13 @@ class _GuideHome extends State<GuideHome> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
+                                    builder: (context) => Community()),
                               );
+                              /*Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );*/
                             },
                             child: Text(
                               "Community",
@@ -305,20 +311,20 @@ class _GuideHome extends State<GuideHome> {
             ),
             Expanded(
                 child:
-                Center(
-                  child:Column(
+                Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height / 10,
-                        ),
-                        child: Container(
+                      Container(
                           child: Column(
                             children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height *
+                                    (80/ 1080),
+                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
-                                    vertical: 34),
+                                    vertical: MediaQuery.of(context).size.height *
+                                        (20/ 1080),),
                                 child: Text('${currentQuestionIndex + 1} / ${questions.length}',
                                     style: TextStyle(
                                         fontSize: 20)),
@@ -336,11 +342,14 @@ class _GuideHome extends State<GuideHome> {
                                   fontSize: 24,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500
-                                ),): SizedBox(height: 0.1,)
+                                ),): SizedBox(height: 0.1,),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height *
+                                    (80/ 1080),
+                              ),
                             ],
                           ),
                         ),
-                      ),
                       Flexible(
                         child: Builder(
                           builder: (context) {
@@ -660,9 +669,6 @@ class _GuideHome extends State<GuideHome> {
                             ),
                           ),
                         ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height *(124/1080),
-                      ),
                       if(currentQuestionIndex != 0)
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width *(64/1512),vertical:MediaQuery.of(context).size.width *(64/1512)),
@@ -698,10 +704,13 @@ class _GuideHome extends State<GuideHome> {
                               Spacer()
                             ],
                           ),
-                        )
+                        ),
+                      if(currentQuestionIndex == 0)
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height *(124/1080),
+                        ),
                     ],
                   ),
-            )
             )
           ]),
     );

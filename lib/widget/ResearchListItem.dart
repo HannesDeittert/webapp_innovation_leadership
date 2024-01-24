@@ -116,67 +116,81 @@ class ResearchListItem extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                               children: [
-                                Container(
-                                  child: IntrinsicWidth(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: [
-                                        Wrap(
-                                          runSpacing: 5,
-                                          spacing: MediaQuery.of(context).size.width * (16 / 1512),
-                                          children: Work.tags.map((chip) {
-                                            return Container(
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                  width: 2,
-                                                  color: tBlue,
-                                                ),
-                                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height *(22/982), ),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 5),
-                                                child: Center(
-                                                  child: Text(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      Work.title,
+                                      style: TextStyle(fontSize: 32,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                    ),
+                                    Container(
+                                      child: IntrinsicWidth(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
 
-                                                    chip,
-
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.w600,
+                                            Wrap(
+                                              runSpacing: 5,
+                                              spacing: MediaQuery.of(context).size.width * (16 / 1512),
+                                              children: Work.tags.map((chip) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 2,
                                                       color: tBlue,
                                                     ),
+                                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height *(22/982), ),
                                                   ),
-                                                ),
-                                              ),
-                                            );
-                                          }).toList(),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 2,horizontal: 5),
+                                                    child: Center(
+                                                      child: Text(
+
+                                                        chip,
+
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.w600,
+                                                          color: tBlue,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }).toList(),
+                                            ),
+                                            Divider(
+                                              thickness: 1,
+                                            ),
+                                          ],
                                         ),
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
                                 Spacer(),
                                 Container(
                                   width: Lenght*(900/1384),
-                                  child: Text(
-                                    Work.title,
-                                    style: TextStyle(fontSize: 32,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                  ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  width: Lenght*(900/1384),
-                                  child: Text(
-                                    Work.shortdescription,
-                                    style: TextStyle(fontSize: 32,
-                                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * (125/1032),
+
+                                  child: LayoutBuilder(
+                                    builder: (BuildContext context, BoxConstraints constraints) {
+                                      int maxLines = (constraints.maxHeight.isFinite ? constraints.maxHeight / 32 : 1).floor(); // 32 is the font size, adjust as needed
+                                      return Text(
+                                        Work.shortdescription,
+                                        style: TextStyle(
+                                          fontSize: 32,
+                                          color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                        ),
+                                        maxLines: maxLines >2? 3:maxLines ,
+                                        overflow: TextOverflow.ellipsis,
+                                      );
+                                    },
                                   ),
                                 ),
                               ],

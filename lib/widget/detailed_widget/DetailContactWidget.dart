@@ -23,12 +23,22 @@ class DetailContactWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Feel Free To Contact $name!",
+              Text("Feel Free To Contact",
                 style: TextStyle(
                     fontSize: 64,
                     fontWeight: FontWeight.w700,
                     color: tPrimaryColorText
-                ),),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Text("$name!",
+                style: TextStyle(
+                    fontSize: 64,
+                    fontWeight: FontWeight.w700,
+                    color: tPrimaryColorText
+                ),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height* 0.1,
               ),

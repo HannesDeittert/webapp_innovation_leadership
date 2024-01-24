@@ -227,8 +227,13 @@ class _HomePage extends State<MyHomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => LoginScreen()),
+                                  builder: (context) => Community()),
                             );
+                            /*Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );*/
                           },
                           child: Text(
                             "Community",
@@ -284,7 +289,7 @@ class _HomePage extends State<MyHomePage> {
                 Container(
                   child: Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.062),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -308,64 +313,191 @@ class _HomePage extends State<MyHomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.458,
-                            height: MediaQuery.of(context).size.height*0.31975,
-                            decoration: BoxDecoration(
-                                color: tWhite,
-                                borderRadius: BorderRadius.circular(30)
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text("Innovation hubs",style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500
-                                          ),),
-                                          Text("Discover our diverse innovation locations",style: TextStyle(
-                                              fontSize: 24,
+                          GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => InnovationHubs()),
+                              );
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.458,
+                              height: MediaQuery.of(context).size.height*0.31975,
+                              decoration: BoxDecoration(
+                                  color: tWhite,
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Text("Innovation hubs",style: TextStyle(
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w500
-                                          ),),
-                                        ],
-                                      ),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => InnovationHubs()),
-                                          );
-                                        },
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.height*0.059,
-                                          height: MediaQuery.of(context).size.height*0.059,
-                                          decoration: BoxDecoration(
-                                              color: tBackground,
-                                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
-                                          ),
-                                          child: Transform.rotate(
-                                              angle: -45 * 0.0174533,
-                                            child: Icon(
-                                              Icons.arrow_forward,
-                                            ),)
+                                            ),),
+                                            Text("Discover our diverse innovation locations",style: TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.w500
+                                            ),),
+                                          ],
                                         ),
-                                      )
-                                    ],
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => InnovationHubs()),
+                                            );
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.height*0.059,
+                                            height: MediaQuery.of(context).size.height*0.059,
+                                            decoration: BoxDecoration(
+                                                color: tBackground,
+                                                borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                            ),
+                                            child: Transform.rotate(
+                                                angle: -45 * 0.0174533,
+                                              child: Icon(
+                                                Icons.arrow_forward,
+                                              ),)
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.width*0.0205,
+                                    ),
+                                    FutureBuilder(
+                                      future:  _loadExpandedImage("Images/Fusch.PNG"),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.done) {
+                                          // Wenn das Bild geladen wurde, zeige es an
+                                          return snapshot.data!;
+                                        } else if (snapshot.hasError) {
+                                          // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                          return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
+                                        } else {
+                                          // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                          return CircularProgressIndicator();
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              // Den DetailedHubInfoProvider vom Kontext abrufen
+                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                              await provider3.loadAllEvents();
+                              await provider4.loadAllHubworks();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EventsHome()),
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width*0.392,
+                                  height: MediaQuery.of(context).size.height*0.31975,
+                                  decoration: BoxDecoration(
+                                      color: tWhite,
+                                      borderRadius: BorderRadius.circular(30)
                                   ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.width*0.0205,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Text("Events",style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                                Text("Dynamic calendar of events",style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                              ],
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                // Den DetailedHubInfoProvider vom Kontext abrufen
+                                                DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                                                EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                                                WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                                                // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                                                await provider3.loadAllEvents();
+                                                await provider4.loadAllHubworks();
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => EventsHome()),
+                                                );
+                                              },
+                                              child: Container(
+                                                  width: MediaQuery.of(context).size.height*0.059,
+                                                  height: MediaQuery.of(context).size.height*0.059,
+                                                  decoration: BoxDecoration(
+                                                      color: tBackground,
+                                                      borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                                  ),
+                                                  child: Transform.rotate(
+                                                    angle: -45 * 0.0174533,
+                                                    child: Icon(
+                                                      Icons.arrow_forward,
+                                                    ),)
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context).size.width*0.0205,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                            child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Text("Stay connected with our community through\na curated calendar of events, workshops,\nand conferences – where inspiration\ntransforms into action.",style: TextStyle(
+                                                fontWeight: FontWeight.w400
+                                              ),),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  FutureBuilder(
-                                    future:  _loadExpandedImage("Images/Fusch.PNG"),
+                                ),
+                                Positioned(
+                                  bottom: MediaQuery.of(context).size.height * (16 / 491),
+                                  right: MediaQuery.of(context).size.width * (16 / 491),
+                                  child: FutureBuilder(
+                                    future: _loadImage(MediaQuery.of(context).size.height * (62 / 491),MediaQuery.of(context).size.height * (62 / 491),"Images/Storysetdump/3d-fluency-planner 1.png"),
                                     builder: (context, snapshot) {
                                       if (snapshot.connectionState == ConnectionState.done) {
                                         // Wenn das Bild geladen wurde, zeige es an
@@ -379,111 +511,9 @@ class _HomePage extends State<MyHomePage> {
                                       }
                                     },
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Stack(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width*0.392,
-                                height: MediaQuery.of(context).size.height*0.31975,
-                                decoration: BoxDecoration(
-                                    color: tWhite,
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text("Events",style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500
-                                              ),),
-                                              Text("Dynamic calendar of events",style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500
-                                              ),),
-                                            ],
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              // Den DetailedHubInfoProvider vom Kontext abrufen
-                                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
-                                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
-                                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                                              await provider3.loadAllEvents();
-                                              await provider4.loadAllHubworks();
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => EventsHome()),
-                                              );
-                                            },
-                                            child: Container(
-                                                width: MediaQuery.of(context).size.height*0.059,
-                                                height: MediaQuery.of(context).size.height*0.059,
-                                                decoration: BoxDecoration(
-                                                    color: tBackground,
-                                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
-                                                ),
-                                                child: Transform.rotate(
-                                                  angle: -45 * 0.0174533,
-                                                  child: Icon(
-                                                    Icons.arrow_forward,
-                                                  ),)
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: MediaQuery.of(context).size.width*0.0205,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text("Stay connected with our community through\na curated calendar of events, workshops,\nand conferences – where inspiration\ntransforms into action.",style: TextStyle(
-                                              fontWeight: FontWeight.w400
-                                            ),),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: MediaQuery.of(context).size.height * (16 / 491),
-                                right: MediaQuery.of(context).size.width * (16 / 491),
-                                child: FutureBuilder(
-                                  future: _loadImage(MediaQuery.of(context).size.height * (62 / 491),MediaQuery.of(context).size.height * (62 / 491),"Images/Storysetdump/3d-fluency-planner 1.png"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.done) {
-                                      // Wenn das Bild geladen wurde, zeige es an
-                                      return snapshot.data!;
-                                    } else if (snapshot.hasError) {
-                                      // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                      return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
-                                    } else {
-                                      // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
-                                      return CircularProgressIndicator();
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
                           )
                         ],
                       ),
@@ -494,47 +524,182 @@ class _HomePage extends State<MyHomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Stack(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width*0.458,
-                                height: MediaQuery.of(context).size.height*0.31975,
-                                decoration: BoxDecoration(
-                                    color: tWhite,
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text("Innovation Guide",style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500
+                          GestureDetector(
+                            onTap: () async {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GuideHome()),
+                              );
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width*0.458,
+                                  height: MediaQuery.of(context).size.height*0.31975,
+                                  decoration: BoxDecoration(
+                                      color: tWhite,
+                                      borderRadius: BorderRadius.circular(30)
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Text("Innovation Guide",style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                                Text("Navigate your personal path",style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                              ],
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => GuideHome()),
+                                                );
+                                              },
+                                              child:
+                                                Container(
+                                                    width: MediaQuery.of(context).size.height*0.059,
+                                                    height: MediaQuery.of(context).size.height*0.059,
+                                                    decoration: BoxDecoration(
+                                                        color: tBackground,
+                                                        borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
+                                                    ),
+                                                    child: Transform.rotate(
+                                                      angle: -45 * 0.0174533,
+                                                      child: Icon(
+                                                        Icons.arrow_forward,
+                                                      ),)
+                                                ),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context).size.width*0.0205,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                            child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Text("Get your personalized PDF Guide with insider\ninsights, local tips, and essential information about\neach location.",style: TextStyle(
+                                                  fontWeight: FontWeight.w400
                                               ),),
-                                              Text("Navigate your personal path",style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500
-                                              ),),
-                                            ],
+                                            ),
                                           ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              Navigator.push(
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: MediaQuery.of(context).size.height * (16 / 491),
+                                  right: MediaQuery.of(context).size.width * (16 / 491),
+                                  child: FutureBuilder(
+                                    future: _loadImage(MediaQuery.of(context).size.height * (77 / 491),MediaQuery.of(context).size.height * (77 / 491),"Images/Storysetdump/3d-fluency-world-map 1.png"),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.done) {
+                                        // Wenn das Bild geladen wurde, zeige es an
+                                        return snapshot.data!;
+                                      } else if (snapshot.hasError) {
+                                        // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                        return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
+                                      } else {
+                                        // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                        return CircularProgressIndicator();
+                                      }
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                              await provider3.loadAllEvents();
+                              await provider4.loadAllHubworks();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Community()),
+                              );
+                              /*Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => GuideHome()),
-                                              );
-                                            },
-                                            child:
+                                                builder: (context) => LoginScreen()),
+                                                );*/
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width*0.392,
+                                  height: MediaQuery.of(context).size.height*0.31975,
+                                  decoration: BoxDecoration(
+                                      color: tWhite,
+                                      borderRadius: BorderRadius.circular(30)
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Text("Community",style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                                Text("Innovate together",style: TextStyle(
+                                                    fontSize: 24,
+                                                    fontWeight: FontWeight.w500
+                                                ),),
+                                              ],
+                                            ),
+                                            GestureDetector(
+                                              onTap: () async {
+                                                DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                                                EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                                                WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                                                // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                                                await provider3.loadAllEvents();
+                                                await provider4.loadAllHubworks();
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => Community()),
+                                                );
+                                                /*Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                builder: (context) => LoginScreen()),
+                                                );*/
+                                              },
+                                              child:
                                               Container(
                                                   width: MediaQuery.of(context).size.height*0.059,
                                                   height: MediaQuery.of(context).size.height*0.059,
@@ -548,149 +713,48 @@ class _HomePage extends State<MyHomePage> {
                                                       Icons.arrow_forward,
                                                     ),)
                                               ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: MediaQuery.of(context).size.width*0.0205,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text("Get your personalized PDF Guide with insider\ninsights, local tips, and essential information about\neach location.",style: TextStyle(
-                                                fontWeight: FontWeight.w400
-                                            ),),
-                                          ),
+                                            )
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: MediaQuery.of(context).size.height * (16 / 491),
-                                right: MediaQuery.of(context).size.width * (16 / 491),
-                                child: FutureBuilder(
-                                  future: _loadImage(MediaQuery.of(context).size.height * (77 / 491),MediaQuery.of(context).size.height * (77 / 491),"Images/Storysetdump/3d-fluency-world-map 1.png"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.done) {
-                                      // Wenn das Bild geladen wurde, zeige es an
-                                      return snapshot.data!;
-                                    } else if (snapshot.hasError) {
-                                      // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                      return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
-                                    } else {
-                                      // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
-                                      return CircularProgressIndicator();
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                          Stack(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width*0.392,
-                                height: MediaQuery.of(context).size.height*0.31975,
-                                decoration: BoxDecoration(
-                                    color: tWhite,
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0205),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text("Community",style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500
+                                        SizedBox(
+                                          height: MediaQuery.of(context).size.width*0.0205,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width*0.392*(400/594),
+                                            child: FittedBox(
+                                              fit: BoxFit.fitWidth,
+                                              child: Text("No more awkward feeling when go alone to the events.\nJoin our community, find your buddy, and explore\ninnovations and events together.",style: TextStyle(
+                                                  fontWeight: FontWeight.w400
                                               ),),
-                                              Text("Innovate together",style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w500
-                                              ),),
-                                            ],
-                                          ),
-                                          GestureDetector(
-                                            onTap: () async {
-                                              DetailedHubInfoProvider detailedHubInfoProvider = Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                                              EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
-                                              WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
-                                              // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                                              await provider3.loadAllEvents();
-                                              await provider4.loadAllHubworks();
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => LoginScreen()),
-                                              );
-                                            },
-                                            child:
-                                            Container(
-                                                width: MediaQuery.of(context).size.height*0.059,
-                                                height: MediaQuery.of(context).size.height*0.059,
-                                                decoration: BoxDecoration(
-                                                    color: tBackground,
-                                                    borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*0.0295)
-                                                ),
-                                                child: Transform.rotate(
-                                                  angle: -45 * 0.0174533,
-                                                  child: Icon(
-                                                    Icons.arrow_forward,
-                                                  ),)
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: MediaQuery.of(context).size.width*0.0205,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width*0.392*(400/594),
-                                          child: FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text("No more awkward feeling when go alone to the events.\nJoin our community, find your buddy, and explore\ninnovations and events together.",style: TextStyle(
-                                                fontWeight: FontWeight.w400
-                                            ),),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                bottom: MediaQuery.of(context).size.height * (16 / 491),
-                                right: MediaQuery.of(context).size.width * (16 / 600),
-                                child: FutureBuilder(
-                                  future: _loadImage(MediaQuery.of(context).size.width * (839/ 7200),MediaQuery.of(context).size.height * 0.06024,"Images/Faces.PNG"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.done) {
-                                      // Wenn das Bild geladen wurde, zeige es an
-                                      return snapshot.data!;
-                                    } else if (snapshot.hasError) {
-                                      // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
-                                      return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
-                                    } else {
-                                      // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
-                                      return CircularProgressIndicator();
-                                    }
-                                  },
+                                Positioned(
+                                  bottom: MediaQuery.of(context).size.height * (16 / 491),
+                                  right: MediaQuery.of(context).size.width * (16 / 600),
+                                  child: FutureBuilder(
+                                    future: _loadImage(MediaQuery.of(context).size.width * (839/ 7200),MediaQuery.of(context).size.height * 0.06024,"Images/Faces.PNG"),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.done) {
+                                        // Wenn das Bild geladen wurde, zeige es an
+                                        return snapshot.data!;
+                                      } else if (snapshot.hasError) {
+                                        // Wenn ein Fehler aufgetreten ist, zeige eine Fehlermeldung an
+                                        return Icon(Icons.error); // Hier könntest du eine andere Fehleranzeige verwenden
+                                      } else {
+                                        // Ansonsten zeige einen Ladeindikator oder ein Platzhalterbild an
+                                        return CircularProgressIndicator();
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           )
                         ],
                       )

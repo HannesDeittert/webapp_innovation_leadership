@@ -37,6 +37,7 @@ class _InnoMap extends State<InnoMap> {
   List<String> selected_all_tags = [];
   bool selected_yes = false;
   bool selected_no = false;
+  String searchText = '';
   late final PopupController _popupController;
 
   @override
@@ -61,6 +62,11 @@ class _InnoMap extends State<InnoMap> {
     textEditingController.dispose();
     super.dispose();
   }
+  void clearTextField() {
+    setState(() {
+      textEditingController.clear();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +80,11 @@ class _InnoMap extends State<InnoMap> {
     Category_tags = tags.toSet().toList();
     tags = [];
     for (InnovationHub hub in innoHubs) {
-      tags.addAll(hub.question_topic);
-      tags.addAll(hub.question_goal);
+      // Überprüfe und füge nicht leere Elemente von `hub.question_topic` zu `tags` hinzu
+      tags.addAll(hub.question_topic.where((topic) => topic.isNotEmpty));
+
+      // Überprüfe und füge nicht leere Elemente von `hub.question_goal` zu `tags` hinzu
+      tags.addAll(hub.question_goal.where((goal) => goal.isNotEmpty));
     }
     Type_tags = tags.toSet().toList();
     all_tags = Category_tags + Type_tags;
@@ -95,6 +104,7 @@ class _InnoMap extends State<InnoMap> {
             size: 30,),
           );
         }).toList();
+        int filterselected = selected_all_tags.length;
 
         return Stack(
           children: [
@@ -167,6 +177,28 @@ class _InnoMap extends State<InnoMap> {
                               fontSize: 24,
                             ),
                           ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            height: 21,
+                            width: 21,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF006BDC),
+                              borderRadius: BorderRadius.all(Radius.circular(10.5))
+                            ),
+                            child: Center(
+                              child: Text(
+                                filterselected.toString(),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: tWhite
+                                ),
+                              ),
+                            ),
+                          ),
+
                           Spacer(),
                           GestureDetector(
                             onTap: (){
@@ -175,9 +207,22 @@ class _InnoMap extends State<InnoMap> {
                                   hub.filtered_chips.clear();
                                 }
                                 provider.createFilterdHubList(provider.innovationHubs);
+                                selected_Type_tags = [];
+                                selected_all_tags = [];
+                                selected_Category_tags= [];
+                                searchText = "";
+                                selected_yes = false;
+                                selected_no = false;
+                                clearTextField();
                               });
                             },
-                              child: Icon(Icons.filter_alt_off))
+                              child: Text(
+                                "Reset All",style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: Color(0xFFC3C3C3)
+                              ),
+                              ))
                         ],
                       ),
                       SizedBox(
@@ -191,184 +236,29 @@ class _InnoMap extends State<InnoMap> {
                           height: MediaQuery.of(context).size.height * (11 / 982)
                       ),
                       ///SearchButton
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: Row(
-                            children: [
-                              Icon(
-                                Icons.search_sharp,
-                                size: MediaQuery.of(context).size.height * (24 / 982),
-                                color: tWritingGrey,
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  'Search filter',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: tWritingGrey,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          items: all_tags.map((item) {
-                            return DropdownMenuItem(
-                              value: item,
-                              enabled: false,
-                              child: StatefulBuilder(
-                                builder: (context, menuSetState) {
-                                  final isSelected = selected_all_tags.contains(item);
-                                  return InkWell(
-                                    onTap: () {
-                                      if (isSelected == true) {
-                                        selected_all_tags.remove(item);
-                                        if(selected_Category_tags.contains(item)){
-                                          selected_Category_tags.remove(item);
-                                        }
-                                        if(selected_Type_tags.contains(item)){
-                                          selected_Type_tags.remove(item);
-                                        }
-                                      }else{
-                                        selected_all_tags.add(item);
-                                        if(Category_tags.contains(item)){
-                                          selected_Category_tags.add(item);
-                                        }
-                                        if(Type_tags.contains(item)){
-                                          selected_Type_tags.add(item);
-                                        }
-                                      }
-                                      //This rebuilds the StatefulWidget to update the button's text
-                                      setState(() {});
-                                      //This rebuilds the dropdownMenu Widget to update the check mark
-                                      menuSetState(() {});
-                                    },
-                                    child: Container(
-                                      height: double.infinity,
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                      child: Row(
-                                        children: [
-                                          if (isSelected)
-                                            const Icon(Icons.check_box_outlined)
-                                          else
-                                            const Icon(Icons.check_box_outline_blank),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            child: Text(
-                                              item,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-
-                          }).toList(),
-
-                          //Use last selected item as the current value so if we've limited menu height, it scroll to last item.
-                          value: selected_all_tags.isEmpty ? null : selected_all_tags.last,
-                          onChanged: (value) {},
-                          selectedItemBuilder: (context) {
-                            return all_tags.map(
-                                  (item) {
-                                return Container(
-                                  alignment: AlignmentDirectional.center,
-                                  child: Text(
-                                    selected_all_tags.join(', '),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    maxLines: 1,
-                                  ),
-                                );
-                              },
-                            ).toList();
+                      Container(
+                        height: MediaQuery.of(context).size.height * (55 / 982),
+                        width: MediaQuery.of(context).size.width * (317 / 1512),
+                        padding: const EdgeInsets.only(left: 14, right: 14),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
+                          color: tSearch,
+                        ),
+                        child: TextField(
+                          controller: textEditingController,
+                          onChanged: (text) {
+                            setState(() {
+                              searchText = text; // Update the variable when text changes
+                            });
                           },
-                          buttonStyleData: ButtonStyleData(
-                            height: MediaQuery.of(context).size.height * (55 / 982),
-                            width: MediaQuery.of(context).size.width * (317 / 1512),
-                            padding: const EdgeInsets.only(left: 14, right: 14),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
-                              color: tSearch,
-                            ),
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.search_sharp, color: Colors.black),
+                            hintText: "Search by name",
+                            enabledBorder: InputBorder.none, // Remove the underline when not focused
+                            focusedBorder: InputBorder.none,
                           ),
-                          iconStyleData: const IconStyleData(
-                            icon: Icon(
-                              Icons.arrow_forward_ios_outlined,
-                            ),
-                            iconSize: 14,
-                            iconEnabledColor: tSearch,
-                            iconDisabledColor: tSearch,
-                          ),
-                          dropdownStyleData: DropdownStyleData(
-                            maxHeight: MediaQuery.of(context).size.height * (300 / 982),
-                            width: MediaQuery.of(context).size.width * (317 / 1512),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height * (27.5 / 982)),
-                              color: tSearch,
-                            ),
-                            offset: Offset(0, -MediaQuery.of(context).size.height * (6.875 / 982)),
-                            scrollbarTheme: ScrollbarThemeData(
-                              radius: const Radius.circular(40),
-                              thickness: MaterialStateProperty.all(6),
-                              thumbVisibility: MaterialStateProperty.all(true),
-                            ),
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 40,
-                            padding: EdgeInsets.only(left: 14, right: 14),
-                          ),
-                          dropdownSearchData: DropdownSearchData(
-                            searchController: textEditingController,
-                            searchInnerWidgetHeight: 50+MediaQuery.of(context).size.height * (20 / 982),
-                            searchInnerWidget: Container(
-                              height: 50+MediaQuery.of(context).size.height * (20 / 982),
-                              padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * (20 / 982),
-                                left: MediaQuery.of(context).size.height * (10 / 982),
-                                right: MediaQuery.of(context).size.height * (10 / 982),
-                              ),
-                              child: TextFormField(
-                                expands: true,
-                                maxLines: null,
-                                controller: textEditingController,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 8,
-                                  ),
-                                  hintText: 'Search for an item...',
-                                  hintStyle: const TextStyle(fontSize: 12),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            searchMatchFn: (item, searchValue) {
-                              return item.value.toString().contains(searchValue);
-                            },
-                          ),
-                          //This to clear the search value when you close the menu
-                          onMenuStateChange: (isOpen) {
-                            if (!isOpen) {
-                              textEditingController.clear();
-                            }
-                          },
+
                         ),
                       ),
                       SizedBox(
@@ -427,15 +317,35 @@ class _InnoMap extends State<InnoMap> {
                                       child: Row(
                                         children: [
                                           if (isSelected)
-                                            const Icon(Icons.check_box_outlined)
+                                            Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: Color(0xFF006BDC),
+                                              ),
+                                              child: Icon(Icons.check,color: tWhite,size: 20,),
+                                            )
                                           else
-                                            const Icon(Icons.check_box_outline_blank),
+                                            Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: tBackground,
+                                                border: Border.all(
+                                                  color: Color(0xFF006BDC), // Blue color for the border
+                                                  width: 2, // Adjust the width as needed
+                                                ),
+                                              ),
+                                            ),
                                           const SizedBox(width: 16),
                                           Expanded(
                                             child: Text(
                                               item,
                                               style: const TextStyle(
                                                 fontSize: 14,
+                                                fontWeight: FontWeight.w500
                                               ),
                                             ),
                                           ),
@@ -453,21 +363,20 @@ class _InnoMap extends State<InnoMap> {
                           value: selected_Category_tags.isEmpty ? null : selected_Category_tags.last,
                           onChanged: (value) {},
                           selectedItemBuilder: (context) {
-                            return Category_tags.map(
-                                  (item) {
-                                return Container(
-                                  alignment: AlignmentDirectional.center,
-                                  child: Text(
-                                    selected_Category_tags.join(', '),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    maxLines: 1,
+                            return Category_tags.map((item) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width * (365 / 1512) - MediaQuery.of(context).size.width * (1 / 63),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  selected_Category_tags.join(', '),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                );
-                              },
-                            ).toList();
+                                  maxLines: 1,
+                                ),
+                              );
+                            }).toList();
                           },
                           buttonStyleData: ButtonStyleData(
                             height: MediaQuery.of(context).size.height * (55 / 982),
@@ -556,9 +465,28 @@ class _InnoMap extends State<InnoMap> {
                                       child: Row(
                                         children: [
                                           if (isSelected)
-                                            const Icon(Icons.check_box_outlined)
+                                            Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: Color(0xFF006BDC),
+                                              ),
+                                              child: Icon(Icons.check,color: tWhite,size: 20,),
+                                            )
                                           else
-                                            const Icon(Icons.check_box_outline_blank),
+                                            Container(
+                                              height: 25,
+                                              width: 25,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(3),
+                                                color: tBackground,
+                                                border: Border.all(
+                                                  color: Color(0xFF006BDC), // Blue color for the border
+                                                  width: 2, // Adjust the width as needed
+                                                ),
+                                              ),
+                                            ),
                                           const SizedBox(width: 16),
                                           Expanded(
                                             child: Text(
@@ -585,7 +513,7 @@ class _InnoMap extends State<InnoMap> {
                             return Type_tags.map(
                                   (item) {
                                 return Container(
-                                  alignment: AlignmentDirectional.center,
+                                  alignment: Alignment.centerLeft,
                                   child: Text(
                                     selected_Type_tags.join(', '),
                                     style: const TextStyle(
@@ -725,7 +653,7 @@ class _InnoMap extends State<InnoMap> {
                           Spacer(),
                           GestureDetector(
                             onTap: (){
-                              filterInnoHubs(context, selected_Category_tags, selected_Type_tags, selected_yes,selected_no);
+                              filterInnoHubs(context, selected_Category_tags, selected_Type_tags, selected_yes,selected_no, searchText);
                             },
                             child: Container(
                               height:  MediaQuery.of(context).size.height * (60 / 982),
@@ -767,6 +695,8 @@ class _InnoMap extends State<InnoMap> {
         return Icons.business;
       case 'socialInstitution':
         return Icons.group;
+      case 'startup':
+        return Icons.rocket;
       default:
         return Icons.info;
     }
@@ -871,40 +801,33 @@ Future<ImageProvider> _loadProfileImage(String path) async {
   }
 }
 
-void filterInnoHubs(BuildContext context, List<dynamic> selected_Category_tags, List<dynamic> selected_Type_tags, bool yes, bool no) {
+void filterByName(BuildContext context, String filterText) {
+  if (filterText.isNotEmpty) {
+    final String lowercaseFilter = filterText.toLowerCase();
+    List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
+    List<InnovationHub> filtered = originalHubs
+        .where((hub) => hub.name.toLowerCase().contains(lowercaseFilter))
+        .toList();
+    // Sortiere die gefilterte Liste nach der Übereinstimmung
+    filtered.sort((a, b) => a.name.toLowerCase().indexOf(lowercaseFilter).compareTo(b.name.toLowerCase().indexOf(lowercaseFilter)));
+    context.read<InnovationHubProvider>().createFilterdHubList(filtered);
+  }
+}
+
+void filterInnoHubs(BuildContext context, List<dynamic> selected_Category_tags, List<dynamic> selected_Type_tags, bool yes, bool no,String text) {
+  filterByName(context, text);
   // Get the original list of innovation hubs
-  List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
+  List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().filteredHubs;
   List<Map<InnovationHub, int>> filteredHubs = [];
   print(selected_Category_tags);
   print(selected_Type_tags);
   print(yes);
   print("filter");
-  if(selected_Category_tags.length == 0 && selected_Type_tags.length == 0 && yes == false && no == false){
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('No Options Selected'),
-        content: Text("During the Filtering you have not selected an Filtering Option."),
-        actions: [
-          TextButton(
-            child: const Text('Let´s restart!'),
-            onPressed: () {
-              ///ToDo: implement logic to set qurrentQuestionIndex to 0
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Let´s go Home'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+  if(selected_Category_tags.length == 0 && selected_Type_tags.length == 0 && yes == false && no == false && text.isEmpty){
+    List<InnovationHub> originalHubs = context.read<InnovationHubProvider>().innovationHubs;
+    context.read<InnovationHubProvider>().createFilterdHubList(originalHubs);
+  } else if(selected_Category_tags.length == 0 && selected_Type_tags.length == 0 && yes == false && no == false && !text.isEmpty){
+
   } else {
     for (InnovationHub Hub in originalHubs) {
       int matchCount = 0;

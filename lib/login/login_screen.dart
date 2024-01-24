@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import 'package:provider/provider.dart';
 import 'package:webapp_innovation_leadership/AdminPanels/SuperAdminPanel.dart';
 import 'package:webapp_innovation_leadership/CommunityPages/Community.dart';
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isHomeViewSelected = false;
+  bool LogInSelected = true;
   bool isHubViewSelected = false;
   bool isEventViewSelected = false;
   bool isGuideViewSelected = false;
@@ -37,11 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     // Überprüfe den Authentifizierungsstatus beim Initialisieren der Seite
-    checkLoggedInUser();
+    //checkLoggedInUser();
   }
 
   // Überprüfe, ob der Benutzer bereits eingeloggt ist
-  void checkLoggedInUser() async {
+  /*void checkLoggedInUser() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       // Benutzer ist bereits eingeloggt, leite ihn weiter
@@ -50,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (context) => Community()),
       );
     }
-  }
+  }*/
 
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
 
@@ -294,10 +296,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      'Log In/Create Account to be part of our Community',
-                      style: TextStyle(fontSize: 32,fontWeight: FontWeight.w400),
-                    ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.392,
                       height: MediaQuery.of(context).size.height * 0.6395,
@@ -306,54 +304,99 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          TextField(
-                            controller: emailController,
-                            decoration: InputDecoration(labelText: 'Email'),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: LiteRollingSwitch(
+                              value: LogInSelected,
+                              width: 150,
+                              textOn: 'LogIn',
+                              textOff: 'Register',
+                              colorOn: Colors.deepOrange,
+                              colorOff: Colors.blueGrey,
+                              iconOn: Icons.login,
+                              iconOff: Icons.account_circle_outlined,
+                              animationDuration: const Duration(milliseconds: 300),
+                              onChanged: (bool state) {
+                                setState(() {
+                                  LogInSelected = state;
+                                });
+                                print('turned ${(state) ? 'on' : 'off'}');
+                              },
+                              onDoubleTap: () {},
+                              onSwipe: () {},
+                              onTap: () {},
+                            ),
                           ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    obscureText = !obscureText;
-                                  });
-                                },
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                          ),
+                          if (LogInSelected)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  /*Row(
+                                    children: [
+                                      Text("Login to your Account",style: TextStyle(
+                                        fontSize: 32,
+                                        fontWeight: FontWeight.w500
+                                      ),),
+                                      Spacer(),
+                                    ],
+                                  ),*/
+
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.063,
+                                  ),
+                                  TextField(
+                                    controller: emailController,
+                                    decoration: InputDecoration(
+                                        labelText: 'Email',
+                                        border: OutlineInputBorder()
+                                    ),
+
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.063,
+                                  ),
+                                  TextField(
+                                    controller: passwordController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Password',
+                                      border: OutlineInputBorder(),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          obscureText
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            obscureText = !obscureText;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    obscureText: obscureText,
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.063,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => signIn(),
+                                    child: Text('Sign In'),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.063,
+                                  )
+                                ],
                               ),
                             ),
-                            obscureText: obscureText,
-                          ),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => signIn(),
-                            child: Text('Sign In'),
-                          ),
-                          SizedBox(height: 10),
-                          /*ElevatedButton(
-                            onPressed: () => signInWithGoogle(),
-                            child: Text('Sign In with Google'),
-                          ),*/
-                          SizedBox(height: 10),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegisterScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Don\'t have an account? Register here.',
-                            ),
-                          ),
+                          if (!LogInSelected)
+                            RegisterWidget(),
                         ],
                       ),
                     ),
@@ -365,3 +408,28 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+
+class RegisterWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RegisterScreen(),
+              ),
+            );
+          },
+          child: Text(
+            'Don\'t have an account? Register here.',
+          ),
+        ),
+      ],
+    );
+  }
+}
+

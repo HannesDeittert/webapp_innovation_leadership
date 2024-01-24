@@ -167,182 +167,389 @@ class EventListItem extends StatelessWidget {
 
     return Consumer<EventProvider>(
         builder: (context, provider, child) {
-          return Container(
-            height: MediaQuery
-                .of(context)
-                .size
-                .height * (252/1032),
-            width: Lenght,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: detail? tBackground : tWhite
-            ),
-            child: Stack(
-              children: [
-                Center(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * (41/982),
-                      ),
-                      // Hier kannst du das Profilbild anzeigen
-                      Stack(
-                        children: [
-                          FutureBuilder(
-                            future: _loadProfileImage(Event.eventImagePath),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.done) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.vertical(top: Radius.circular(10),bottom: Radius.circular(10)),
-                                  child: Image(
+          if(detail == true){
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * (252/1032),
+              width: Lenght,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: detail? tBackground : tWhite
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(width: MediaQuery
+                            .of(context)
+                            .size
+                            .height * (41/982),
+                        ),
+                        // Hier kannst du das Profilbild anzeigen
+                        Stack(
+                          children: [
+                            FutureBuilder(
+                              future: _loadProfileImage(Event.eventImagePath),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(10),bottom: Radius.circular(10)),
+                                    child: Image(
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * (200/1032),
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * (200/1032),
+                                      image: snapshot.data as ImageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                } else {
+                                  return Container(); // Hier könnte ein Ladeindikator eingefügt werden
+                                }
+                              },
+                            ),
+                            Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: Container(
+                                  width: 68,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: tWhiteop
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                        Cost,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: tWritingGrey
+                                        ),
+                                        textAlign: TextAlign.center
+                                    ),
+                                  ),
+                                ))
+                          ],
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * (125/491),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * (26/1032)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        Event.title,
+                                        style: TextStyle(fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        child: IntrinsicWidth(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Container(
+                                                child: IntrinsicWidth(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                    children: [
+                                                      Text(Date),
+                                                      Divider(
+                                                        thickness: 1,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),Container(
+                                    width: Lenght*(900/1384),
                                     height: MediaQuery
                                         .of(context)
                                         .size
-                                        .height * (200/1032),
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height * (200/1032),
-                                    image: snapshot.data as ImageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              } else {
-                                return Container(); // Hier könnte ein Ladeindikator eingefügt werden
-                              }
-                            },
-                          ),
-                          Positioned(
-                              bottom: 10,
-                              left: 10,
-                              child: Container(
-                                width: 68,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: tWhiteop
-                                ),
-                                child: Center(
-                                  child: Text(
-                                      Cost,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          color: tWritingGrey
-                                      ),
-                                      textAlign: TextAlign.center
-                                  ),
-                                ),
-                              ))
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * (125/491),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * (26/1032)),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        .height * (125/1032),
 
-                              children: [
-                                Container(
-                                  child: IntrinsicWidth(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: [
-                                        Container(
-                                          child: IntrinsicWidth(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                              children: [
-                                                Text(Date),
-                                                Divider(
-                                                  thickness: 1,
-                                                ),
-                                              ],
-                                            ),
+                                    child: LayoutBuilder(
+                                      builder: (BuildContext context, BoxConstraints constraints) {
+                                        int maxLines = (constraints.maxHeight.isFinite ? constraints.maxHeight / 32 : 1).floor(); // 32 is the font size, adjust as needed
+                                        return Text(
+                                          Event.description,
+                                          style: TextStyle(
+                                            fontSize: 32,
+                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
                                           ),
-                                        ),
-                                      ],
+                                          maxLines: maxLines >2? 3:maxLines ,
+                                          overflow: TextOverflow.ellipsis,
+                                        );
+                                      },
                                     ),
                                   ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  width: Lenght*(900/1384),
-                                  child: Text(
-                                    Event.title,
-                                    style: TextStyle(fontSize: 32,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                  ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  width: Lenght*(900/1384),
-                                  child: Text(
-                                    Event.description,
-                                    style: TextStyle(fontSize: 32,
-                                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+
+
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(width: MediaQuery
-                          .of(context)
-                          .size
-                          .height * (41/982),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  bottom: MediaQuery.of(context).size.height * (10 / 491),
-                  right: MediaQuery.of(context).size.width * (10 / 491),
-                  child: GestureDetector(
-                    onTap: () async {
-                      DetailedHubInfoProvider detailedHubInfoProvider =
-                      Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                      InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
-                      InnovationHub Hub = provider2.getInnovationHubByCode(Event.HubCode);
-                      await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EventsDetailedPage(Event,timeRange,Detailed,Hub),
+                        SizedBox(width: MediaQuery
+                            .of(context)
+                            .size
+                            .height * (41/982),
                         ),
-                      );
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.height*(29/491),
-                      height: MediaQuery.of(context).size.height*(29/491),
-                      decoration: BoxDecoration(
-                          color: detail? tWhite: tBackground,
-                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*(29/491))
-                      ),
-                      child: Icon(
-                        Icons.arrow_forward,
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: MediaQuery.of(context).size.height * (10 / 491),
+                    right: MediaQuery.of(context).size.width * (10 / 491),
+                    child: GestureDetector(
+                      onTap: () async {
+                        DetailedHubInfoProvider detailedHubInfoProvider =
+                        Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                        InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
+                        InnovationHub Hub = provider2.getInnovationHubByCode(Event.HubCode);
+                        await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EventsDetailedPage(Event,timeRange,Detailed,Hub),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.height*(29/491),
+                        height: MediaQuery.of(context).size.height*(29/491),
+                        decoration: BoxDecoration(
+                            color: detail? tWhite: tBackground,
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*(29/491))
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
+                ],
+              ),
+            );
+          } else {
+            return Container(
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * (252/1032),
+              width: Lenght,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: detail? tBackground : tWhite
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(width: MediaQuery
+                            .of(context)
+                            .size
+                            .height * (41/982),
+                        ),
+                        // Hier kannst du das Profilbild anzeigen
+                        Stack(
+                          children: [
+                            FutureBuilder(
+                              future: _loadProfileImage(Event.eventImagePath),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(10),bottom: Radius.circular(10)),
+                                    child: Image(
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * (200/1032),
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * (200/1032),
+                                      image: snapshot.data as ImageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                } else {
+                                  return Container(); // Hier könnte ein Ladeindikator eingefügt werden
+                                }
+                              },
+                            ),
+                            Positioned(
+                                bottom: 10,
+                                left: 10,
+                                child: Container(
+                                  width: 68,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: tWhiteop
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                        Cost,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: tWritingGrey
+                                        ),
+                                        textAlign: TextAlign.center
+                                    ),
+                                  ),
+                                ))
+                          ],
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Container(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * (125/491),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * (26/1032)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        Event.title,
+                                        style: TextStyle(fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        child: IntrinsicWidth(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Container(
+                                                child: IntrinsicWidth(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.stretch,
+                                                    children: [
+                                                      Text(Date),
+                                                      Divider(
+                                                        thickness: 1,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Container(
+                                    width: Lenght*(9/10),
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * (125/1032),
+
+                                    child: LayoutBuilder(
+                                      builder: (BuildContext context, BoxConstraints constraints) {
+                                        int maxLines = (constraints.maxHeight.isFinite ? constraints.maxHeight / 32 : 1).floor(); // 32 is the font size, adjust as needed
+                                        return Text(
+                                          Event.description,
+                                          style: TextStyle(
+                                            fontSize: 32,
+                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55),
+                                          ),
+                                          maxLines: maxLines >2? 3:maxLines ,
+                                          overflow: TextOverflow.ellipsis,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery
+                            .of(context)
+                            .size
+                            .height * (41/982),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: MediaQuery.of(context).size.height * (10 / 491),
+                    right: MediaQuery.of(context).size.width * (10 / 491),
+                    child: GestureDetector(
+                      onTap: () async {
+                        DetailedHubInfoProvider detailedHubInfoProvider =
+                        Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                        InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
+                        InnovationHub Hub = provider2.getInnovationHubByCode(Event.HubCode);
+                        await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EventsDetailedPage(Event,timeRange,Detailed,Hub),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.height*(29/491),
+                        height: MediaQuery.of(context).size.height*(29/491),
+                        decoration: BoxDecoration(
+                            color: detail? tWhite: tBackground,
+                            borderRadius: BorderRadius.circular(MediaQuery.of(context).size.height*(29/491))
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
         }
     );
   }

@@ -53,7 +53,9 @@ class InnovationHubProvider with ChangeNotifier {
         .collection('InnovationHubKollektion');
 
     // Daten aus der Sammlung laden
-    QuerySnapshot snapshot = await innovationHubsRef.get();
+    // Daten aus der Sammlung laden
+    QuerySnapshot snapshot = await innovationHubsRef.where('status', isEqualTo: 'live').get();
+    print(snapshot.size);
 
     // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen
     _allinnovationHubs = snapshot.docs.map((doc) {

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -76,7 +77,9 @@ class HubListItem extends StatelessWidget {
                           future: _loadProfileImage(hub.profileImagePath),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.done) {
-                              return SizedBox(
+                              return ClipRRect(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20),bottom: Radius.circular(20)),
+                            child: SizedBox(
                                 height: MediaQuery
                                     .of(context)
                                     .size
@@ -89,13 +92,13 @@ class HubListItem extends StatelessWidget {
                                   image: snapshot.data as ImageProvider,
                                   fit: BoxFit.cover,
                                 ),
-                              );
+                              ));
                             } else {
                               return Container(); // Hier könnte ein Ladeindikator eingefügt werden
                             }
                           },
                         ),
-                        SizedBox(width: 10),
+                        SizedBox(width: 30),
                         Expanded(
                           child: Container(
                             height: MediaQuery
@@ -112,16 +115,20 @@ class HubListItem extends StatelessWidget {
                                   style: TextStyle(fontSize: 32,
                                       fontWeight: FontWeight.bold,
                                       color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
-                                  hub.summary,
-                                  style: TextStyle(fontSize: 32,
-                                      color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                Spacer(),
+                                Container(
+                                  width: (MediaQuery.of(context).size.width * (173/189))-(MediaQuery.of(context).size.width * (16 / 491)+MediaQuery.of(context).size.height*(29/491)+ MediaQuery.of(context).size.height * (125/491)+30+MediaQuery.of(context).size.height * (41/982)),
+                                  child: AutoSizeText(
+                                    hub.summary,
+                                    style: TextStyle(fontSize: 28,
+                                        color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                    maxLines: 3,
+                                  ),
                                 ),
-                                SizedBox(height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height / 20),
+                                Spacer(),
 
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

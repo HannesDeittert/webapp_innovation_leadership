@@ -225,6 +225,7 @@ class _InnovationHubState extends State<InnovationHubs> {
               builder: (context, provider, child) {
                 // Liste der gefilterten Hubs abrufen
                 List<InnovationHub> filteredHubs = provider.filteredHubs;
+                int length = filteredHubs.length;
                 return Expanded(
                   child: CustomScrollView(
                     slivers: [
@@ -245,9 +246,10 @@ class _InnovationHubState extends State<InnovationHubs> {
                                 padding: EdgeInsets.fromLTRB((MediaQuery.of(context).size.width / 30), 0, 0, 0),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
-                                  child: Text("Your Results", style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w700
+                                  child: Text("Results ($length)", style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                    color: Color(0xFFA1A1A1)
                                   ),),
                                 ),
                               ),

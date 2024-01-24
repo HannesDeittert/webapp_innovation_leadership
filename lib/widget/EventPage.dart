@@ -6,6 +6,7 @@ import 'package:webapp_innovation_leadership/InnovationHubs.dart';
 import 'package:webapp_innovation_leadership/datamanager/DetailedHubInfo.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/datamanager/Work.dart';
+import '../CommunityPages/Community.dart';
 import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
@@ -202,8 +203,13 @@ class _EventPage extends State<EventPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
+                                    builder: (context) => Community()),
                               );
+                              /*Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );*/
                             },
                             child: Text(
                               "Community",

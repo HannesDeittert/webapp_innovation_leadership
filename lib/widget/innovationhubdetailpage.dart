@@ -1,5 +1,6 @@
 import 'dart:html';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:webapp_innovation_leadership/datamanager/DetailedHubInfo.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/datamanager/Work.dart';
 
+import '../CommunityPages/Community.dart';
 import '../Constants/Colors.dart';
 import '../Events.dart';
 import '../Homepage.dart';
@@ -267,8 +269,13 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginScreen()),
+                                    builder: (context) => Community()),
                               );
+                              /*Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );*/
                             },
                             child: Text(
                               "Community",
@@ -511,13 +518,19 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                         SizedBox(
                                                           height:(MediaQuery.of(context).size.height* (5/1080)),
                                                         ),
-                                                        Text(reccomendations[index].name,
-                                                          style: TextStyle(
-                                                            fontSize: 24,
-                                                            color: tPrimaryColorText,
-                                                            fontWeight: FontWeight.w700
+                                                        Center(
+                                                          child: Container(
+                                                            width: MediaQuery.of(context).size.width * (186/1512),
+                                                            child: Text(reccomendations[index].name,
+                                                              style: TextStyle(
+                                                                fontSize: 24,
+                                                                color: tPrimaryColorText,
+                                                                fontWeight: FontWeight.w700,
+                                                              ),
+                                                            textAlign: TextAlign.center,
+                                                            maxLines: 2,),
                                                           ),
-                                                        maxLines: 2,),
+                                                        ),
                                                         SizedBox(
                                                           height:(MediaQuery.of(context).size.height* (14/1080)),
                                                         ),
@@ -540,8 +553,8 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                         builder: (context, snapshot) {
                                                           if (snapshot.connectionState == ConnectionState.done) {
                                                             return SizedBox(
-                                                              height: MediaQuery.of(context).size.width * 4/25,
-                                                              width: MediaQuery.of(context).size.width * 4/25,
+                                                              height: MediaQuery.of(context).size.width * (186/1512),
+                                                              width: MediaQuery.of(context).size.width * (186/1512),
                                                               child: Image(
                                                                 image: snapshot.data as ImageProvider,
                                                                 fit: BoxFit.cover,
@@ -555,12 +568,19 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                                       SizedBox(
                                                         height:(MediaQuery.of(context).size.height* (10/1080)),
                                                       ),
-                                                      Text("This Innovation Hub is unique. WHAT!",
-                                                        style: TextStyle(
-                                                          fontSize: 24,
-                                                          color: tPrimaryColorText,
-                                                          fontWeight: FontWeight.w700
-                                                      ),),
+                                                      Center(
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width * (186/1512),
+                                                          child: Text("Unique Hub. WHAT!",
+                                                            style: TextStyle(
+                                                              fontSize: 24,
+                                                              color: tPrimaryColorText,
+                                                              fontWeight: FontWeight.w700,
+                                                            ),
+                                                            textAlign: TextAlign.center,
+                                                            maxLines: 2,),
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),
                                                 ),
@@ -681,11 +701,13 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                               fontWeight: FontWeight.w700,
                                             ),),
                                           ),
-                                          Text(info.detailedDescription,
+                                          AutoSizeText(info.detailedDescription,
                                             style: TextStyle(
                                               fontSize: 24,
                                               fontWeight: FontWeight.w400,
-                                            ),),
+                                            ),
+                                            maxLines: 4,
+                                          ),
                                         ],
                                       );
                                     }

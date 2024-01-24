@@ -25,12 +25,29 @@ class ContactWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Feel Free To Contact $name!",
-                    style: TextStyle(
-                        fontSize: 64,
-                        fontWeight: FontWeight.w700,
-                        color: tPrimaryColorText
-                    ),),
+                  Container(
+                    width: MediaQuery.of(context).size.width *(1156/1512)-32,
+                    child: Column(
+                      children: [
+                        Text("Feel Free To Contact",
+                          style: TextStyle(
+                              fontSize: 64,
+                              fontWeight: FontWeight.w700,
+                              color: tPrimaryColorText,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(name,
+                          style: TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w700,
+                            color: tPrimaryColorText,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height* 0.1,
                   ),
@@ -73,12 +90,29 @@ class ContactWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Feel Free To Contact $name!",
-                    style: TextStyle(
-                        fontSize: 64,
-                        fontWeight: FontWeight.w700,
-                        color: tPrimaryColorText
-                    ),),
+                  Container(
+                    width: MediaQuery.of(context).size.width *(1092/1512)-32,
+                    child: Column(
+                      children: [
+                        Text("Feel Free To Contact",
+                          style: TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w700,
+                            color: tPrimaryColorText,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        Text(name,
+                          style: TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w700,
+                            color: tPrimaryColorText,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height* 0.1,
                   ),
