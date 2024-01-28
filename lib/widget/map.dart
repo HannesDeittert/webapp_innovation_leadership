@@ -200,6 +200,7 @@ class _InnoMap extends State<InnoMap> {
                           ),
 
                           Spacer(),
+
                           GestureDetector(
                             onTap: (){
                               setState(() {
