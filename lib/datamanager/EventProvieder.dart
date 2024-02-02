@@ -77,7 +77,7 @@ class EventProvider with ChangeNotifier {
           .collection('Events');
 
       /// Daten aus der Sammlung laden
-      QuerySnapshot<Object?> snapshot = await EventsRef.get();
+      QuerySnapshot<Object?> snapshot = await EventsRef.where('HubCode', isNotEqualTo: "Prod").get();
       print(snapshot);
 
 // Innovation-Hub-Objekte aus den Firestore-Dokumenten erstellen

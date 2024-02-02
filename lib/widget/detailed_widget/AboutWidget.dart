@@ -67,11 +67,9 @@ class AboutWidget extends StatelessWidget {
             ),
             Text(AboutText,
               style: TextStyle(
-              fontSize: 32,
+              fontSize: 24,
               fontWeight: FontWeight.w400,
             ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         )

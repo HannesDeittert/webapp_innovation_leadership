@@ -117,7 +117,7 @@ class _InnovationHubState extends State<InnovationHubs> {
                               }
                             },
                           ),
-                          Text("fau innohub",style: TextStyle(
+                          Text("innohub",style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600
                           ),)

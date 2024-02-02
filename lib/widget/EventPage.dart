@@ -124,7 +124,7 @@ class _EventPage extends State<EventPage> {
                             }
                           },
                         ),
-                        Text("fau innohub",style: TextStyle(
+                        Text("innohub",style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600
                         ),)

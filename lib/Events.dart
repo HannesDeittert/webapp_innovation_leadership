@@ -225,74 +225,29 @@ class _Events extends State<EventsHome> {
                 return Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width *(64/1512)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Events",style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                          ),),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: filteredEvents.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: EventListItem(Event: filteredEvents[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: false, ),
-                              );
-                            }
-                        ),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Events",style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: filteredEvents.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                                  child: EventListItem(Event: filteredEvents[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: false, text: true,),
+                                );
+                              }
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  /* CustomScrollView(
-                    slivers: [
-                      SliverAppBar(
-                        expandedHeight:
-                        MediaQuery.of(context).size.height * (617 / 982),
-                        flexibleSpace: Calender(),
-                        backgroundColor: tBackground,
-                        pinned: false,
-                      ),
-                      SliverToBoxAdapter(
-                        child: Container(
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.031,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB((MediaQuery.of(context).size.width / 30), 0, 0, 0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Your Results", style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.w700
-                                  ),),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.0155,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                       SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * (8/189),vertical: 8),
-                                child: EventListItem(Event:  filteredEvents[index],Lenght: MediaQuery.of(context).size.width * (173/189),detail: false,),
-                              );
-                            },
-                            childCount: filteredEvents.length,
-                          ),
-                        ),
-
-                    ],
-                  ),*/
                 );
               },
             )

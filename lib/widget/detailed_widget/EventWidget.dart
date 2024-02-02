@@ -40,7 +40,7 @@ class EventWidget extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 itemCount: events.length,
-                itemBuilder: (context, index) => EventListItem(Event: events[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: false, ),),
+                itemBuilder: (context, index) => EventListItem(Event: events[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: false,text: false, ),),
               ),
           ],
         ),

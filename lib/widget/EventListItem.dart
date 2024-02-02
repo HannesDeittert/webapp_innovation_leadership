@@ -17,6 +17,7 @@ class EventListItem extends StatelessWidget {
   final HubEvents Event;
   final double Lenght;
   final bool detail;
+  final bool text;
 
   String weekdayToAbbreviation(int weekday) {
     switch (weekday) {
@@ -52,7 +53,7 @@ class EventListItem extends StatelessWidget {
     return timeRangeString;
   }
 
-  EventListItem({required this.Event,required this.Lenght, required this.detail});
+  EventListItem({required this.Event,required this.Lenght, required this.detail, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -254,40 +255,57 @@ class EventListItem extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        Event.title,
-                                        style: TextStyle(fontSize: 32,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                      ),
-                                      Spacer(),
-                                      Container(
-                                        child: IntrinsicWidth(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                            children: [
-                                              Container(
-                                                child: IntrinsicWidth(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.stretch,
-                                                    children: [
-                                                      Text(Date),
-                                                      Divider(
-                                                        thickness: 1,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                  Container(
+                                    width: Lenght - 10- MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * (200/1032),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        if(Event.title.length > 38)
+                                          Text(
+
+                                            Event.title.substring(0,38) +"...",
+                                            style: TextStyle(fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                        if(Event.title.length <= 38)
+                                          Text(
+                                            Event.title,
+                                            style: TextStyle(fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        Spacer(),
+                                        IntrinsicWidth(
+                                            child: Container(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                children: [
+                                                  Container(
+                                                    child: IntrinsicWidth(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.stretch,
+                                                        children: [
+                                                          Text(Date),
+                                                          Divider(
+                                                            thickness: 1,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),Container(
                                     width: Lenght*(900/1384),
                                     height: MediaQuery
@@ -448,12 +466,33 @@ class EventListItem extends StatelessWidget {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        Event.title,
-                                        style: TextStyle(fontSize: 32,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
-                                      ),
+                                      if(text == false)
+                                        if(Event.title.length > 38)
+                                          Text(
+
+                                            Event.title.substring(0,38) +"...",
+                                            style: TextStyle(fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                      if(text == false)
+                                        if(Event.title.length <= 38)
+                                          Text(
+                                            Event.title,
+                                            style: TextStyle(fontSize: 32,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                      if(text == true)
+                                        Text(
+                                          Event.title,
+                                          style: TextStyle(fontSize: 32,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color.fromARGB(0xFF, 0x55, 0x55, 0x55)),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       Spacer(),
                                       Container(
                                         child: IntrinsicWidth(

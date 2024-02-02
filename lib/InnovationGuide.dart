@@ -79,8 +79,8 @@ class _GuideHome extends State<GuideHome> {
   }
 
   String GetIndex() {
-    List<List<String>> Arrays = [['No', 'StartUps','Insurance',"Finance"],['Yes', 'StartUps',],['Yes', 'University Chair'],['No', 'StartUps','Insurance'],['No', 'Not Sure'],['No', 'Research Institutions']];
-    List<String> PathList = ['pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/231117_Innovation_Lecture_upload.pdf', 'pdf/231117_Innovation_Lecture_upload.pdf','pdf/Exercise_2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf','pdf/InnoHikes Factsheet Promotion Hike 2.pdf'];
+    List<List<String>> Arrays = [['No', 'StartUps','Information Technology / AI',"Finance"],['Yes', 'Information Technology / AI',],['Yes', 'University Chair'],['No', 'StartUps','Insurance'],['No', 'Not Sure'],['No', 'Research Institutions']];
+    List<String> PathList = ['pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf', 'pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf'];
     List<int> match = List.filled(Arrays.length, 0);
     List<int> matchInd =[];
     List<String?> filterTags= [selectedAnswers_Furth[0] , selectedAnswers_Type[0]];
@@ -200,7 +200,7 @@ class _GuideHome extends State<GuideHome> {
                               }
                             },
                           ),
-                          Text("fau innohub",style: TextStyle(
+                          Text("innohub",style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600
                           ),)

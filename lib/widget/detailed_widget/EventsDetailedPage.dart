@@ -522,50 +522,61 @@ class EventsDetailedPage extends StatelessWidget {
                                             SizedBox(
                                                 width: 20
                                             ),
-                                            Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(Orga, style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 24
-                                                ),),
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    // Den DetailedHubInfoProvider vom Kontext abrufen
-                                                    DetailedHubInfoProvider detailedHubInfoProvider =
-                                                    Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                                                    InnovationHubProvider provider =
-                                                    Provider.of<InnovationHubProvider>(context, listen: false);
-                                                    EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
-                                                    WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
-                                                    // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                                                    await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
-                                                    await detailedHubInfoProvider.getMenu();
-                                                    await provider3.loadAllEvents();
-                                                    await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
-                                                    await provider4.loadAllHubworks();
-                                                    await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
-                                                    print(detailedHubInfoProvider.detailedInnovationHub);
-                                                    provider.calculate_recomendations(Hub);
-                                                    print(provider.recomendations);
-                                                    // Zur Detailseite navigieren
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => InnovationHubDetailPage(stringList: Hub.filtered_chips,),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width *(500/1512)-20-MediaQuery.of(context).size.width *(200/1512),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(Orga,
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.w500,
+                                                              fontSize: 24
+                                                          ),
+                                                          overflow: TextOverflow.ellipsis,),
                                                       ),
-                                                    );
-                                                  },
-                                                  child: Text("Open Company Page", style: TextStyle(
-                                                      fontWeight: FontWeight.w400,
-                                                      fontSize: 20,
-                                                      decoration: TextDecoration.underline,
-                                                      decorationColor: Color.fromARGB(255, 	186, 	186, 	186),
-                                                      color: Color.fromARGB(255, 	186, 	186, 	186)
-                                                  ),),
-                                                )
-                                              ],
+                                                    ],
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      // Den DetailedHubInfoProvider vom Kontext abrufen
+                                                      DetailedHubInfoProvider detailedHubInfoProvider =
+                                                      Provider.of<DetailedHubInfoProvider>(context, listen: false);
+                                                      InnovationHubProvider provider =
+                                                      Provider.of<InnovationHubProvider>(context, listen: false);
+                                                      EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
+                                                      WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
+                                                      // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
+                                                      await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
+                                                      await detailedHubInfoProvider.getMenu();
+                                                      await provider3.loadAllEvents();
+                                                      await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
+                                                      await provider4.loadAllHubworks();
+                                                      await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
+                                                      print(detailedHubInfoProvider.detailedInnovationHub);
+                                                      provider.calculate_recomendations(Hub);
+                                                      print(provider.recomendations);
+                                                      // Zur Detailseite navigieren
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => InnovationHubDetailPage(stringList: Hub.filtered_chips,),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text("Open Company Page", style: TextStyle(
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 20,
+                                                        decoration: TextDecoration.underline,
+                                                        decorationColor: Color.fromARGB(255, 	186, 	186, 	186),
+                                                        color: Color.fromARGB(255, 	186, 	186, 	186)
+                                                    ),),
+                                                  )
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),

@@ -189,7 +189,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                               }
                             },
                           ),
-                          Text("fau innohub",style: TextStyle(
+                          Text("innohub",style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600
                           ),)
@@ -601,7 +601,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                       isAboutViewSelected
                           ? AboutWidget(info.detailedDescription, info.headerImage, info.name)
                           : isWorkSelected
-                          ? WorkWidget(Research, info.name, true)
+                          ? WorkWidget(info.work[0],info.headerImage, info.name )
                           : isEventSelected
                           ? EventWidget(events, info.name)
                           : isContactSelected
@@ -644,8 +644,9 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                     if(menuItems[index] == "About"){
                                       return Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [SizedBox(
-                                          height: MediaQuery.of(context).size.height*(20/1032),
+                                        children: [
+                                          SizedBox(
+                                          height: MediaQuery.of(context).size.height*(30/1032),
                                         ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -718,6 +719,9 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
+                                          SizedBox(
+                                            height: MediaQuery.of(context).size.height*(30/1032),
+                                          ),
                                           if(events.length > 1)
                                             Text("Events",style: TextStyle(
                                               fontSize: 24,
@@ -737,7 +741,7 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                           itemBuilder: (context, index) {
                                             return Padding(
                                               padding: EdgeInsets.symmetric(vertical: 8.0),
-                                              child: EventListItem(Event: events[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: true, ),
+                                              child: EventListItem(Event: events[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: true,text: false, ),
                                             );
                                           }
                                           ),
@@ -748,28 +752,19 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          if(Research.length > 1)
+                                          SizedBox(
+                                            height: MediaQuery.of(context).size.height*(30/1032),
+                                          ),
                                             Text("Research",style: TextStyle(
                                               fontSize: 24,
                                               fontWeight: FontWeight.w700,
                                             ),),
-                                          if(Research.length == 1)
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                                              child: Text("Research",style: TextStyle(
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w700,
-                                              ),),
+                                          AutoSizeText(info.work[0],
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w400,
                                             ),
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: Research.length,
-                                              itemBuilder: (context, index) {
-                                                return Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                                                  child: ResearchListItem(Work: Research[index], Lenght: (MediaQuery.of(context).size.width * (1095/1512)),detail: true, ),
-                                                );
-                                              }
+                                            maxLines: 4,
                                           ),
                                         ],
                                       );
