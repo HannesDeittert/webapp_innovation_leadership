@@ -100,8 +100,20 @@ class _InnoMap extends State<InnoMap> {
         List<Marker> _markers = filteredHubs.map((hub) {
           return Marker(
             point: hub.coordinates,
-            child: Icon(_getIconForCategory(hub.category),
-            size: 30,),
+            child: FutureBuilder(
+              future: _loadProfileImage(_getIconForCategory(hub.category)),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return Image(
+                    height: 37.68,
+                    width: 30,
+                    image: snapshot.data as ImageProvider,
+                  );
+                } else {
+                  return Container(); // Hier könnte ein Ladeindikator eingefügt werden
+                }
+              },
+            ),
           );
         }).toList();
         int filterselected = selected_all_tags.length;
@@ -690,18 +702,20 @@ class _InnoMap extends State<InnoMap> {
     );
   }
 
-  IconData _getIconForCategory(String category) {
+  String _getIconForCategory(String category) {
     switch (category) {
-      case 'university':
-        return Icons.school;
+      case 'chair':
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 30.png";
       case 'company':
-        return Icons.business;
-      case 'socialInstitution':
-        return Icons.group;
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 38.png";
+      case 'research institute':
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 39.png";
       case 'startup':
-        return Icons.rocket;
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 32.png";
+      case 'museum':
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 40.png";
       default:
-        return Icons.info;
+        return "gs://cohort1innovationandleadership.appspot.com/Images/map/Group 41.png";
     }
   }
 }

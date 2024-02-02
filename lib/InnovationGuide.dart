@@ -57,6 +57,7 @@ class _GuideHome extends State<GuideHome> {
     "Business / Economics",
     "Sustainability",
     "Healthcare",
+    "Technology",
     "Education",
     "Research",
     "Automotive",
@@ -64,7 +65,6 @@ class _GuideHome extends State<GuideHome> {
     "Finance",
     "Insurance",
     "Social Science",
-    "Creativity",
     "Communications",
     "Manufacturing",
     "FAU",
@@ -80,7 +80,7 @@ class _GuideHome extends State<GuideHome> {
 
   String GetIndex() {
     List<List<String>> Arrays = [['No', 'StartUps','Information Technology / AI',"Finance"],['Yes', 'Information Technology / AI',],['Yes', 'University Chair'],['No', 'StartUps','Insurance'],['No', 'Not Sure'],['No', 'Research Institutions']];
-    List<String> PathList = ['pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf', 'pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf','pdf/InnovationGuide.pdf'];
+    List<String> PathList = ['pdf/Innovation Guide.pdf','pdf/Innovation Guide.pdf', 'pdf/Innovation Guide.pdf','pdf/Innovation Guide.pdf','pdf/Innovation Guide.pdf','pdf/Innovation Guide.pdf'];
     List<int> match = List.filled(Arrays.length, 0);
     List<int> matchInd =[];
     List<String?> filterTags= [selectedAnswers_Furth[0] , selectedAnswers_Type[0]];
@@ -338,7 +338,7 @@ class _GuideHome extends State<GuideHome> {
                                 ),
                               ),
                               currentQuestion == "What best matches your Intrests?" ?
-                                Text("Select minimum 3 categories",style: TextStyle(
+                                Text("Select minimum 2 categories",style: TextStyle(
                                   fontSize: 24,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w500

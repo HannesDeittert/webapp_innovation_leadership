@@ -22,13 +22,12 @@ import '../../login/login_screen.dart';
 import '../innovationhubdetailpage.dart';
 
 
-class EventsDetailedPage extends StatelessWidget {
+class EventsDetailedPageNoHub extends StatelessWidget {
 
 
-  EventsDetailedPage(this.Event, this.Range, this.Date, this.Hub);
+  EventsDetailedPageNoHub(this.Event, this.Range, this.Date);
 
   final HubEvents Event;
-  late InnovationHub Hub;
   final String Range;
   final String Date;
   final String imagePath = 'Images/FAU_INNOVATION_LOGO.png';
@@ -83,8 +82,6 @@ class EventsDetailedPage extends StatelessWidget {
     DetailedHubInfoProvider detailedHubInfoProvider =
     Provider.of<DetailedHubInfoProvider>(context, listen: false);
     String Cost = "Paid";
-    String Name = Hub.name;
-    String Orga = "Organized by $Name";
     Uri Link = Uri(
         scheme: 'https',
         path: Event.link,
@@ -465,133 +462,6 @@ class EventsDetailedPage extends StatelessWidget {
                               ),
                             ],
                           ),
-
-                          SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.03
-                          ),
-                          if(Hub.code.isNotEmpty)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width *(66/1512),
-                                ),
-
-                                Container(
-                                  height: MediaQuery.of(context).size.width *(500/1512)*(43/125),
-                                  width: MediaQuery.of(context).size.width *(500/1512),
-                                  decoration: BoxDecoration(
-                                    color: tWhite,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0xFFD5D5D5).withOpacity(0.25), // Farbe mit Opazität
-                                        offset: Offset(0, 4), // Versatz in der horizontalen und vertikalen Richtung
-                                        blurRadius: 20, // Radius des Schatten
-                                        spreadRadius: 0, // Verbreitung des Schattens
-                                      ),
-                                    ],
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 36,horizontal: MediaQuery.of(context).size.width *(50/1512)),
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              FutureBuilder(
-                                                future: _loadProfileImage(Hub.profileImagePath),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.connectionState ==
-                                                      ConnectionState.done) {
-                                                    return ClipRRect(
-                                                      borderRadius: BorderRadius.vertical(top: Radius.circular(MediaQuery.of(context).size.width *(100/1512)*0.5),bottom:Radius.circular(MediaQuery.of(context).size.width *(100/1512)*0.5) ),
-                                                      child: Image(
-                                                        height: MediaQuery.of(context).size.width *(100/1512),
-                                                        width: MediaQuery.of(context).size.width *(100/1512),
-                                                        image: snapshot.data as ImageProvider,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return Container();
-                                                  }
-                                                },
-                                              ),
-                                              SizedBox(
-                                                  width: 20
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context).size.width *(500/1512)-20-MediaQuery.of(context).size.width *(200/1512),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(Orga,
-                                                            style: TextStyle(
-                                                                fontWeight: FontWeight.w500,
-                                                                fontSize: 24
-                                                            ),
-                                                            overflow: TextOverflow.ellipsis,),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () async {
-                                                        // Den DetailedHubInfoProvider vom Kontext abrufen
-                                                        DetailedHubInfoProvider detailedHubInfoProvider =
-                                                        Provider.of<DetailedHubInfoProvider>(context, listen: false);
-                                                        InnovationHubProvider provider =
-                                                        Provider.of<InnovationHubProvider>(context, listen: false);
-                                                        EventProvider provider3 = Provider.of<EventProvider>(context, listen:  false);
-                                                        WorkProvider provider4 = Provider.of<WorkProvider>(context, listen:  false);
-                                                        // _detailedHubInfo über die loadDetailedHubInfo-Methode initialisieren
-                                                        await detailedHubInfoProvider.getHubInfoByCode(Hub.code,Hub.filtered_chips);
-                                                        await detailedHubInfoProvider.getMenu();
-                                                        await provider3.loadAllEvents();
-                                                        await provider3.getEventListFromUidList(detailedHubInfoProvider.detailedInnovationHub.events);
-                                                        await provider4.loadAllHubworks();
-                                                        await provider4.getHubworksListFromUidList(detailedHubInfoProvider.detailedInnovationHub.work);
-                                                        print(detailedHubInfoProvider.detailedInnovationHub);
-                                                        provider.calculate_recomendations(Hub);
-                                                        print(provider.recomendations);
-                                                        // Zur Detailseite navigieren
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) => InnovationHubDetailPage(stringList: Hub.filtered_chips,),
-                                                          ),
-                                                        );
-                                                      },
-                                                      child: Text("Open Company Page", style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: 20,
-                                                          decoration: TextDecoration.underline,
-                                                          decorationColor: Color.fromARGB(255, 	186, 	186, 	186),
-                                                          color: Color.fromARGB(255, 	186, 	186, 	186)
-                                                      ),),
-                                                    )
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      Spacer()
-                                    ],
-                                  ),
-                                ),
-
-                                Spacer(),
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width *(66/1512),
-                                ),
-                              ],
-                            ),
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.0155
                           ),

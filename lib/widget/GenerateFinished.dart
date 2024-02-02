@@ -214,7 +214,7 @@ class _GuideFinishedHome extends State<GuideFinishedHome> {
                               }
                             },
                           ),
-                          Text("fau innohub",style: TextStyle(
+                          Text("innohub",style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600
                           ),)

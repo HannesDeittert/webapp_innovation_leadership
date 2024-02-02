@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:webapp_innovation_leadership/datamanager/InnovationHub.dart';
 import 'package:webapp_innovation_leadership/datamanager/InnovationHubProvider.dart';
 import 'package:webapp_innovation_leadership/widget/detailed_widget/EventsDetailedPage.dart';
+import 'package:webapp_innovation_leadership/widget/detailed_widget/EventsDetailedPageNoHub.dart';
 import '../constants/colors.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../datamanager/DetailedHubInfoProvider.dart';
@@ -353,6 +354,7 @@ class EventListItem extends StatelessWidget {
                         InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
                         InnovationHub Hub = provider2.getInnovationHubByCode(Event.HubCode);
                         await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -563,14 +565,27 @@ class EventListItem extends StatelessWidget {
                         DetailedHubInfoProvider detailedHubInfoProvider =
                         Provider.of<DetailedHubInfoProvider>(context, listen: false);
                         InnovationHubProvider provider2 = Provider.of<InnovationHubProvider>(context, listen: false);
-                        InnovationHub Hub = provider2.getInnovationHubByCode(Event.HubCode);
-                        await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EventsDetailedPage(Event,timeRange,Detailed,Hub),
-                          ),
-                        );
+                        InnovationHub Hub = provider2.innovationHubs[0];
+                        if(Event.HubCode != ""){
+                          Hub = provider2.getInnovationHubByCode(Event.HubCode);
+                          await detailedHubInfoProvider.getHubInfoByCode(Event.HubCode,Hub.filtered_chips);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EventsDetailedPage(Event,timeRange,Detailed,Hub),
+                            ),
+                          );
+                        }
+                        else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EventsDetailedPageNoHub(
+                                      Event, timeRange, Detailed),
+                            ),
+                          );
+                        }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.height*(29/491),

@@ -651,11 +651,18 @@ class _InnovationHubDetailPageState extends State<InnovationHubDetailPage> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(info.name, style: TextStyle(
-                                                fontSize: 32,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                              ),
+                                              if(info.name.length > 38)
+                                                  Text(info.name.substring(0,38), style: TextStyle(
+                                                  fontSize: 32,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                ),
+                                              if(info.name.length <= 38)
+                                                Text(info.name, style: TextStyle(
+                                                  fontSize: 32,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                                ),
                                               if (info.filtered_chips.isNotEmpty)
                                                 Wrap(
                                                   runSpacing: 5,

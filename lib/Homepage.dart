@@ -558,7 +558,7 @@ class _HomePage extends State<MyHomePage> {
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w500
                                                 ),),
-                                                Text("Navigate your personal path",style: TextStyle(
+                                                Text("Get your personalized guide",style: TextStyle(
                                                     fontSize: 24,
                                                     fontWeight: FontWeight.w500
                                                 ),),
