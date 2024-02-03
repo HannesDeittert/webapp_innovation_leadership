@@ -162,7 +162,7 @@ class _Community extends State<Community> {
                             },
                           ),
                           Text(
-                            "fau innohub",
+                            "innohub",
                             style:
                             TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                           )
